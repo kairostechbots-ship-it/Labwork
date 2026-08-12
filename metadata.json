@@ -1,0 +1,6 @@
+{
+  "name": "Labwork Análisis Clínicos",
+  "description": "Sitio web informativo y de contacto para laboratorio de análisis clínicos, con catálogo de estudios, sucursales y solicitud de tomas a domicilio.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

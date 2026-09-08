@@ -1,0 +1,126 @@
+import {
+  boolean,
+  date,
+  numeric,
+  pgEnum,
+  pgTable,
+  primaryKey,
+  text,
+  time,
+  timestamp,
+  uniqueIndex,
+  uuid,
+  varchar,
+} from 'drizzle-orm/pg-core';
+
+export const appointmentTypeEnum = pgEnum('appointment_type', [
+  'branch',
+  'home',
+]);
+
+export const appointmentStatusEnum = pgEnum('appointment_status', [
+  'pending',
+  'confirmed',
+  'cancelled',
+  'completed',
+]);
+
+export const branches = pgTable(
+  'branches',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    name: varchar('name', { length: 120 }).notNull(),
+    slug: varchar('slug', { length: 140 }).notNull(),
+    address: text('address').notNull(),
+    phone: varchar('phone', { length: 30 }).notNull(),
+    whatsapp: varchar('whatsapp', { length: 30 }),
+    mapUrl: text('map_url'),
+    businessHours: text('business_hours'),
+    isActive: boolean('is_active').default(true).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [uniqueIndex('branches_slug_unique').on(table.slug)],
+);
+
+export const services = pgTable(
+  'services',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    name: varchar('name', { length: 160 }).notNull(),
+    slug: varchar('slug', { length: 180 }).notNull(),
+    category: varchar('category', { length: 100 }),
+    description: text('description'),
+    preparation: text('preparation'),
+    price: numeric('price', { precision: 10, scale: 2 }),
+    isActive: boolean('is_active').default(true).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [uniqueIndex('services_slug_unique').on(table.slug)],
+);
+
+export const packages = pgTable(
+  'packages',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    name: varchar('name', { length: 160 }).notNull(),
+    slug: varchar('slug', { length: 180 }).notNull(),
+    description: text('description'),
+    preparation: text('preparation'),
+    price: numeric('price', { precision: 10, scale: 2 }),
+    isActive: boolean('is_active').default(true).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [uniqueIndex('packages_slug_unique').on(table.slug)],
+);
+
+export const packageServices = pgTable(
+  'package_services',
+  {
+    packageId: uuid('package_id')
+      .notNull()
+      .references(() => packages.id, { onDelete: 'cascade' }),
+    serviceId: uuid('service_id')
+      .notNull()
+      .references(() => services.id, { onDelete: 'restrict' }),
+  },
+  (table) => [primaryKey({ columns: [table.packageId, table.serviceId] })],
+);
+
+export const appointments = pgTable('appointments', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  patientName: varchar('patient_name', { length: 160 }).notNull(),
+  phone: varchar('phone', { length: 30 }).notNull(),
+  email: varchar('email', { length: 254 }),
+  type: appointmentTypeEnum('type').notNull(),
+  branchId: uuid('branch_id').references(() => branches.id, {
+    onDelete: 'restrict',
+  }),
+  address: text('address'),
+  requestedDate: date('requested_date').notNull(),
+  requestedTime: time('requested_time').notNull(),
+  studies: text('studies'),
+  notes: text('notes'),
+  status: appointmentStatusEnum('status').default('pending').notNull(),
+  googleCalendarEventId: varchar('google_calendar_event_id', { length: 255 }),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});

@@ -11,12 +11,13 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "admin:create": "tsx scripts/create-admin.ts"
+    "admin:create": "node --import tsx scripts/create-admin.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
     "@hookform/resolvers": "^5.2.1",
     "@neondatabase/serverless": "^1.1.0",
+    "@next/env": "^15.5.25",
     "autoprefixer": "^10.4.21",
     "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",

@@ -29,3 +29,7 @@ View your app in AI Studio: https://ai.studio/apps/6643f446-da99-4d74-90c9-9b004
 4. Verify the connection at `/api/health/database`.
 
 Never commit `.env.local` or a real database connection string.
+
+## Backend API
+
+See [`docs/API.md`](docs/API.md) for endpoints, permissions, request examples, and setup.

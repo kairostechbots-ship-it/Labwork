@@ -1,6 +1,7 @@
 import {
   boolean,
   date,
+  index,
   numeric,
   pgEnum,
   pgTable,
@@ -24,6 +25,27 @@ export const appointmentStatusEnum = pgEnum('appointment_status', [
   'cancelled',
   'completed',
 ]);
+
+export const userRoleEnum = pgEnum('user_role', [
+  'admin',
+  'receptionist',
+  'editor',
+]);
+
+export const users = pgTable(
+  'users',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    name: varchar('name', { length: 160 }).notNull(),
+    email: varchar('email', { length: 254 }).notNull(),
+    passwordHash: text('password_hash').notNull(),
+    role: userRoleEnum('role').default('receptionist').notNull(),
+    isActive: boolean('is_active').default(true).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [uniqueIndex('users_email_unique').on(table.email)],
+);
 
 export const branches = pgTable(
   'branches',
@@ -123,4 +145,42 @@ export const appointments = pgTable('appointments', {
   updatedAt: timestamp('updated_at', { withTimezone: true })
     .defaultNow()
     .notNull(),
-});
+}, (table) => [
+  index('appointments_status_idx').on(table.status),
+  index('appointments_requested_date_idx').on(table.requestedDate),
+  index('appointments_branch_id_idx').on(table.branchId),
+]);
+
+export const appointmentServices = pgTable(
+  'appointment_services',
+  {
+    appointmentId: uuid('appointment_id').notNull().references(() => appointments.id, { onDelete: 'cascade' }),
+    serviceId: uuid('service_id').notNull().references(() => services.id, { onDelete: 'restrict' }),
+  },
+  (table) => [
+    primaryKey({ columns: [table.appointmentId, table.serviceId] }),
+    index('appointment_services_service_id_idx').on(table.serviceId),
+  ],
+);
+
+export const appointmentPackages = pgTable(
+  'appointment_packages',
+  {
+    appointmentId: uuid('appointment_id').notNull().references(() => appointments.id, { onDelete: 'cascade' }),
+    packageId: uuid('package_id').notNull().references(() => packages.id, { onDelete: 'restrict' }),
+  },
+  (table) => [
+    primaryKey({ columns: [table.appointmentId, table.packageId] }),
+    index('appointment_packages_package_id_idx').on(table.packageId),
+  ],
+);
+
+export const appointmentStatusHistory = pgTable('appointment_status_history', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  appointmentId: uuid('appointment_id').notNull().references(() => appointments.id, { onDelete: 'cascade' }),
+  previousStatus: appointmentStatusEnum('previous_status'),
+  newStatus: appointmentStatusEnum('new_status').notNull(),
+  changedByUserId: uuid('changed_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+  note: text('note'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [index('appointment_status_history_appointment_id_idx').on(table.appointmentId)]);

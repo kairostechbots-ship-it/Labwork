@@ -21,8 +21,8 @@ View your app in AI Studio: https://ai.studio/apps/6643f446-da99-4d74-90c9-9b004
 
 ## Neon database
 
-1. Create a Neon Postgres database and copy its pooled connection string.
-2. Add it to `.env.local` as `DATABASE_URL`.
+1. Create a Neon Postgres database and copy its pooled and direct connection strings.
+2. Add them to `.env.local` as `DATABASE_URL` and `DATABASE_URL_UNPOOLED`.
 3. Generate and apply migrations:
    `npm run db:generate`
    `npm run db:migrate`

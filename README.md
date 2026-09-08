@@ -18,3 +18,14 @@ View your app in AI Studio: https://ai.studio/apps/6643f446-da99-4d74-90c9-9b004
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
+
+## Neon database
+
+1. Create a Neon Postgres database and copy its pooled connection string.
+2. Add it to `.env.local` as `DATABASE_URL`.
+3. Generate and apply migrations:
+   `npm run db:generate`
+   `npm run db:migrate`
+4. Verify the connection at `/api/health/database`.
+
+Never commit `.env.local` or a real database connection string.

@@ -33,3 +33,7 @@ Never commit `.env.local` or a real database connection string.
 ## Backend API
 
 See [`docs/API.md`](docs/API.md) for endpoints, permissions, request examples, and setup.
+
+## Google Calendar
+
+See [`docs/GOOGLE_CALENDAR.md`](docs/GOOGLE_CALENDAR.md) for OAuth setup, branch-specific calendars, environment variables, and sync testing.

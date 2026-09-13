@@ -54,13 +54,19 @@ Para una cita `home`, `address` es obligatorio. Para una cita `branch`, `branchI
 | `GET`, `POST` | `/api/admin/packages` | admin, editor |
 | `PATCH` | `/api/admin/packages/:id` | admin, editor |
 | `DELETE` | `/api/admin/packages/:id` | admin |
-| `GET` | `/api/admin/appointments?status=pending` | admin, receptionist |
+| `GET` | `/api/admin/appointments?status=pending&branchId=:id&type=branch` | admin, receptionist |
 | `GET`, `PATCH` | `/api/admin/appointments/:id` | admin, receptionist |
 | `DELETE` | `/api/admin/appointments/:id` | admin |
+| `POST` | `/api/admin/appointments/:id/calendar` | admin, receptionist |
 | `GET`, `POST` | `/api/admin/users` | admin |
 | `PATCH` | `/api/admin/users/:id` | admin |
+| `GET`, `DELETE` | `/api/admin/google-calendar` | admin |
+| `GET` | `/api/admin/google-calendar/connect` | admin |
+| `GET` | `/api/admin/google-calendar/calendars` | admin |
+| `GET`, `PUT`, `DELETE` | `/api/admin/google-calendar/mappings` | admin |
 
 El `PATCH` de una cita acepta `{ "status": "confirmed", "note": "Confirmada por teléfono" }` y registra el historial.
+Al confirmar o cancelar también sincroniza el evento de Google Calendar. La guía completa está en [`GOOGLE_CALENDAR.md`](./GOOGLE_CALENDAR.md).
 
 ## Puesta en marcha
 

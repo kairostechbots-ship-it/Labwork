@@ -102,9 +102,14 @@ export default function AdminAgenda() {
               Panel Administrativo
             </span>
           </div>
-          <Link href="/" className="text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors">
-            Volver al sitio web
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/admin/google-calendar" className="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors">
+              Google Calendar
+            </Link>
+            <Link href="/" className="text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors">
+              Volver al sitio web
+            </Link>
+          </div>
         </div>
       </header>
 

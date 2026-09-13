@@ -69,6 +69,36 @@ export const branches = pgTable(
   (table) => [uniqueIndex('branches_slug_unique').on(table.slug)],
 );
 
+export const googleCalendarConnections = pgTable('google_calendar_connections', {
+  id: varchar('id', { length: 32 }).primaryKey(),
+  googleEmail: varchar('google_email', { length: 254 }).notNull(),
+  encryptedRefreshToken: text('encrypted_refresh_token').notNull(),
+  scopes: text('scopes').notNull(),
+  connectedByUserId: uuid('connected_by_user_id').references(() => users.id, {
+    onDelete: 'set null',
+  }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const googleCalendarMappings = pgTable(
+  'google_calendar_mappings',
+  {
+    key: varchar('key', { length: 200 }).primaryKey(),
+    branchId: uuid('branch_id').references(() => branches.id, {
+      onDelete: 'cascade',
+    }),
+    calendarId: text('calendar_id').notNull(),
+    calendarName: varchar('calendar_name', { length: 255 }).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('google_calendar_mappings_branch_unique').on(table.branchId),
+    uniqueIndex('google_calendar_mappings_calendar_unique').on(table.calendarId),
+  ],
+);
+
 export const services = pgTable(
   'services',
   {
@@ -139,6 +169,7 @@ export const appointments = pgTable('appointments', {
   notes: text('notes'),
   status: appointmentStatusEnum('status').default('pending').notNull(),
   googleCalendarEventId: varchar('google_calendar_event_id', { length: 255 }),
+  googleCalendarId: text('google_calendar_id'),
   createdAt: timestamp('created_at', { withTimezone: true })
     .defaultNow()
     .notNull(),

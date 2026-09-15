@@ -4,9 +4,14 @@ import { apiError, handleApiError } from '@/lib/api';
 import { getDb } from '@/lib/db';
 import { appointmentPackages, appointments, appointmentServices, branches, packages, services } from '@/lib/db/schema';
 import { appointmentInputSchema } from '@/lib/validators';
+import { AppointmentSlotUnavailableError, assertSlotAvailable } from '@/lib/appointments/availability';
+import { sendAppointmentNotifications } from '@/lib/email/appointments';
+import { consumeAppointmentRateLimit } from '@/lib/appointments/rate-limit';
 
 export async function POST(request: Request) {
   try {
+    const rateLimit = await consumeAppointmentRateLimit(request);
+    if (!rateLimit.allowed) return apiError('Demasiadas solicitudes. Inténtalo nuevamente en unos minutos.', 429);
     const input = appointmentInputSchema.parse(await request.json());
     const today = new Date().toISOString().slice(0, 10);
     if (input.requestedDate < today) return apiError('La fecha solicitada no puede estar en el pasado.', 422);
@@ -24,6 +29,7 @@ export async function POST(request: Request) {
       const found = await db.select({ id: packages.id }).from(packages).where(and(inArray(packages.id, input.packageIds), eq(packages.isActive, true)));
       if (found.length !== new Set(input.packageIds).size) return apiError('Uno o más paquetes no existen o no están activos.', 422);
     }
+    await assertSlotAvailable(input.requestedDate, input.requestedTime, { type: input.type, branchId: input.type === 'branch' ? input.branchId ?? null : null });
 
     const { serviceIds, packageIds, ...values } = input;
     const appointmentId = crypto.randomUUID();
@@ -46,6 +52,10 @@ export async function POST(request: Request) {
       [created] = rows;
     }
 
-    return NextResponse.json({ data: created }, { status: 201 });
-  } catch (error) { return handleApiError(error); }
+    const emailNotification = await sendAppointmentNotifications(created, 'pending');
+    return NextResponse.json({ data: created, emailNotification }, { status: 201 });
+  } catch (error) {
+    if (error instanceof AppointmentSlotUnavailableError) return apiError(error.message, 409);
+    return handleApiError(error);
+  }
 }

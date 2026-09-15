@@ -13,6 +13,13 @@ const googleCalendarEnvironmentSchema = z.object({
   GOOGLE_CALENDAR_APPOINTMENT_DURATION_MINUTES: z.coerce.number().int().min(15).max(480).default(60),
 });
 
+const emailEnvironmentSchema = z.object({
+  SENDGRID_API_KEY: z.string().min(1),
+  SENDGRID_FROM_EMAIL: z.string().email(),
+  SENDGRID_FROM_NAME: z.string().min(1).default('Labwork'),
+  LABWORK_NOTIFICATION_EMAIL: z.string().email(),
+});
+
 export function getDatabaseUrl() {
   const result = databaseEnvironmentSchema.safeParse({
     DATABASE_URL: process.env.DATABASE_URL,
@@ -42,4 +49,14 @@ export function getGoogleCalendarEnvironment() {
   }
 
   return result.data;
+}
+
+export function getEmailEnvironment() {
+  const result = emailEnvironmentSchema.safeParse({
+    SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
+    SENDGRID_FROM_EMAIL: process.env.SENDGRID_FROM_EMAIL,
+    SENDGRID_FROM_NAME: process.env.SENDGRID_FROM_NAME,
+    LABWORK_NOTIFICATION_EMAIL: process.env.LABWORK_NOTIFICATION_EMAIL,
+  });
+  return result.success ? result.data : null;
 }

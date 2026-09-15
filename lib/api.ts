@@ -17,6 +17,7 @@ export function handleApiError(error: unknown) {
     : undefined;
   if (code === '23505') return apiError('Ya existe un registro con ese valor único.', 409);
   if (code === '23503') return apiError('La operación viola una relación existente.', 409);
+  if (code === '23514') return apiError('El horario seleccionado ya no está disponible.', 409);
   if (code === '22P02') return apiError('El identificador no es válido.', 422);
 
   console.error(error);

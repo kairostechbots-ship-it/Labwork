@@ -23,6 +23,9 @@ Auth.js publica sus rutas bajo `/api/auth/*`. El inicio de sesión usa el provee
 | `GET` | `/api/packages` | Paquetes activos |
 | `GET` | `/api/packages/:slug` | Paquete y estudios incluidos |
 | `POST` | `/api/appointments` | Solicitar una cita |
+| `GET` | `/api/appointments/options` | Datos necesarios para construir el formulario |
+| `GET` | `/api/availability?date=YYYY-MM-DD&type=branch&branchId=:id` | Horarios y cupos disponibles |
+| `GET` | `/api/settings` | Contactos y configuración pública |
 
 ```json
 {
@@ -54,7 +57,7 @@ Para una cita `home`, `address` es obligatorio. Para una cita `branch`, `branchI
 | `GET`, `POST` | `/api/admin/packages` | admin, editor |
 | `PATCH` | `/api/admin/packages/:id` | admin, editor |
 | `DELETE` | `/api/admin/packages/:id` | admin |
-| `GET` | `/api/admin/appointments?status=pending&branchId=:id&type=branch` | admin, receptionist |
+| `GET`, `POST` | `/api/admin/appointments?status=pending&branchId=:id&type=branch&page=1&limit=20` | admin, receptionist |
 | `GET`, `PATCH` | `/api/admin/appointments/:id` | admin, receptionist |
 | `DELETE` | `/api/admin/appointments/:id` | admin |
 | `POST` | `/api/admin/appointments/:id/calendar` | admin, receptionist |
@@ -64,9 +67,20 @@ Para una cita `home`, `address` es obligatorio. Para una cita `branch`, `branchI
 | `GET` | `/api/admin/google-calendar/connect` | admin |
 | `GET` | `/api/admin/google-calendar/calendars` | admin |
 | `GET`, `PUT`, `DELETE` | `/api/admin/google-calendar/mappings` | admin |
+| `GET`, `POST` | `/api/admin/schedule-rules` | admin |
+| `PUT`, `DELETE` | `/api/admin/schedule-rules/:id` | admin |
+| `GET`, `POST` | `/api/admin/schedule-blocks` | admin |
+| `DELETE` | `/api/admin/schedule-blocks/:id` | admin |
+| `GET`, `PUT` | `/api/admin/settings` | admin, editor |
 
 El `PATCH` de una cita acepta `{ "status": "confirmed", "note": "Confirmada por teléfono" }` y registra el historial.
 Al confirmar o cancelar también sincroniza el evento de Google Calendar. La guía completa está en [`GOOGLE_CALENDAR.md`](./GOOGLE_CALENDAR.md).
+
+Las reglas de agenda se configuran por sucursal y por día de la semana (`weekday`: 0 domingo a 6 sábado). Los bloqueos pueden cubrir un día completo o un rango de horas. Solamente las citas `confirmed` consumen cupo. El servidor vuelve a validar el horario al confirmar una cita.
+
+El listado administrativo acepta `search`, `dateFrom`, `dateTo`, `status`, `type`, `branchId`, `page` y `limit`. Devuelve `{ data, meta }`.
+
+Si SendGrid está configurado, las altas y cambios de cita notifican al paciente y al correo de Labwork. Un fallo de correo se devuelve en `emailNotification`, pero no revierte la cita.
 
 ## Puesta en marcha
 

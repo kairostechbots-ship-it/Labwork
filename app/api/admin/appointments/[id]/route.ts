@@ -12,6 +12,8 @@ import {
 } from '@/lib/google-calendar/appointments';
 import { GoogleCalendarNotConnectedError } from '@/lib/google-calendar/connection';
 import { GoogleCalendarApiError } from '@/lib/google-calendar/client';
+import { AppointmentSlotUnavailableError, assertSlotAvailable } from '@/lib/appointments/availability';
+import { sendAppointmentNotifications } from '@/lib/email/appointments';
 
 type Context = { params: Promise<{ id: string }> };
 
@@ -37,13 +39,40 @@ export async function PATCH(request: Request, { params }: Context) {
     const { id } = await params;
     const input = appointmentUpdateSchema.parse(await request.json());
     const db = getDb();
-    const [current] = await db.select({ status: appointments.status }).from(appointments).where(eq(appointments.id, id)).limit(1);
+    const [current] = await db.select().from(appointments).where(eq(appointments.id, id)).limit(1);
     if (!current) return apiError('Cita no encontrada.', 404);
-    const [data] = await db.update(appointments).set({ status: input.status, updatedAt: new Date() }).where(eq(appointments.id, id)).returning();
-    if (current.status !== input.status) await db.insert(appointmentStatusHistory).values({ appointmentId: id, previousStatus: current.status, newStatus: input.status, changedByUserId: access.user.id, note: input.note });
+    const nextStatus = input.status ?? current.status;
+    const nextType = input.type ?? current.type;
+    const nextBranchId = input.branchId !== undefined ? input.branchId : current.branchId;
+    const nextDate = input.requestedDate ?? current.requestedDate;
+    const nextTime = input.requestedTime ?? current.requestedTime;
+    if (nextDate < new Date().toISOString().slice(0, 10)) return apiError('La fecha no puede estar en el pasado.', 422);
+    if (nextType === 'branch' && !nextBranchId) return apiError('Selecciona una sucursal.', 422);
+    if (nextType === 'home' && !(input.address ?? current.address)) return apiError('La dirección es obligatoria.', 422);
+    if (nextStatus === 'confirmed') {
+      await assertSlotAvailable(nextDate, nextTime, { type: nextType, branchId: nextType === 'branch' ? nextBranchId : null }, id);
+    }
+    const { serviceIds, packageIds, note: _note, ...updates } = input;
+    const normalizedUpdates = {
+      ...updates,
+      ...(input.type === 'home' ? { branchId: null } : {}),
+      ...(input.type === 'branch' ? { address: null } : {}),
+      ...(input.requestedTime ? { requestedTime: input.requestedTime.length === 5 ? `${input.requestedTime}:00` : input.requestedTime } : {}),
+      updatedAt: new Date(),
+    };
+    const [data] = await db.update(appointments).set(normalizedUpdates).where(eq(appointments.id, id)).returning();
+    if (serviceIds) {
+      await db.delete(appointmentServices).where(eq(appointmentServices.appointmentId, id));
+      if (serviceIds.length) await db.insert(appointmentServices).values([...new Set(serviceIds)].map((serviceId) => ({ appointmentId: id, serviceId })));
+    }
+    if (packageIds) {
+      await db.delete(appointmentPackages).where(eq(appointmentPackages.appointmentId, id));
+      if (packageIds.length) await db.insert(appointmentPackages).values([...new Set(packageIds)].map((packageId) => ({ appointmentId: id, packageId })));
+    }
+    if (current.status !== nextStatus) await db.insert(appointmentStatusHistory).values({ appointmentId: id, previousStatus: current.status, newStatus: nextStatus, changedByUserId: access.user.id, note: input.note });
 
     let calendarSync: Awaited<ReturnType<typeof syncAppointmentWithGoogleCalendar>> | { status: 'error'; message: string } = { status: 'not-needed' };
-    if (input.status === 'confirmed' || input.status === 'cancelled') {
+    if (nextStatus === 'confirmed' || nextStatus === 'cancelled') {
       try {
         calendarSync = await syncAppointmentWithGoogleCalendar(id);
       } catch (error) {
@@ -56,8 +85,13 @@ export async function PATCH(request: Request, { params }: Context) {
       }
     }
 
-    return NextResponse.json({ data, calendarSync });
-  } catch (error) { return handleApiError(error); }
+    const emailEvent = current.status !== nextStatus ? nextStatus : 'updated';
+    const emailNotification = await sendAppointmentNotifications(data, emailEvent);
+    return NextResponse.json({ data, calendarSync, emailNotification });
+  } catch (error) {
+    if (error instanceof AppointmentSlotUnavailableError) return apiError(error.message, 409);
+    return handleApiError(error);
+  }
 }
 
 export async function DELETE(_request: Request, { params }: Context) {

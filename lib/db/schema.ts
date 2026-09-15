@@ -2,6 +2,7 @@ import {
   boolean,
   date,
   index,
+  integer,
   numeric,
   pgEnum,
   pgTable,
@@ -170,6 +171,7 @@ export const appointments = pgTable('appointments', {
   status: appointmentStatusEnum('status').default('pending').notNull(),
   googleCalendarEventId: varchar('google_calendar_event_id', { length: 255 }),
   googleCalendarId: text('google_calendar_id'),
+  createdByUserId: uuid('created_by_user_id').references(() => users.id, { onDelete: 'set null' }),
   createdAt: timestamp('created_at', { withTimezone: true })
     .defaultNow()
     .notNull(),
@@ -215,3 +217,46 @@ export const appointmentStatusHistory = pgTable('appointment_status_history', {
   note: text('note'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [index('appointment_status_history_appointment_id_idx').on(table.appointmentId)]);
+
+export const scheduleRules = pgTable('schedule_rules', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  type: appointmentTypeEnum('type').notNull(),
+  branchId: uuid('branch_id').references(() => branches.id, { onDelete: 'cascade' }),
+  weekday: integer('weekday').notNull(),
+  startTime: time('start_time').notNull(),
+  endTime: time('end_time').notNull(),
+  slotDurationMinutes: integer('slot_duration_minutes').default(60).notNull(),
+  capacity: integer('capacity').default(1).notNull(),
+  isActive: boolean('is_active').default(true).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [index('schedule_rules_target_day_idx').on(table.type, table.branchId, table.weekday)]);
+
+export const scheduleBlocks = pgTable('schedule_blocks', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  type: appointmentTypeEnum('type').notNull(),
+  branchId: uuid('branch_id').references(() => branches.id, { onDelete: 'cascade' }),
+  blockedDate: date('blocked_date').notNull(),
+  startTime: time('start_time'),
+  endTime: time('end_time'),
+  reason: varchar('reason', { length: 500 }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [index('schedule_blocks_target_date_idx').on(table.type, table.branchId, table.blockedDate)]);
+
+export const siteSettings = pgTable('site_settings', {
+  id: varchar('id', { length: 32 }).primaryKey(),
+  laboratoryName: varchar('laboratory_name', { length: 160 }).notNull(),
+  email: varchar('email', { length: 254 }),
+  phone: varchar('phone', { length: 30 }),
+  whatsapp: varchar('whatsapp', { length: 30 }),
+  facebookUrl: text('facebook_url'),
+  instagramUrl: text('instagram_url'),
+  appointmentNotice: text('appointment_notice'),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const appointmentRateLimits = pgTable('appointment_rate_limits', {
+  identifierHash: varchar('identifier_hash', { length: 64 }).notNull(),
+  bucketStart: timestamp('bucket_start', { withTimezone: true }).notNull(),
+  requestCount: integer('request_count').default(1).notNull(),
+}, (table) => [primaryKey({ columns: [table.identifierHash, table.bucketStart] })]);

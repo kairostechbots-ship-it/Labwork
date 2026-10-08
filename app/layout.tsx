@@ -1,5 +1,6 @@
 import type {Metadata} from 'next';
 import { Outfit, Plus_Jakarta_Sans } from 'next/font/google';
+import 'leaflet/dist/leaflet.css';
 import './globals.css';
 
 const displayFont = Outfit({ 
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang="es" className="scroll-smooth">
-      <body className={`${bodyFont.variable} ${displayFont.variable} font-body text-slate-800 antialiased bg-slate-50`} suppressHydrationWarning>
+      <body className={`${bodyFont.variable} ${displayFont.variable} font-body text-slate-800 antialiased bg-white`} suppressHydrationWarning>
         {children}
       </body>
     </html>

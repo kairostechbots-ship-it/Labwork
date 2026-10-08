@@ -12,6 +12,7 @@ import {
   uniqueIndex,
   uuid,
   varchar,
+   doublePrecision,
 } from 'drizzle-orm/pg-core';
 
 export const appointmentTypeEnum = pgEnum('appointment_type', [
@@ -57,18 +58,26 @@ export const branches = pgTable(
     phone: varchar('phone', { length: 30 }).notNull(),
     whatsapp: varchar('whatsapp', { length: 30 }),
     mapUrl: text('map_url'),
+
+    // Coordenadas para mostrar la sucursal en el mapa
+    latitude: doublePrecision('latitude'),
+    longitude: doublePrecision('longitude'),
+
     businessHours: text('business_hours'),
     isActive: boolean('is_active').default(true).notNull(),
+
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),
+
     updatedAt: timestamp('updated_at', { withTimezone: true })
       .defaultNow()
       .notNull(),
   },
-  (table) => [uniqueIndex('branches_slug_unique').on(table.slug)],
+  (table) => [
+    uniqueIndex('branches_slug_unique').on(table.slug),
+  ],
 );
-
 export const googleCalendarConnections = pgTable('google_calendar_connections', {
   id: varchar('id', { length: 32 }).primaryKey(),
   googleEmail: varchar('google_email', { length: 254 }).notNull(),

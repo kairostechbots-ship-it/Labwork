@@ -1,5 +1,7 @@
+
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import AuthProvider from '@/components/providers/AuthProvider';
 
 export default function WebLayout({
   children,
@@ -7,7 +9,7 @@ export default function WebLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <AuthProvider>
       <Header />
 
       <main>
@@ -15,6 +17,6 @@ export default function WebLayout({
       </main>
 
       <Footer />
-    </>
+    </AuthProvider>
   );
 }

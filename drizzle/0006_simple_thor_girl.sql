@@ -1,0 +1,1 @@
+ALTER TABLE "appointments" ADD COLUMN "birth_date" date NOT NULL;

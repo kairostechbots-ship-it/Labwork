@@ -8,7 +8,11 @@ import { packageInputSchema } from '@/lib/validators';
 
 export async function GET() {
   try {
-    const access = await requireUser(['admin', 'editor']); if ('response' in access) return access.response;
+    const access = await requireUser([
+  'admin',
+  'editor',
+  'receptionist',
+]); if ('response' in access) return access.response;
     return NextResponse.json({ data: await getDb().select().from(packages).orderBy(asc(packages.name)) });
   } catch (error) { return handleApiError(error); }
 }

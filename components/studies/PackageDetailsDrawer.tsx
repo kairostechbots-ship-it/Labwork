@@ -1,17 +1,18 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 import {
   CalendarDays,
+  CheckCircle2,
   FileText,
   Info,
   Package,
   X,
 } from 'lucide-react';
 
-import type { StudyPackage } from '@/types/study';
+import type { PackageDetailsResponse, PackageIncludedService, StudyPackage } from '@/types/study';
 
 type PackageDetailsDrawerProps = {
   studyPackage: StudyPackage | null;
@@ -22,6 +23,53 @@ export default function PackageDetailsDrawer({
   studyPackage,
   onClose,
 }: PackageDetailsDrawerProps) {
+  const [includedServices, setIncludedServices] = useState<PackageIncludedService[]>([]);
+  const [loadingServices, setLoadingServices] = useState(false);
+  const [servicesError, setServicesError] = useState(false);
+
+  useEffect(() => {
+    if (!studyPackage) {
+      setIncludedServices([]);
+      setLoadingServices(false);
+      setServicesError(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    setIncludedServices([]);
+    setLoadingServices(true);
+    setServicesError(false);
+
+    const loadPackageDetails = async () => {
+      try {
+        const response = await fetch(
+          `/api/packages/${encodeURIComponent(studyPackage.slug)}`,
+          { signal: controller.signal },
+        );
+
+        if (!response.ok) {
+          throw new Error('No fue posible consultar el paquete.');
+        }
+
+        const result: PackageDetailsResponse = await response.json();
+        if (!controller.signal.aborted) {
+          setIncludedServices(result.data.services ?? []);
+        }
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error('Error al consultar estudios incluidos:', error);
+          setServicesError(true);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoadingServices(false);
+        }
+      }
+    };
+
+    void loadPackageDetails();
+    return () => controller.abort();
+  }, [studyPackage?.slug]);
   /*
   |--------------------------------------------------------------------------
   | ESC + BLOQUEAR SCROLL
@@ -297,7 +345,7 @@ export default function PackageDetailsDrawer({
           </section>
 
           {/* =========================================================
-              ESTUDIOS INCLUIDOS - FUTURO
+              ESTUDIOS INCLUIDOS
           ========================================================== */}
 
           <section className="border-t border-slate-100 px-6 py-7 sm:px-8">
@@ -305,18 +353,50 @@ export default function PackageDetailsDrawer({
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-50 text-accent-700">
                 <Package className="h-4 w-4" />
               </div>
-
               <h3 className="font-display text-lg font-bold text-primary-950">
                 Estudios incluidos
               </h3>
+              {!loadingServices && !servicesError && includedServices.length > 0 && (
+                <span className="rounded-full bg-accent-50 px-2.5 py-1 text-xs font-bold text-accent-700">
+                  {includedServices.length}
+                </span>
+              )}
             </div>
 
-            <div className="mt-4 rounded-2xl border border-dashed border-accent-200 bg-accent-50/40 p-5">
-              <p className="text-sm leading-6 text-slate-500">
-                El contenido de este paquete
-                estará disponible próximamente.
-              </p>
-            </div>
+            {loadingServices ? (
+              <div className="mt-4 space-y-3" role="status" aria-live="polite">
+                <span className="sr-only">Cargando estudios incluidos</span>
+                {[1, 2, 3].map((item) => (
+                  <div key={item} className="h-14 animate-pulse rounded-xl bg-slate-100" />
+                ))}
+              </div>
+            ) : servicesError ? (
+              <div className="mt-4 rounded-2xl border border-red-100 bg-red-50 p-5">
+                <p className="text-sm leading-6 text-red-700">
+                  No fue posible consultar los estudios incluidos. Intenta abrir el paquete nuevamente.
+                </p>
+              </div>
+            ) : includedServices.length > 0 ? (
+              <ul className="mt-4 space-y-2">
+                {includedServices.map((service) => (
+                  <li
+                    key={service.id}
+                    className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3.5"
+                  >
+                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-accent-600" aria-hidden="true" />
+                    <span className="text-sm font-medium leading-6 text-primary-950">
+                      {service.name}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="mt-4 rounded-2xl border border-dashed border-accent-200 bg-accent-50/40 p-5">
+                <p className="text-sm leading-6 text-slate-500">
+                  Este paquete todavía no tiene estudios relacionados en el catálogo.
+                </p>
+              </div>
+            )}
           </section>
 
           {/* Aviso */}

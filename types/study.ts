@@ -30,3 +30,16 @@ export type StudyPackage = {
 export type PackagesResponse = {
   data: StudyPackage[];
 };
+export type PackageIncludedService = {
+  id: string;
+  name: string;
+  slug: string;
+};
+
+export type PackageDetails = StudyPackage & {
+  services: PackageIncludedService[];
+};
+
+export type PackageDetailsResponse = {
+  data: PackageDetails;
+};

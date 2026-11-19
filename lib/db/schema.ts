@@ -13,7 +13,9 @@ import {
   uuid,
   varchar,
    doublePrecision,
+   integer
 } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 
 export const appointmentTypeEnum = pgEnum('appointment_type', [
   'branch',
@@ -31,6 +33,8 @@ export const userRoleEnum = pgEnum('user_role', [
   'admin',
   'receptionist',
   'editor',
+    'patient',
+
 ]);
 
 export const users = pgTable(
@@ -42,6 +46,11 @@ export const users = pgTable(
     passwordHash: text('password_hash').notNull(),
     role: userRoleEnum('role').default('receptionist').notNull(),
     isActive: boolean('is_active').default(true).notNull(),
+    birthDate: date('birth_date'),
+
+emailVerifiedAt: timestamp('email_verified_at', {
+  withTimezone: true,
+}),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
@@ -78,6 +87,39 @@ export const branches = pgTable(
     uniqueIndex('branches_slug_unique').on(table.slug),
   ],
 );
+
+export const userBranches = pgTable(
+  'user_branches',
+  {
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, {
+        onDelete: 'cascade',
+      }),
+
+    branchId: uuid('branch_id')
+      .notNull()
+      .references(() => branches.id, {
+        onDelete: 'cascade',
+      }),
+
+    createdAt: timestamp('created_at', {
+      withTimezone: true,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    primaryKey({
+      columns: [table.userId, table.branchId],
+    }),
+
+    index('user_branches_branch_id_idx').on(
+      table.branchId,
+    ),
+  ],
+);
+
 export const googleCalendarConnections = pgTable('google_calendar_connections', {
   id: varchar('id', { length: 32 }).primaryKey(),
   googleEmail: varchar('google_email', { length: 254 }).notNull(),
@@ -163,8 +205,17 @@ export const packageServices = pgTable(
 );
 
 export const appointments = pgTable('appointments', {
+  
   id: uuid('id').defaultRandom().primaryKey(),
+ userId: uuid('user_id').references(() => users.id, {
+  onDelete: 'restrict',
+}),
+locationUrl: text('location_url'),
+  folio: varchar('folio', { length: 32 })
+  .default(sql`generate_appointment_folio_value()`)
+  .notNull(),
   patientName: varchar('patient_name', { length: 160 }).notNull(),
+birthDate: date('birth_date').notNull(),
   phone: varchar('phone', { length: 30 }).notNull(),
   email: varchar('email', { length: 254 }),
   type: appointmentTypeEnum('type').notNull(),
@@ -185,11 +236,17 @@ export const appointments = pgTable('appointments', {
   updatedAt: timestamp('updated_at', { withTimezone: true })
     .defaultNow()
     .notNull(),
+    
 }, (table) => [
   index('appointments_status_idx').on(table.status),
   index('appointments_requested_date_idx').on(table.requestedDate),
   index('appointments_branch_id_idx').on(table.branchId),
+  uniqueIndex('appointments_folio_unique').on(table.folio),
+  index('appointments_user_id_idx').on(table.userId),
+  
 ]);
+
+
 
 export const appointmentServices = pgTable(
   'appointment_services',
@@ -224,3 +281,63 @@ export const appointmentStatusHistory = pgTable('appointment_status_history', {
   note: text('note'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [index('appointment_status_history_appointment_id_idx').on(table.appointmentId)]);
+
+export const branchScheduleSettings = pgTable(
+  'branch_schedule_settings',
+  {
+    branchId: uuid('branch_id')
+      .primaryKey()
+      .references(() => branches.id, {
+        onDelete: 'cascade',
+      }),
+
+    weekdayOpen: time('weekday_open').notNull(),
+    weekdayClose: time('weekday_close').notNull(),
+
+    saturdayOpen: time('saturday_open').notNull(),
+    saturdayClose: time('saturday_close').notNull(),
+
+    
+slotMinutes: integer('slot_minutes').notNull(),
+
+capacity: integer('capacity').notNull(),
+
+    allowSameDay: boolean('allow_same_day')
+      .default(true)
+      .notNull(),
+
+    isActive: boolean('is_active')
+      .default(true)
+      .notNull(),
+
+    updatedAt: timestamp('updated_at', {
+      withTimezone: true,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+);
+// Agregar después de branchScheduleSettings en lib/db/schema.ts
+export const branchHomeScheduleSettings = pgTable(
+  'branch_home_schedule_settings',
+  {
+    branchId: uuid('branch_id')
+      .primaryKey()
+      .references(() => branches.id, { onDelete: 'cascade' }),
+
+    weekdayOpen: time('weekday_open').notNull(),
+    weekdayClose: time('weekday_close').notNull(),
+    saturdayOpen: time('saturday_open').notNull(),
+    saturdayClose: time('saturday_close').notNull(),
+
+    slotMinutes: integer('slot_minutes').default(60).notNull(),
+    capacity: integer('capacity').default(1).notNull(),
+    minimumAdvanceDays: integer('minimum_advance_days').default(1).notNull(),
+    requiresConfirmation: boolean('requires_confirmation').default(true).notNull(),
+    isActive: boolean('is_active').default(false).notNull(),
+
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+);

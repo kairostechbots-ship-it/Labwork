@@ -18,6 +18,9 @@ import PackageCard from './PackageCard';
 import StudiesEmpty from './StudiesEmpty';
 import StudyDetailsDrawer from './StudyDetailsDrawer';
 import PackageDetailsDrawer from './PackageDetailsDrawer';
+import QuotationDrawer from './QuotationDrawer';
+import { ClipboardList } from 'lucide-react';
+import { packageToQuotationItem, quotationKey, studyToQuotationItem, type QuotationItem } from '@/types/quotation';
 
 import type {
   PackagesResponse,
@@ -25,6 +28,28 @@ import type {
   Study,
   StudyPackage,
 } from '@/types/study';
+
+const QUOTATION_STORAGE_KEY = 'labwork:quotation:v1';
+
+type SavedQuotationItem = { type: 'study' | 'package'; id: string };
+
+function readSavedQuotation(): SavedQuotationItem[] {
+  try {
+    const raw = window.localStorage.getItem(QUOTATION_STORAGE_KEY);
+    if (!raw) return [];
+    const value: unknown = JSON.parse(raw);
+    if (!Array.isArray(value)) return [];
+    return value.filter((item): item is SavedQuotationItem =>
+      typeof item === 'object' &&
+      item !== null &&
+      (item.type === 'study' || item.type === 'package') &&
+      typeof item.id === 'string'
+    );
+  } catch (error) {
+    console.warn('No fue posible recuperar la cotización guardada:', error);
+    return [];
+  }
+}
 
 export default function StudiesCatalog() {
   /*
@@ -83,6 +108,14 @@ export default function StudiesCatalog() {
   | ESTUDIO SELECCIONADO
   |--------------------------------------------------------------------------
   */
+
+  const [quotationItems, setQuotationItems] = useState<QuotationItem[]>([]);
+  const [quotationOpen, setQuotationOpen] = useState(false);
+  const [quotationReady, setQuotationReady] = useState(false);
+  const addQuotationItem = (item: QuotationItem) => {
+    setQuotationItems((current) => current.some((existing) => quotationKey(existing) === quotationKey(item)) ? current : [...current, item]);
+  };
+  const removeQuotationItem = (key: string) => setQuotationItems((current) => current.filter((item) => quotationKey(item) !== key));
 
   const [selectedStudy, setSelectedStudy] =
     useState<Study | null>(null);
@@ -157,6 +190,32 @@ const [
 
         setStudies(activeStudies);
         setPackages(activePackages);
+
+        // Reconstruir la cotización desde el catálogo vigente, no desde
+        // nombres o precios que pudieron quedar obsoletos en el navegador.
+        const savedItems = readSavedQuotation();
+        const restored: QuotationItem[] = [];
+        const seen = new Set<string>();
+
+        for (const saved of savedItems) {
+          let quotationItem: QuotationItem | null = null;
+          if (saved.type === 'study') {
+            const study = activeStudies.find((entry) => entry.id === saved.id);
+            if (study) quotationItem = studyToQuotationItem(study);
+          } else {
+            const studyPackage = activePackages.find((entry) => entry.id === saved.id);
+            if (studyPackage) quotationItem = packageToQuotationItem(studyPackage);
+          }
+
+          if (!quotationItem) continue; // Ya no existe o está inactivo.
+          const key = quotationKey(quotationItem);
+          if (seen.has(key)) continue;
+          seen.add(key);
+          restored.push(quotationItem);
+        }
+
+        setQuotationItems(restored);
+        setQuotationReady(true);
       } catch (error) {
         console.error(
           'Error al cargar el catálogo:',
@@ -171,6 +230,18 @@ const [
 
     loadCatalog();
   }, []);
+
+  // Guardar solo los identificadores: al recargar, nombres y precios
+  // se vuelven a obtener de la API. No sobrescribir si falló la carga.
+  useEffect(() => {
+    if (!quotationReady) return;
+    try {
+      const selected: SavedQuotationItem[] = quotationItems.map(({ type, id }) => ({ type, id }));
+      window.localStorage.setItem(QUOTATION_STORAGE_KEY, JSON.stringify(selected));
+    } catch (error) {
+      console.warn('No fue posible guardar la cotización:', error);
+    }
+  }, [quotationItems, quotationReady]);
 
   /*
   |--------------------------------------------------------------------------
@@ -337,7 +408,7 @@ const [
           CATÁLOGO
       ================================================================= */}
 
-      <section className="bg-slate-50/40 py-8 sm:py-10">
+      <section className="bg-slate-50/40 py-4 sm:py-8 lg:py-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
           {/* ============================================================
@@ -380,6 +451,33 @@ const [
             </div>
           )}
 
+       {!quotationOpen && (
+  <button
+    type="button"
+    onClick={() => setQuotationOpen(true)}
+    className="
+  fixed right-3 z-40
+  bottom-[calc(1.25rem+env(safe-area-inset-bottom))]
+  inline-flex min-h-11 items-center gap-2
+  rounded-full bg-primary-900
+  px-4 py-2.5
+  text-xs font-bold text-white
+  shadow-[0_8px_24px_rgba(11,55,109,0.22)]
+  transition-all duration-200
+  hover:bg-primary-800
+  sm:right-6 sm:px-5 sm:py-3 sm:text-sm
+"
+  >
+    <ClipboardList className="h-5 w-5" />
+
+    Mi cotización
+
+    <span className="rounded-full bg-accent-500 px-2 py-0.5 text-xs text-primary-950">
+      {quotationItems.length}
+    </span>
+  </button>
+)}
+
           {/* ============================================================
               LOADING
           ============================================================= */}
@@ -411,7 +509,7 @@ const [
 
               {/* Cards */}
 
-              <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-4 grid gap-4 sm:mt-6 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {[
                   1,
                   2,
@@ -456,7 +554,7 @@ const [
             !hasError &&
             activeTab ===
               'studies' && (
-              <div className="mt-8">
+              <div className="mt-4 sm:mt-8">
 
                 {/* ======================================================
                     CATEGORÍAS
@@ -481,7 +579,7 @@ const [
                     ENCABEZADO DE RESULTADOS
                 ======================================================= */}
 
-                <div className="mt-10 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div className="mt-5 flex flex-col gap-2 sm:mt-10 sm:flex-row sm:items-end sm:justify-between">
                   <div>
                     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                       <h2 className="font-display text-2xl font-bold text-primary-950 sm:text-[28px]">
@@ -519,7 +617,7 @@ const [
 
                 {filteredStudies.length >
                 0 ? (
-                  <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                  <div className="mt-4 grid gap-4 sm:mt-6 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
                     {filteredStudies.map(
                       (study) => (
                         <StudyCard
@@ -529,9 +627,11 @@ const [
                           study={
                             study
                           }
-                          onViewDetails={
-                            handleViewDetails
-                          }
+                          onViewDetails={handleViewDetails}
+                          onAdd={(item) => addQuotationItem(studyToQuotationItem(item))}
+                          isAdded={quotationItems.some(
+                            (selected) => quotationKey(selected) === `study:${study.id}`
+                          )}
                         />
                       )
                     )}
@@ -561,7 +661,7 @@ const [
             hasPackages &&
             activeTab ===
               'packages' && (
-              <div className="mt-10">
+              <div className="mt-5 sm:mt-10">
 
                 {/* ENCABEZADO */}
 
@@ -585,13 +685,15 @@ const [
 
                 {filteredPackages.length >
                 0 ? (
-                  <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  <div className="mt-4 grid gap-4 sm:mt-6 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {filteredPackages.map(
                       (item) => (
                        <PackageCard
   key={item.id}
   studyPackage={item}
   onViewDetails={setSelectedPackage}
+  onAdd={(item) => addQuotationItem(packageToQuotationItem(item))}
+  isAdded={quotationItems.some((selected) => quotationKey(selected) === `package:${item.id}`)}
 />
                       )
                     )}
@@ -605,6 +707,14 @@ const [
             )}
         </div>
       </section>
+
+      <QuotationDrawer
+        open={quotationOpen}
+        items={quotationItems}
+        onClose={() => setQuotationOpen(false)}
+        onRemove={removeQuotationItem}
+        onClear={() => setQuotationItems([])}
+      />
 
       {/* ================================================================
           DRAWER DE DETALLES

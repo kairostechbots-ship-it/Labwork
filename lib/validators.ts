@@ -39,12 +39,17 @@ export const appointmentInputSchema = z.object({
   phone: z.string().trim().min(7).max(30),
   email: z.string().trim().toLowerCase().email().max(254).nullish(),
   type: z.enum(['branch', 'home']),
-  branchId: z.string().uuid().nullish(),
-  address: optionalText(1000),
-  requestedDate: z.iso.date(),
+ branchId: z.string().uuid().nullish(),
+address: optionalText(1000),
+locationUrl: z
+  .union([z.url().max(2000), z.literal('')])
+  .nullish()
+  .transform((value) => value || null),
+requestedDate: z.iso.date(),
   requestedTime: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/),
   studies: optionalText(5000),
   notes: optionalText(5000),
+  birthDate: z.iso.date(),
   serviceIds: z.array(z.string().uuid()).max(100).default([]),
   packageIds: z.array(z.string().uuid()).max(100).default([]),
 }).superRefine((value, ctx) => {

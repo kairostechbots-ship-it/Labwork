@@ -1,4 +1,6 @@
+
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 import {
   ArrowRight,
@@ -9,9 +11,7 @@ import {
 import type { LucideIcon } from "lucide-react";
 
 type TimelineItem = {
-  label: string;
-  title: string;
-  text: string;
+  id: "start" | "growth" | "today";
   icon: LucideIcon;
   tone: "blue" | "green";
   side: "left" | "right";
@@ -19,69 +19,63 @@ type TimelineItem = {
 
 const TIMELINE: TimelineItem[] = [
   {
-    label: "2022",
-    title: "Nuestro inicio",
-    text: "Lab-Work inicia en San Antonio.",
+    id: "start",
     icon: Building2,
     tone: "blue",
     side: "left",
   },
   {
-    label: "Crecimiento",
-    title: "La confianza nos impulsa",
-    text: "Seguimos creciendo junto a nuestros pacientes.",
+    id: "growth",
     icon: HeartHandshake,
     tone: "green",
     side: "right",
   },
   {
-    label: "Hoy",
-    title: "Más cerca de ti",
-    text: "4 sucursales en la Ribera de Chapala.",
+    id: "today",
     icon: MapPin,
     tone: "blue",
     side: "left",
   },
 ];
 
-export default function OurHistory() {
+export default async function OurHistory() {
+  const t = await getTranslations("OurHistory");
+
   return (
     <section className="relative overflow-hidden border-t border-primary-100/60 bg-white py-20 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-14 lg:grid-cols-[1fr_0.9fr] lg:gap-20">
-          {/* =====================================================
-              IZQUIERDA — HISTORIA
-          ====================================================== */}
+
+          {/* IZQUIERDA — HISTORIA */}
+
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-accent-700">
               <span className="h-1.5 w-1.5 rounded-full bg-accent-500" />
-              Nuestra historia
+              {t("badge")}
             </div>
 
             <h2 className="mt-4 max-w-[560px] font-display text-3xl font-bold tracking-[-0.035em] text-primary-950 sm:text-4xl lg:text-[42px] lg:leading-[1.12]">
-              Una historia que sigue{" "}
-              <span className="text-accent-500">creciendo</span>
+              {t("title")}{" "}
+              <span className="text-accent-500">
+                {t("highlight")}
+              </span>
             </h2>
 
             <div className="mt-6 max-w-[610px] space-y-4 text-[15px] leading-7 text-slate-600 sm:text-base">
               <p>
-                Lab-Work inició en 2022 en San Antonio con el propósito de
-                acercar servicios de análisis clínicos a la comunidad.
+                {t("paragraph1")}
               </p>
 
               <p>
-                Gracias a la confianza de nuestros pacientes, hemos
-                continuado creciendo para brindar mayor comodidad y estar
-                cada vez más cerca de quienes nos eligen.
+                {t("paragraph2")}
               </p>
 
               <p>
-                Hoy contamos con{" "}
+                {t("paragraph3Start")}{" "}
                 <strong className="font-semibold text-primary-950">
-                  4 sucursales en la Ribera de Chapala
+                  {t("branchesHighlight")}
                 </strong>
-                , manteniendo la cercanía y atención que han acompañado
-                nuestro crecimiento desde el inicio.
+                {t("paragraph3End")}
               </p>
             </div>
 
@@ -89,14 +83,13 @@ export default function OurHistory() {
               href="/sucursales"
               className="group mt-7 inline-flex items-center gap-2 text-sm font-bold text-primary-800 transition-colors hover:text-accent-600"
             >
-              Conoce nuestras sucursales
+              {t("viewBranches")}
               <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
           </div>
 
-          {/* =====================================================
-              DERECHA — LÍNEA DE TIEMPO
-          ====================================================== */}
+          {/* DERECHA — LÍNEA DE TIEMPO */}
+
           <div className="relative mx-auto w-full max-w-[500px]">
             <div
               aria-hidden="true"
@@ -116,12 +109,13 @@ export default function OurHistory() {
 
                 return (
                   <li
-                    key={item.label}
+                    key={item.id}
                     className={`relative grid grid-cols-[44px_1fr] items-start gap-4 sm:grid-cols-[1fr_44px_1fr] sm:gap-5 ${
                       isLast ? "" : "pb-12"
                     }`}
                   >
-                    {/* LÍNEA: del centro de este nodo al centro del siguiente */}
+                    {/* LÍNEA */}
+
                     {!isLast && (
                       <span
                         aria-hidden="true"
@@ -130,6 +124,7 @@ export default function OurHistory() {
                     )}
 
                     {/* NODO */}
+
                     <div
                       aria-hidden="true"
                       className={`relative z-10 col-start-1 row-start-1 flex h-11 w-11 items-center justify-center rounded-full border-[5px] border-white text-white sm:col-start-2 ${nodeTone}`}
@@ -138,6 +133,7 @@ export default function OurHistory() {
                     </div>
 
                     {/* TEXTO */}
+
                     <div
                       className={`col-start-2 row-start-1 pt-0.5 text-left ${
                         isLeft
@@ -146,15 +142,15 @@ export default function OurHistory() {
                       }`}
                     >
                       <p className="text-xs font-bold uppercase tracking-[0.15em] text-accent-700">
-                        {item.label}
+                        {t(`timeline.${item.id}.label`)}
                       </p>
 
                       <h3 className="mt-1 font-display text-lg font-bold text-primary-950">
-                        {item.title}
+                        {t(`timeline.${item.id}.title`)}
                       </h3>
 
                       <p className="mt-1 text-sm leading-5 text-slate-500">
-                        {item.text}
+                        {t(`timeline.${item.id}.text`)}
                       </p>
                     </div>
                   </li>

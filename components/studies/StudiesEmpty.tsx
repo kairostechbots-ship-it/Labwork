@@ -1,3 +1,8 @@
+
+'use client';
+
+import { useTranslations } from 'next-intl';
+
 import {
   FlaskConical,
   Package,
@@ -11,24 +16,23 @@ type StudiesEmptyProps = {
 export default function StudiesEmpty({
   type,
 }: StudiesEmptyProps) {
+  const t = useTranslations('StudiesEmpty');
+
   const content = {
     studies: {
       icon: FlaskConical,
-      title: 'No hay estudios disponibles',
-      description:
-        'Por el momento no hay estudios disponibles para mostrar.',
+      title: t('studies.title'),
+      description: t('studies.description'),
     },
     packages: {
       icon: Package,
-      title: 'No hay paquetes disponibles',
-      description:
-        'Por el momento no hay paquetes disponibles para mostrar.',
+      title: t('packages.title'),
+      description: t('packages.description'),
     },
     search: {
       icon: SearchX,
-      title: 'No encontramos resultados',
-      description:
-        'Intenta buscar con otro nombre o selecciona otra categoría.',
+      title: t('search.title'),
+      description: t('search.description'),
     },
   };
 

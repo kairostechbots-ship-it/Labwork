@@ -1,0 +1,978 @@
+
+{
+  "Header": {
+    "home": "Home",
+    "studies": "Lab Tests",
+    "branches": "Locations",
+    "about": "About Us",
+    "contact": "Contact",
+    "book": "Book Appointment",
+    "login": "Sign In",
+    "account": "My Account",
+    "language": "Language"
+  },
+  "Hero": {
+    "badge": "Clinical Laboratory",
+    "title": "Your health starts with",
+    "highlight": "clear information",
+    "description": "Explore our lab tests, find the most convenient location, and book your appointment with ease.",
+    "book": "Book Appointment",
+    "explore": "Explore Lab Tests",
+    "findBranch": "Find your nearest location",
+    "cardQuestion": "Need a lab test?",
+    "cardTitle": "Book your appointment online",
+    "imageAlt": "Clinical laboratory"
+  },
+
+"QuickBenefits": {
+  "catalog": {
+    "title": "Wide Range of Tests",
+    "description": "Explore our available lab tests"
+  },
+  "information": {
+    "title": "Easy Access to Information",
+    "description": "Find exactly what you need"
+  },
+  "branches": {
+    "title": "Multiple Locations",
+    "description": "Explore our laboratory locations"
+  },
+  "booking": {
+    "title": "Online Booking",
+    "description": "Schedule your appointment easily"
+  }
+},
+
+"FeaturedStudies": {
+  "eyebrow": "Lab Tests",
+  "title": "Explore some of our",
+  "highlight": "lab tests",
+  "description": "Browse our catalog, check prices, and find the lab tests you need.",
+  "viewAll": "View All Lab Tests",
+  "publicPrice": "Regular Price",
+  "askPrice": "Ask for Price",
+  "details": "View Details"
+},
+
+"FeaturedPackages": {
+  "eyebrow": "Packages",
+  "title": "Explore our",
+  "highlight": "lab packages",
+  "description": "Explore our available packages and find the option that best suits your needs.",
+  "viewAll": "View All Packages",
+  "packageLabel": "Package",
+  "publicPrice": "Regular Price",
+  "askPrice": "Ask for Price",
+  "viewPackage": "View Package"
+},
+
+"AboutPreview": {
+  "eyebrow": "Discover Lab-Work",
+  "title": "An experience designed to make",
+  "highlight": "everything easier",
+  "description": "At Lab-Work, you can explore information about your lab tests, find our locations, and plan your visit all in one place.",
+  "learnMore": "Learn more about Lab-Work",
+  "benefits": {
+    "clearInformation": {
+      "title": "Clear Information",
+      "description": "Check prices, preparation instructions, and important details before your visit."
+    },
+    "easyAccess": {
+      "title": "Easy Access",
+      "description": "Quickly find lab tests, packages, and relevant information."
+    },
+    "personalAttention": {
+      "title": "Convenient Locations",
+      "description": "Find a laboratory location that suits your needs."
+    },
+    "onlineBooking": {
+      "title": "Online Booking",
+      "description": "Schedule your appointment easily through our website."
+    }
+  }
+},
+
+"HowItWorks": {
+  "eyebrow": "It's That Easy",
+  "title": "How Does It Work?",
+  "description": "Find, explore, and book in just 3 simple steps.",
+  "steps": {
+    "search": {
+      "title": "Find Your Lab Test",
+      "description": "Find the test or package you need."
+    },
+    "information": {
+      "title": "Review the Details",
+      "description": "Check prices and available information."
+    },
+    "booking": {
+      "title": "Book Your Appointment",
+      "description": "Choose your location and schedule your visit."
+    }
+  }
+},
+
+"BranchesPreview": {
+  "eyebrow": "Our Locations",
+  "title": "Find the",
+  "highlight": "most convenient location",
+  "titleEnd": "for you",
+  "description": "Explore our locations and choose the laboratory that best suits your needs.",
+  "viewAll": "View All Locations",
+  "loadingMap": "Loading map...",
+  "noBranches": "No locations available",
+  "viewBranch": "View Location",
+  "showOnMap": "Show {name} on the map"
+},
+
+"LoyaltyCard": {
+  "badge": "Loyalty Program",
+  "title": "Your health deserves",
+  "highlight": "special rewards.",
+  "description": "At LabWork, we want to recognize your commitment to taking care of your health. With our loyalty card, every laboratory visit brings you closer to new rewards.",
+  "benefits": {
+    "visits": {
+      "title": "Every Visit Counts",
+      "description": "Collect stamps every time you visit our laboratory."
+    },
+    "rewards": {
+      "title": "Enjoy Special Rewards",
+      "description": "Once you complete your card, you may receive discounts, gifts, or free lab tests, depending on your history."
+    },
+    "expiration": {
+      "title": "No Expiration Date",
+      "description": "Your card never expires. Once completed, you can start a new one."
+    }
+  },
+  "requestTitle": "Get Your LabWork Loyalty Card!",
+  "findBranch": "Find Your Nearest LabWork Location",
+  "requestNote": "Request your card directly at the laboratory.",
+  "card": {
+    "title": "Loyalty Card",
+    "patientName": "Patient Name",
+    "namePlaceholder": "Your Name Here",
+    "progress": "Every visit brings you closer to your goal",
+    "goal": "GOAL",
+    "rewardMessage": "Complete your card and discover your rewards!",
+    "disclaimer": "Rewards are determined based on each patient's history."
+  },
+  "illustrationNote": "Illustrative representation of the physical loyalty card. Request yours directly at the laboratory."
+},
+
+"FinalCTA": {
+  "badge": "We're Here to Help",
+  "title": "Ready to Take the Next Step?",
+  "description": "Book your appointment online or contact us if you have questions about our lab tests, locations, or services.",
+  "links": {
+    "studies": "Explore Lab Tests",
+    "branches": "Find Your Nearest Location",
+    "questions": "Get Your Questions Answered"
+  },
+  "book": "Book Appointment",
+  "contact": "Contact Us",
+  "contactNote": "You can also reach us via WhatsApp or email."
+},
+
+"Footer": {
+  "homeAriaLabel": "Go to Lab-Work homepage",
+  "description": "Explore our lab tests, find our locations, and book your appointment with Lab-Work.",
+  "bookAppointment": "Book an Appointment",
+  "navigationTitle": "Navigation",
+  "navigationAriaLabel": "Footer navigation",
+  "navigation": {
+    "home": "Home",
+    "studies": "Lab Tests",
+    "branches": "Locations",
+    "about": "About Us",
+    "contact": "Contact"
+  },
+  "contactTitle": "Contact",
+  "emailLabel": "Email",
+  "callBranch": "Call a Location",
+  "branchContactDescription": "Find phone numbers and locations",
+  "viewContactOptions": "View All Contact Options",
+  "rightsReserved": "All rights reserved.",
+  "privacyNotice": "Privacy Notice"
+},
+
+"Metadata": {
+  "title": "LabWork | Clinical Laboratory",
+  "description": "Clinical laboratory services. Explore our lab tests, find your nearest location, and book your appointment online."
+},
+
+"StudiesCatalog": {
+  "studiesTab": "Lab Tests",
+  "myQuotation": "My Quote",
+  "allStudies": "All Lab Tests",
+  "availablePackages": "Available Packages",
+  "results": "{count, plural, one {# result} other {# results}}",
+  "resultsFor": "Results for",
+  "error": {
+    "title": "We Couldn't Load the Catalog",
+    "description": "Please try again in a few moments."
+  }
+},
+
+"StudiesHero": {
+  "badge": "Lab Tests & Packages",
+  "title": "Find the lab test",
+  "highlight": "you need",
+  "description": "Explore our available lab tests and packages at Lab-Work.",
+  "searchPlaceholder": "Search for a lab test, analysis, or profile...",
+  "searchAriaLabel": "Search for a lab test"
+},
+
+"StudiesTabs": {
+  "studies": "Lab Tests",
+  "packages": "Packages"
+},
+
+"StudiesFilters": {
+  "categories": "Categories",
+  "filterStudies": "Filter lab tests",
+  "allCategories": "All Categories",
+  "all": "All"
+},
+
+"StudyCard": {
+  "publicPrice": "Regular Price",
+  "askPrice": "Ask for Price",
+  "viewDetails": "View Details",
+  "add": "Add",
+  "added": "Added",
+  "addAriaLabel": "Add {name} to quote",
+  "addedAriaLabel": "{name} added to quote"
+},
+
+"PackageCard": {
+  "packageLabel": "Package",
+  "publicPrice": "Regular Price",
+  "askPrice": "Ask for Price",
+  "viewPackage": "View Package",
+  "add": "Add",
+  "added": "Added",
+  "addAriaLabel": "Add {name} to quote",
+  "addedAriaLabel": "{name} added to quote"
+},
+
+"StudiesEmpty": {
+  "studies": {
+    "title": "No Lab Tests Available",
+    "description": "There are currently no lab tests available to display."
+  },
+  "packages": {
+    "title": "No Packages Available",
+    "description": "There are currently no packages available to display."
+  },
+  "search": {
+    "title": "No Results Found",
+    "description": "Try searching for a different name or selecting another category."
+  }
+},
+
+"StudyDetailsDrawer": {
+  "closeDetails": "Close Details",
+  "close": "Close",
+  "detailsOf": "Details for {name}",
+  "studies": "Lab Tests",
+  "publicPrice": "Regular Price",
+  "askPrice": "Ask for Price",
+  "bookAppointment": "Book Appointment",
+  "information": "Information",
+  "preparation": "Preparation",
+  "noDescription": "Detailed information about this lab test will be available soon.",
+  "noPreparation": "There are currently no preparation instructions available for this lab test.",
+  "notice": "If you have questions about this lab test or its preparation requirements, please ask when booking your appointment."
+},
+
+"PackageDetailsDrawer": {
+  "closeDetails": "Close Package Details",
+  "close": "Close",
+  "packages": "Packages",
+  "packageLabel": "Package",
+  "publicPrice": "Regular Price",
+  "askPrice": "Ask for Price",
+  "bookAppointment": "Book Appointment",
+  "packageDetails": "Package Details",
+  "noDescription": "Detailed information about this package will be available soon.",
+  "preparation": "Preparation",
+  "noPreparation": "There are currently no preparation instructions available for this package.",
+  "includedStudies": "Included Lab Tests",
+  "loadingStudies": "Loading included lab tests",
+  "servicesError": "We couldn't load the included lab tests. Please try opening the package again.",
+  "noIncludedStudies": "This package doesn't have any linked lab tests in the catalog yet.",
+  "notice": "If you have questions about this package or its preparation requirements, please ask when booking your appointment."
+},
+
+"QuotationDrawer": {
+  "title": "My Quote",
+  "selectedItems": "{count, plural, one {# selected item} other {# selected items}}",
+  "closeQuotation": "Close Quote",
+  "close": "Close",
+  "empty": "You haven't added any lab tests or packages yet.",
+  "study": "Lab Test",
+  "package": "Package",
+  "askPrice": "Price Upon Request",
+  "removeItem": "Remove {name}",
+  "checkingPackages": "Checking the lab tests included in your packages…",
+  "duplicates": {
+    "title": "Possible Duplicate Lab Tests",
+    "description": "The following individual lab tests are also included in the packages you selected:",
+    "includedIn": "included in {packages}.",
+    "notice": "Please review your selection. We don't automatically remove items or adjust prices."
+  },
+  "verificationError": "{count, plural, one {We couldn't verify the contents of one package.} other {We couldn't verify the contents of some packages.}} There may be overlapping lab tests that haven't been detected.",
+  "clearQuotation": "Clear Quote",
+  "knownSubtotal": "Known Subtotal",
+  "estimatedTotal": "Estimated Total",
+  "missingPrices": "Some items don't have an available price. The final total cannot be calculated yet.",
+  "disclaimer": "Prices are estimates and subject to confirmation by the laboratory. This quote is not an appointment or reservation.",
+  "continueAppointment": "Continue to Booking"
+},
+
+"AppointmentMetadata": {
+  "title": "Agendar cita | LabWork",
+  "description": "Agenda tu cita para estudios de laboratorio en una sucursal de LabWork."
+},
+"AppointmentWizard": {
+    "patient": {
+      "note": "Your name, email, and date of birth are linked to your account. Update your profile to change them.",
+      "description": "These details come from your account. Please confirm your contact phone number.",
+      "loading": "Loading your account details...",
+      "birthDate": "Date of Birth",
+      "back": "Back to Schedule",
+      "phone": "Phone Number",
+      "email": "Email Address",
+      "fullName": "Full Name",
+      "account": "Go to My Account",
+      "title": "Your Details",
+      "profileInvalid": "Could not validate your account. Review your profile details.",
+      "phoneInvalid": "Enter a 10-digit phone number.",
+      "profileLoadError": "Could not load your profile.",
+      "profileIncomplete": "Your account details are incomplete.",
+      "birthMissing": "Your account has no date of birth. Update it in your profile before booking.",
+      "namePlaceholder": "First and Last Name",
+      "phonePlaceholder": "e.g. 3312345678",
+      "emailPlaceholder": "name@example.com"
+    },
+    "receipt": {
+      "notice": "Keep this receipt for any questions. It does not replace confirmation from the laboratory.",
+      "title": "Appointment Request Receipt",
+      "brand": "LabWork · Clinical Laboratory",
+      "branchPhone": "Location Phone",
+      "notAvailable": "Not Available",
+      "location": "Location:",
+      "address": "Address",
+      "homeMessage": "Home sample collection request pending laboratory confirmation.",
+      "branchMessage": "The time slot is reserved. The request is pending laboratory review.",
+      "aria": "Appointment Request Receipt"
+    },
+    "home": {
+      "mapHelp": "You can share a location link if available. A written address is still required.",
+      "notice": "Your preferred date and time are subject to confirmation by the laboratory.",
+      "title": "Home Sample Collection Address",
+      "map": "Google Maps Link (Optional)",
+      "address": "Full Address *",
+      "addressShort": "Enter a complete address.",
+      "mapInvalid": "Enter a valid location link.",
+      "addressPlaceholder": "Street, number, neighborhood, city, and directions",
+      "mapLink": "View Location on Google Maps"
+    },
+    "quotation": {
+      "requiredText": "To book an appointment at LabWork, add at least one lab test or package to your quote.",
+      "requiredTitle": "Select Your Lab Tests First",
+      "review": "Review Quote",
+      "explore": "Explore Lab Tests",
+      "invalid": "Some items are no longer available. Review your quote before confirming.",
+      "loadError": "Could not load the quote.",
+      "validateError": "We could not validate the selected lab tests and packages.",
+      "invalidResponse": "The catalog returned an invalid response."
+    },
+    "hero": {
+      "description": "Choose where you would like to have your lab tests. We will guide you through the process.",
+      "badge": "ONLINE BOOKING",
+      "title": "Book Your Appointment"
+    },
+    "sidebar": {
+      "empty": "You have not selected any lab tests or packages. Add at least one to book an appointment.",
+      "missing": "The total excludes items without a price.",
+      "description": "Summary of Your Selection",
+      "validating": "Validating quote...",
+      "review": "Review My Quote",
+      "dateTime": "Date and Time",
+      "patient": "Patient",
+      "title": "Your Appointment",
+      "notSelected": "Not Selected",
+      "pending": "Not Selected Yet"
+    },
+    "schedule": {
+      "noSlots": "No time slots remain for this date. Please select another day.",
+      "closed": "No appointments are available on this date. Please select another day.",
+      "loading": "Checking availability...",
+      "title": "Select a Date and Time",
+      "available": "Available Times",
+      "changeAttention": "Change Appointment Type",
+      "retry": "Retry",
+      "homeBranch": "Responsible Location",
+      "branchSelected": "Selected Location",
+      "homeDate": "What day would you like the visit?",
+      "branchDate": "What day would you like to visit?",
+      "confirmation": "Subject to Confirmation",
+      "oneSpot": "spot",
+      "spots": "spots",
+      "spotsCount": "{count, plural, one {# spot} other {# spots}}"
+    },
+    "review": {
+      "description": "Make sure all details are correct before submitting.",
+      "noItems": "No lab tests or packages.",
+      "loading": "Submitting request...",
+      "title": "Review Your Request",
+      "chooseAnother": "Choose Another Time",
+      "confirm": "Confirm Request",
+      "patientData": "Patient Details",
+      "edit": "Edit My Details",
+      "homeTitle": "Home Sample Collection and Requested Time",
+      "branchTitle": "Location and Time",
+      "homeNotice": "Submitting will register your home sample collection request. The time is subject to confirmation by the laboratory.",
+      "branchNotice": "Submitting will register your request and reserve the selected time slot. The laboratory will review the appointment details."
+    },
+    "success": {
+      "keepFolio": "Keep your reference number for any questions.",
+      "title": "We Received Your Appointment Request",
+      "map": "View Location on Google Maps",
+      "myAppointments": "View My Appointments",
+      "print": "Print / Save PDF",
+      "badge": "Request Submitted",
+      "folio": "Reference:",
+      "homeMessage": "We received your home visit request. The laboratory will review and confirm the visit and time.",
+      "branchMessage": "Your time slot has been reserved. The request is pending review by the laboratory."
+    },
+    "branch": {
+      "none": "No locations are available.",
+      "later": "Please try again later.",
+      "select": "Select a location",
+      "loading": "Loading locations...",
+      "loadError": "Could not load locations.",
+      "invalidResponse": "The locations response has an invalid format.",
+      "genericError": "An error occurred while loading locations."
+    },
+    "retry": "Try Again",
+    "directions": "Directions",
+    "continue": "Continue",
+    "call": "Call:",
+    "steps": {
+      "attention": "Service",
+      "schedule": "Schedule",
+      "patient": "Your Details",
+      "summary": "Summary"
+    },
+    "attention": {
+      "branchTitle": "At a Location",
+      "branchDetail": "Visit the laboratory",
+      "homeTitle": "At Home",
+      "homeDetail": "Request a visit to your address",
+      "homeBranch": "Location Handling Your Request",
+      "branchLabel": "Select a Location",
+      "title": "Where Would You Like to Receive Care?",
+      "description": "Choose an in-person appointment or home sample collection."
+    },
+    "common": {
+      "branch": "Location",
+      "responsibleBranch": "Responsible Location",
+      "visitAddress": "Visit Address",
+      "date": "Date",
+      "time": "Time",
+      "patient": "Patient",
+      "patientPhone": "Patient Phone",
+      "email": "Email",
+      "name": "Name",
+      "birth": "Date of Birth",
+      "phone": "Phone",
+      "folio": "Reference",
+      "testsPackages": "Lab Tests and Packages",
+      "study": "Lab Test",
+      "package": "Package",
+      "pricePending": "Price Upon Request",
+      "knownSubtotal": "Known Subtotal",
+      "estimatedTotal": "Estimated Total",
+      "branchColon": "Location:",
+      "responsibleBranchColon": "Responsible Location:",
+      "visitAddressColon": "Visit Address:",
+      "dateColon": "Date:",
+      "timeColon": "Time:",
+      "patientColon": "Patient:",
+      "patientPhoneColon": "Patient Phone:",
+      "emailColon": "Email:",
+      "nameColon": "Name:",
+      "birthColon": "Date of Birth:",
+      "phoneColon": "Phone:",
+      "testPackagesColon": "Lab Tests and Packages:"
+    },
+    "booking": {
+      "missingSelection": "Select a location, date, and time.",
+      "homeAdvance": "Home sample collection must be requested at least one day in advance.",
+      "homeAddress": "Enter a complete address for home sample collection.",
+      "invalidProtocol": "The location link must use HTTP or HTTPS.",
+      "submitError": "Could not book the appointment. Please try again.",
+      "submitErrorShort": "Could not book the appointment.",
+      "noId": "The server did not return an appointment ID. Check whether the appointment was registered before retrying."
+    },
+    "availability": {
+      "loadError": "Could not retrieve available times.",
+      "invalidResponse": "The availability response is invalid.",
+      "genericError": "Error checking available times."
+    },
+    "stepCount": "Step {step} of 4"
+  },
+
+"LoginMetadata": {
+  "title": "Sign In | LabWork",
+  "description": "Sign in to your LabWork patient account."
+},
+
+"LoginView": {
+  "backToHome": "Back to Home",
+  "badge": "PATIENT PORTAL",
+  "title": "Welcome Back",
+  "description": "Sign in to view your appointments and access your personal account.",
+  "noAccount": "Don't have an account yet?",
+  "createAccount": "Create an Account",
+  "secureAccess": "Secure access to your LabWork account."
+},
+
+"LoginForm": {
+  "emailLabel": "Email Address",
+  "emailPlaceholder": "email@example.com",
+  "passwordLabel": "Password",
+  "passwordPlaceholder": "Enter your password",
+  "showPassword": "Show password",
+  "hidePassword": "Hide password",
+  "signIn": "Sign In",
+  "signingIn": "Signing in...",
+  "errors": {
+    "invalidCredentials": "We couldn't sign you in. Please check your credentials or account status.",
+    "loginFailed": "Unable to sign in. Please try again.",
+    "unexpectedError": "An error occurred while signing in."
+  }
+},
+
+"RegisterMetadata": {
+  "title": "Create an Account | LabWork",
+  "description": "Register for the LabWork patient portal."
+},
+
+"RegisterView": {
+  "backToHome": "Back to Home",
+  "badge": "PATIENT PORTAL",
+  "title": "Create Your Account",
+  "description": "Register to manage your appointments and access your LabWork services.",
+  "alreadyHaveAccount": "Already have an account?",
+  "signIn": "Sign In",
+  "privacyNotice": "Your personal information will be used to manage your account and appointment requests in accordance with our privacy notice."
+},
+
+"RegisterForm": {
+  "nameLabel": "Full Name",
+  "namePlaceholder": "First and Last Name",
+  "emailLabel": "Email Address",
+  "emailPlaceholder": "email@example.com",
+  "birthDateLabel": "Date of Birth",
+  "passwordLabel": "Password",
+  "passwordPlaceholder": "At least 12 characters",
+  "confirmPasswordLabel": "Confirm Password",
+  "confirmPasswordPlaceholder": "Re-enter your password",
+  "showPassword": "Show password",
+  "hidePassword": "Hide password",
+  "createAccount": "Create My Account",
+  "creatingAccount": "Creating account...",
+  "errors": {
+    "passwordMismatch": "Passwords do not match.",
+    "passwordTooShort": "Your password must be at least 12 characters long.",
+    "invalidBirthDate": "Please select a valid date of birth.",
+    "registrationFailed": "We couldn't create your account. Please check your information and try again.",
+    "unexpectedResponse": "The server returned an unexpected response. Please try again later.",
+    "unexpectedError": "An unexpected error occurred. Please try again."
+  }
+},
+
+"RegisterSuccess": {
+  "title": "Registration Received",
+  "description": "Your account has been registered successfully and is pending verification.",
+  "verificationNotice": "Email verification is not yet available. Your account will remain inactive until the verification process is completed.",
+  "backToHome": "Back to Home"
+},
+
+"PatientAccountMetadata": {
+  "title": "My Account | LabWork",
+  "description": "View your appointments and manage your bookings in the LabWork patient portal."
+},
+"PatientAccount": {
+  "badge": "PATIENT PORTAL",
+  "greeting": "Hello, {name}",
+  "defaultName": "patient",
+  "description": "View your upcoming appointments and booking history at LabWork."
+},
+"PatientAppointments": {
+    "appointmentFolio": "Appointment Reference",
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled",
+      "completed": "Completed"
+    },
+    "homeService": "At-home service",
+    "branch": "Branch",
+    "detailsAndReceipt": "Details and Receipt",
+    "patient": "Patient",
+    "phone": "Phone",
+    "email": "Email",
+    "studiesAndPackages": "Tests and Packages",
+    "callBranch": "Call Branch",
+    "directions": "Get Directions",
+    "printOrSavePdf": "Print or Save as PDF",
+    "savePdfHint": "To download, select “Save as PDF” in the print dialog.",
+    "receiptAriaLabel": "Appointment Receipt",
+    "receiptBrand": "LabWork · Clinical Laboratory",
+    "receiptTitle": "Appointment Request Receipt",
+    "folio": "Reference",
+    "appointmentStatus": "Appointment Status",
+    "contactPhone": "Contact Phone",
+    "emailAddress": "Email Address",
+    "date": "Date",
+    "time": "Time",
+    "notAvailable": "Not Available",
+    "address": "Address",
+    "branchPhone": "Branch Phone",
+    "addressNotAvailable": "Address Not Available",
+    "studies": "Lab Tests",
+    "receiptNotice": "Keep this receipt for future inquiries. The status shown reflects the appointment status at the time of printing.",
+    "accountSections": "My Account Sections",
+    "tabs": {
+      "appointments": {
+        "title": "My Appointments",
+        "subtitle": "Bookings and History"
+      },
+      "results": {
+        "title": "My Results",
+        "subtitle": "External System"
+      },
+      "profile": {
+        "title": "My Profile",
+        "subtitle": "Personal Information"
+      }
+    },
+    "myAppointments": "My Appointments",
+    "appointmentsDescription": "View your bookings and receipts.",
+    "refreshAppointments": "Refresh Appointments",
+    "newAppointment": "New Appointment",
+    "loadingAppointments": "Loading your appointments...",
+    "noAppointmentsTitle": "You Have No Appointments Yet",
+    "noAppointmentsDescription": "Once you book an appointment, you can view it here.",
+    "bookFirstAppointment": "Book My First Appointment",
+    "upcomingAppointments": "Upcoming Appointments",
+    "totalAppointments": "Total Appointments",
+    "noUpcomingAppointments": "You have no upcoming appointments.",
+    "appointmentHistory": "Appointment History",
+    "viewResults": "View My Results",
+    "resultsDescription": "Your results are available through the laboratory’s external system. Follow the access instructions provided by LabWork.",
+    "goToResultsPortal": "Go to Results Portal",
+    "resultsLinkComingSoon": "Link Coming Soon",
+    "resultsExternalNotice": "The portal opens in a new tab. Results are not stored in this patient portal.",
+    "myProfile": "My Profile",
+    "profileDescription": "Information linked to your patient account.",
+    "loadingProfile": "Loading your information...",
+    "fullName": "Full Name",
+    "birthDate": "Date of Birth",
+    "notRegistered": "Not Provided",
+    "profileReadOnly": "This information is currently read-only.",
+    "errors": {
+      "appointmentsLoad": "Unable to load your appointments.",
+      "appointmentsInvalid": "The appointment response is invalid.",
+      "appointmentsUnknown": "An error occurred while loading your appointments.",
+      "profileLoad": "Unable to load your profile.",
+      "profileUnavailable": "Your profile information is unavailable.",
+      "profileUnknown": "Unable to retrieve your profile."
+    }
+  },
+
+"ContactMetadata": {
+  "title": "Contact Us | LabWork",
+  "description": "Contact LabWork for assistance with laboratory tests, appointments, and locations."
+},
+"ContactHero": {
+  "badge": "Contact Us",
+  "title": "How Can We",
+  "highlight": "Help You?",
+  "description": "If you have questions about laboratory tests, appointments, locations, or anything else, we're here to help.",
+  "bookAppointment": "Book an Appointment",
+  "viewBranches": "View Locations"
+},
+
+"ContactCards": {
+  "badge": "DIRECT CONTACT",
+  "title": "Choose How to Get in Touch",
+  "description": "We're here to answer your questions and help you find the information you need.",
+  "whatsapp": {
+    "description": "Message us on our main WhatsApp number for information and assistance.",
+    "action": "Start a Conversation"
+  },
+  "email": {
+    "title": "Email",
+    "description": "You can also email us with your questions or comments.",
+    "action": "Send an Email"
+  },
+  "branches": {
+    "title": "Contact a Location",
+    "description": "Find the phone number of the LabWork location you'd like to contact.",
+    "action": "View Locations"
+  }
+},
+"ContactForm": {
+    "badge": "GET IN TOUCH",
+    "title": "Send Us a Message",
+    "description": "Share your contact details and let us know how we can help.",
+    "name": {
+      "label": "Full Name",
+      "placeholder": "Your name"
+    },
+    "contact": {
+      "label": "Email or Phone",
+      "placeholder": "Your contact information"
+    },
+    "subject": {
+      "label": "Reason for Contact",
+      "placeholder": "Select an option",
+      "studies": "Information About Lab Tests",
+      "appointment": "Question About an Appointment",
+      "branches": "Information About Locations",
+      "other": "Other"
+    },
+    "message": {
+      "label": "Message",
+      "placeholder": "Write your question or message here..."
+    },
+    "send": "Send Message",
+    "sending": "Sending message...",
+    "success": "Your message was sent successfully! We'll get in touch with you.",
+    "errors": {
+      "name": "Please enter your full name.",
+      "contact": "Enter a valid email address or phone number.",
+      "subject": "Please select a reason for contacting us.",
+      "message": "Your message must be at least 10 characters long.",
+      "sendFailed": "We couldn't send your message. Please try again.",
+      "unexpected": "An error occurred while sending your message."
+    }
+  },
+
+"ContactQuickHelp": {
+  "badge": "OTHER OPTIONS",
+  "title": "Prefer to Contact Us Directly?",
+  "description": "You can also message us on WhatsApp, send us an email, or contact one of our locations directly.",
+  "email": {
+    "title": "Email"
+  },
+  "branches": {
+    "title": "Call a Location",
+    "description": "Find available phone numbers"
+  },
+  "viewAllBranches": "View All Locations"
+},
+
+"AboutMetadata": {
+  "title": "About Us | LabWork",
+  "description": "Learn about LabWork, our history, mission, vision, values, and commitment to patient care."
+},
+
+"AboutHero": {
+  "badge": "About Us",
+  "title": "Growing With You,",
+  "highlight": "Caring for What Matters",
+  "description": "Since 2022, we've been working to bring clinical laboratory services closer to families in the Lake Chapala region, growing alongside our community.",
+  "bookAppointment": "Book an Appointment",
+  "viewBranches": "Explore Our Locations"
+},
+
+"OurHistory": {
+  "badge": "Our History",
+  "title": "A Story That Keeps",
+  "highlight": "Growing",
+  "paragraph1": "Lab-Work began in 2022 in San Antonio with the goal of bringing clinical laboratory services closer to the community.",
+  "paragraph2": "Thanks to the trust of our patients, we have continued to grow, making our services more convenient and accessible to those who choose us.",
+  "paragraph3Start": "Today, we have",
+  "branchesHighlight": "4 locations in the Lake Chapala region",
+  "paragraph3End": ", maintaining the personal attention and close connection that have been part of our growth from the beginning.",
+  "viewBranches": "Explore Our Locations",
+  "timeline": {
+    "start": {
+      "label": "2022",
+      "title": "Where It All Began",
+      "text": "Lab-Work opens in San Antonio."
+    },
+    "growth": {
+      "label": "Growth",
+      "title": "Driven by Your Trust",
+      "text": "We continue to grow alongside our patients."
+    },
+    "today": {
+      "label": "Today",
+      "title": "Closer to You",
+      "text": "4 locations in the Lake Chapala region."
+    }
+  }
+},
+
+"MissionVision": {
+  "badge": "WHAT GUIDES OUR WORK",
+  "title": "Mission and Vision",
+  "mission": {
+    "title": "Our Mission",
+    "description": "To bring clinical laboratory services closer to families in the Lake Chapala region, providing personalized, respectful care and a strong commitment to every patient."
+  },
+  "vision": {
+    "title": "Our Vision",
+    "description": "To continue growing alongside our community, expanding our presence and making clinical laboratory services more accessible to more people."
+  }
+},
+
+"OurValues": {
+  "badge": "Our Values",
+  "title": "What Drives Us Every Day",
+  "values": {
+    "trust": {
+      "title": "Trust",
+      "description": "We build relationships based on respect and transparency."
+    },
+    "closeness": {
+      "title": "Personal Connection",
+      "description": "We are here for our community and its needs."
+    },
+    "responsibility": {
+      "title": "Responsibility",
+      "description": "We approach our work with commitment and professionalism."
+    },
+    "clarity": {
+      "title": "Clarity",
+      "description": "We strive to provide information our patients can easily understand."
+    }
+  }
+},
+
+"AboutCTA": {
+  "badge": "Lab-Work Clinical Laboratory",
+  "title": "Continuing to Grow",
+  "highlight": "With Our Community",
+  "description": "Since 2022, we've grown thanks to the trust of our patients. Today, we continue working to bring our services closer to families throughout the Lake Chapala region.",
+  "exploreStudies": "Explore Lab Tests",
+  "bookAppointment": "Book an Appointment"
+},
+
+"HistoriaVisual": {
+    "center": {
+      "title": "Growing Close to You",
+      "description": "Thanks to our patients' trust, we continue to grow throughout the Lake Chapala region."
+    },
+    "cards": {
+      "start": {
+        "label": "Our Beginning",
+        "value": "Since 2022"
+      },
+      "branches": {
+        "label": "Locations",
+        "value": "4 Branches"
+      },
+      "community": {
+        "label": "Community",
+        "value": "Lake Chapala"
+      },
+      "growth": {
+        "label": "Growing Together",
+        "value": "Closer to Our Community"
+      }
+    }
+  },
+
+"BranchesMetadata": {
+  "title": "Our Locations | LabWork",
+  "description": "Find LabWork locations throughout the Lake Chapala region. Explore addresses, opening hours, and contact information."
+},
+
+"BranchesHero": {
+  "badge": "Our Locations",
+  "title": "Find Your Nearest",
+  "description": "Explore our locations and opening hours."
+},
+
+"BranchesList": {
+  "error": {
+    "title": "We Couldn't Load Our Locations",
+    "description": "Please try again in a few moments."
+  },
+  "availableCount": "{count, plural, one {# location available} other {# locations available}}"
+},
+
+"BranchCard": {
+  "branch": "Location",
+  "address": "Address",
+  "hours": "Opening Hours",
+  "phone": "Phone",
+  "bookAppointment": "Book an Appointment",
+  "directions": "Get Directions"
+},
+
+"BranchesEmpty": {
+  "title": "No Locations Available",
+  "description": "There are currently no locations available to display."
+},
+
+"BranchMap": {
+  "title": "Map of {name} location"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

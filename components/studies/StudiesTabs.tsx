@@ -1,3 +1,7 @@
+
+'use client';
+
+import { useTranslations } from 'next-intl';
 import { FlaskConical, Package } from 'lucide-react';
 
 export type CatalogTab = 'studies' | 'packages';
@@ -15,11 +19,14 @@ export default function StudiesTabs({
   studiesCount,
   packagesCount,
 }: StudiesTabsProps) {
+  const t = useTranslations('StudiesTabs');
+
   return (
     <div className="inline-flex rounded-2xl bg-slate-100 p-1.5">
       <button
         type="button"
         onClick={() => onChange('studies')}
+        aria-pressed={activeTab === 'studies'}
         className={`inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all ${
           activeTab === 'studies'
             ? 'bg-white text-primary-900 shadow-sm'
@@ -27,7 +34,9 @@ export default function StudiesTabs({
         }`}
       >
         <FlaskConical className="h-4 w-4" />
-        Estudios
+
+        {t('studies')}
+
         {studiesCount > 0 && (
           <span className="rounded-full bg-primary-50 px-2 py-0.5 text-xs text-primary-700">
             {studiesCount}
@@ -38,6 +47,7 @@ export default function StudiesTabs({
       <button
         type="button"
         onClick={() => onChange('packages')}
+        aria-pressed={activeTab === 'packages'}
         className={`inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all ${
           activeTab === 'packages'
             ? 'bg-white text-primary-900 shadow-sm'
@@ -45,7 +55,9 @@ export default function StudiesTabs({
         }`}
       >
         <Package className="h-4 w-4" />
-        Paquetes
+
+        {t('packages')}
+
         {packagesCount > 0 && (
           <span className="rounded-full bg-accent-50 px-2 py-0.5 text-xs text-accent-700">
             {packagesCount}

@@ -1,5 +1,7 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 
 import {
   ArrowUpRight,
@@ -11,14 +13,16 @@ import {
 } from 'lucide-react';
 
 const navigation = [
-  { name: 'Inicio', href: '/' },
-  { name: 'Estudios', href: '/estudios' },
-  { name: 'Sucursales', href: '/sucursales' },
-  { name: 'Nosotros', href: '/nosotros' },
-  { name: 'Contacto', href: '/contacto' },
-];
+  { key: 'home', href: '/' },
+  { key: 'studies', href: '/estudios' },
+  { key: 'branches', href: '/sucursales' },
+  { key: 'about', href: '/nosotros' },
+  { key: 'contact', href: '/contacto' },
+] as const;
 
-export default function Footer() {
+export default async function Footer() {
+  const t = await getTranslations('Footer');
+
   return (
     <footer className="relative overflow-hidden bg-primary-900">
       {/* =====================================================
@@ -77,7 +81,7 @@ export default function Footer() {
             <Link
               href="/"
               className="inline-flex"
-              aria-label="Ir al inicio de Lab-Work"
+              aria-label={t('homeAriaLabel')}
             >
               <Image
                 src="/images/labwork-logo-white.png"
@@ -97,8 +101,7 @@ export default function Footer() {
                 text-white/55
               "
             >
-              Consulta nuestros estudios, conoce nuestras sucursales
-              y agenda tu cita con Lab-Work.
+              {t('description')}
             </p>
 
             <Link
@@ -118,7 +121,7 @@ export default function Footer() {
             >
               <CalendarDays className="h-4 w-4" />
 
-              Agendar una cita
+              {t('bookAppointment')}
 
               <ArrowUpRight
                 className="
@@ -147,16 +150,16 @@ export default function Footer() {
                 text-white
               "
             >
-              Navegación
+              {t('navigationTitle')}
             </p>
 
             <nav
               className="mt-5 flex flex-col gap-3"
-              aria-label="Navegación del pie de página"
+              aria-label={t('navigationAriaLabel')}
             >
               {navigation.map((item) => (
                 <Link
-                  key={item.name}
+                  key={item.key}
                   href={item.href}
                   className="
                     w-fit
@@ -167,7 +170,7 @@ export default function Footer() {
                     hover:text-white
                   "
                 >
-                  {item.name}
+                  {t(`navigation.${item.key}`)}
                 </Link>
               ))}
             </nav>
@@ -187,7 +190,7 @@ export default function Footer() {
                 text-white
               "
             >
-              Contacto
+              {t('contactTitle')}
             </p>
 
             <div className="mt-5 space-y-5">
@@ -270,7 +273,7 @@ export default function Footer() {
 
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-white/85">
-                    Correo
+                    {t('emailLabel')}
                   </p>
 
                   <p
@@ -328,11 +331,11 @@ export default function Footer() {
 
                 <div>
                   <p className="text-sm font-semibold text-white/85">
-                    Llamar a una sucursal
+                    {t('callBranch')}
                   </p>
 
                   <p className="mt-0.5 text-xs text-white/40">
-                    Consulta teléfonos y ubicaciones
+                    {t('branchContactDescription')}
                   </p>
                 </div>
 
@@ -371,7 +374,7 @@ export default function Footer() {
             >
               <MapPin className="h-3.5 w-3.5 text-accent-400" />
 
-              Ver todas las opciones de contacto
+              {t('viewContactOptions')}
 
               <ArrowUpRight
                 className="
@@ -404,8 +407,8 @@ export default function Footer() {
           "
         >
           <p className="text-xs text-white/35 sm:text-sm">
-            © {new Date().getFullYear()} Lab-Work Análisis Clínicos.
-            Todos los derechos reservados.
+            © {new Date().getFullYear()} Lab-Work Análisis Clínicos.{' '}
+            {t('rightsReserved')}
           </p>
 
           <Link
@@ -419,7 +422,7 @@ export default function Footer() {
               sm:text-sm
             "
           >
-            Aviso de privacidad
+            {t('privacyNotice')}
           </Link>
         </div>
       </div>

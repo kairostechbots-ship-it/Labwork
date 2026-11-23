@@ -1,4 +1,6 @@
+
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 
 import {
   ArrowRight,
@@ -7,7 +9,9 @@ import {
   MessageCircle,
 } from 'lucide-react';
 
-export default function ContactCards() {
+export default async function ContactCards() {
+  const t = await getTranslations('ContactCards');
+
   return (
     <section className="bg-white py-10 sm:py-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -18,15 +22,15 @@ export default function ContactCards() {
 
         <div className="mb-6">
           <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-accent-600">
-            Contacto directo
+            {t('badge')}
           </p>
 
           <h2 className="mt-2 font-display text-2xl font-bold tracking-tight text-primary-950 sm:text-[28px]">
-            Elige cómo comunicarte con nosotros
+            {t('title')}
           </h2>
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
-            Estamos disponibles para orientarte y resolver tus dudas.
+            {t('description')}
           </p>
         </div>
 
@@ -97,8 +101,7 @@ export default function ContactCards() {
               </h3>
 
               <p className="mt-1.5 text-[13px] leading-[1.65] text-slate-500">
-                Escríbenos por nuestro WhatsApp general para solicitar
-                información.
+                {t('whatsapp.description')}
               </p>
 
               <p className="mt-3 text-sm font-bold text-primary-950">
@@ -116,7 +119,7 @@ export default function ContactCards() {
                   text-accent-600
                 "
               >
-                Iniciar conversación
+                {t('whatsapp.action')}
 
                 <ArrowRight
                   className="
@@ -185,12 +188,11 @@ export default function ContactCards() {
               </div>
 
               <h3 className="mt-4 font-display text-[17px] font-bold text-primary-950">
-                Correo electrónico
+                {t('email.title')}
               </h3>
 
               <p className="mt-1.5 text-[13px] leading-[1.65] text-slate-500">
-                También puedes enviarnos un correo con tus dudas o
-                comentarios.
+                {t('email.description')}
               </p>
 
               <p className="mt-3 break-all text-sm font-bold text-primary-950">
@@ -208,7 +210,7 @@ export default function ContactCards() {
                   text-primary-700
                 "
               >
-                Enviar correo
+                {t('email.action')}
 
                 <ArrowRight
                   className="
@@ -277,12 +279,11 @@ export default function ContactCards() {
               </div>
 
               <h3 className="mt-4 font-display text-[17px] font-bold text-primary-950">
-                Contacta una sucursal
+                {t('branches.title')}
               </h3>
 
               <p className="mt-1.5 text-[13px] leading-[1.65] text-slate-500">
-                Consulta el teléfono de la sucursal con la que deseas
-                comunicarte.
+                {t('branches.description')}
               </p>
 
               <p className="mt-3 text-sm font-bold text-primary-950">
@@ -300,7 +301,7 @@ export default function ContactCards() {
                   text-primary-700
                 "
               >
-                Ver sucursales
+                {t('branches.action')}
 
                 <ArrowRight
                   className="

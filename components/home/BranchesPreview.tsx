@@ -1,8 +1,10 @@
+
 'use client';
 
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import {
   ArrowRight,
@@ -23,25 +25,33 @@ const BranchesMap = dynamic(
   {
     ssr: false,
 
-    loading: () => (
-      <div className="flex h-full items-center justify-center bg-primary-50">
-        <div className="text-center">
-          <div className="mx-auto h-7 w-7 animate-spin rounded-full border-2 border-primary-200 border-t-primary-700" />
-
-          <p className="mt-2 text-xs font-medium text-slate-500">
-            Cargando mapa...
-          </p>
-        </div>
-      </div>
-    ),
+    loading: () => <MapLoading />,
   }
 );
+
+function MapLoading() {
+  const t = useTranslations('BranchesPreview');
+
+  return (
+    <div className="flex h-full items-center justify-center bg-primary-50">
+      <div className="text-center">
+        <div className="mx-auto h-7 w-7 animate-spin rounded-full border-2 border-primary-200 border-t-primary-700" />
+
+        <p className="mt-2 text-xs font-medium text-slate-500">
+          {t('loadingMap')}
+        </p>
+      </div>
+    </div>
+  );
+}
 
 /* ============================================================
    COMPONENTE
 ============================================================ */
 
 export default function BranchesPreview() {
+  const t = useTranslations('BranchesPreview');
+
   const [branches, setBranches] = useState<Branch[]>([]);
 
   const [selectedBranch, setSelectedBranch] =
@@ -54,11 +64,15 @@ export default function BranchesPreview() {
   ========================================================== */
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const getBranches = async () => {
       try {
         setLoading(true);
 
-        const response = await fetch('/api/branches');
+        const response = await fetch('/api/branches', {
+          signal: controller.signal,
+        });
 
         if (!response.ok) {
           throw new Error(
@@ -80,6 +94,13 @@ export default function BranchesPreview() {
 
         setBranches(activeBranches);
       } catch (error) {
+        if (
+          error instanceof Error &&
+          error.name === 'AbortError'
+        ) {
+          return;
+        }
+
         console.error(
           'Error al cargar sucursales:',
           error
@@ -87,11 +108,17 @@ export default function BranchesPreview() {
 
         setBranches([]);
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
-    getBranches();
+    void getBranches();
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   /* ==========================================================
@@ -100,15 +127,9 @@ export default function BranchesPreview() {
 
   return (
     <section className="bg-white py-14 sm:py-16">
-      {/* ======================================================
-          CONTENEDOR
-      ======================================================= */}
-
+      {/* CONTENEDOR */}
       <div className="mx-auto max-w-[1420px] px-4 sm:px-6 lg:px-8">
-        {/* ====================================================
-            CARD PRINCIPAL
-        ===================================================== */}
-
+        {/* CARD PRINCIPAL */}
         <div
           className="
             overflow-hidden
@@ -126,7 +147,6 @@ export default function BranchesPreview() {
             className="
               grid
               gap-0
-
               lg:grid-cols-[260px_minmax(500px,1.45fr)_minmax(360px,0.9fr)]
               lg:items-stretch
             "
@@ -156,7 +176,7 @@ export default function BranchesPreview() {
                   text-accent-600
                 "
               >
-                Nuestras sucursales
+                {t('eyebrow')}
               </p>
 
               <h2
@@ -170,11 +190,13 @@ export default function BranchesPreview() {
                   text-primary-950
                 "
               >
-                Encuentra la sucursal{' '}
+                {t('title')}{' '}
+
                 <span className="text-accent-500">
-                  más conveniente
+                  {t('highlight')}
                 </span>{' '}
-                para ti
+
+                {t('titleEnd')}
               </h2>
 
               <p
@@ -186,8 +208,7 @@ export default function BranchesPreview() {
                   text-slate-600
                 "
               >
-                Consulta nuestras ubicaciones y elige la
-                sucursal que mejor se adapte a ti.
+                {t('description')}
               </p>
 
               <Link
@@ -216,7 +237,7 @@ export default function BranchesPreview() {
                   hover:shadow-md
                 "
               >
-                Ver todas las sucursales
+                {t('viewAll')}
 
                 <ArrowRight
                   className="
@@ -247,9 +268,7 @@ export default function BranchesPreview() {
                 border
                 border-white
                 shadow-[0_10px_30px_rgba(15,23,42,0.08)]
-
                 sm:mx-7
-
                 lg:mx-0
                 lg:my-6
                 lg:h-auto
@@ -257,15 +276,7 @@ export default function BranchesPreview() {
               "
             >
               {loading ? (
-                <div className="flex h-full items-center justify-center bg-primary-50">
-                  <div className="text-center">
-                    <div className="mx-auto h-7 w-7 animate-spin rounded-full border-2 border-primary-200 border-t-primary-700" />
-
-                    <p className="mt-2 text-xs text-slate-500">
-                      Cargando mapa...
-                    </p>
-                  </div>
-                </div>
+                <MapLoading />
               ) : branches.length > 0 ? (
                 <BranchesMap
                   branches={branches}
@@ -278,7 +289,7 @@ export default function BranchesPreview() {
                     <MapPin className="mx-auto h-6 w-6 text-primary-600" />
 
                     <p className="mt-2 text-sm font-semibold text-primary-900">
-                      No hay sucursales disponibles
+                      {t('noBranches')}
                     </p>
                   </div>
                 </div>
@@ -325,7 +336,6 @@ export default function BranchesPreview() {
                         py-3
                         transition-all
                         duration-200
-
                         ${
                           isSelected
                             ? `
@@ -341,16 +351,15 @@ export default function BranchesPreview() {
                         }
                       `}
                     >
-                      {/* =======================================
-                          PIN
-                      ======================================== */}
-
+                      {/* PIN */}
                       <button
                         type="button"
                         onClick={() =>
                           setSelectedBranch(branch)
                         }
-                        aria-label={`Mostrar ${branch.name} en el mapa`}
+                        aria-label={t('showOnMap', {
+                          name: branch.name,
+                        })}
                         className={`
                           flex
                           h-11
@@ -362,7 +371,6 @@ export default function BranchesPreview() {
                           border
                           transition-all
                           duration-200
-
                           ${
                             isSelected
                               ? `
@@ -382,10 +390,7 @@ export default function BranchesPreview() {
                         <MapPin className="h-4.5 w-4.5" />
                       </button>
 
-                      {/* =======================================
-                          INFORMACIÓN
-                      ======================================== */}
-
+                      {/* INFORMACIÓN */}
                       <button
                         type="button"
                         onClick={() =>
@@ -424,43 +429,40 @@ export default function BranchesPreview() {
                         )}
                       </button>
 
-                      {/* =======================================
-                          VER SUCURSAL
-                      ======================================== */}
-
+                      {/* VER SUCURSAL */}
                       <Link
-  href={`/sucursales#${branch.slug}`}
-  className="
-    group/details
-    flex
-    shrink-0
-    items-center
-    gap-1.5
-    rounded-lg
-    px-2
-    py-2
-    text-[10px]
-    font-bold
-    text-primary-800
-    transition-all
-    hover:bg-primary-50
-    hover:text-accent-600
-  "
->
-  <span>
-    Ver sucursal
-  </span>
+                        href={`/sucursales#${branch.slug}`}
+                        className="
+                          group/details
+                          flex
+                          shrink-0
+                          items-center
+                          gap-1.5
+                          rounded-lg
+                          px-2
+                          py-2
+                          text-[10px]
+                          font-bold
+                          text-primary-800
+                          transition-all
+                          hover:bg-primary-50
+                          hover:text-accent-600
+                        "
+                      >
+                        <span>
+                          {t('viewBranch')}
+                        </span>
 
-  <ArrowRight
-    className="
-      h-3.5
-      w-3.5
-      transition-transform
-      duration-200
-      group-hover/details:translate-x-0.5
-    "
-  />
-</Link>
+                        <ArrowRight
+                          className="
+                            h-3.5
+                            w-3.5
+                            transition-transform
+                            duration-200
+                            group-hover/details:translate-x-0.5
+                          "
+                        />
+                      </Link>
                     </div>
                   );
                 })}

@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -5,6 +6,10 @@ import {
   useMemo,
   useState,
 } from 'react';
+
+import { useLocale, useTranslations } from 'next-intl';
+import { ClipboardList } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import StudiesHero from './StudiesHero';
 
@@ -19,8 +24,13 @@ import StudiesEmpty from './StudiesEmpty';
 import StudyDetailsDrawer from './StudyDetailsDrawer';
 import PackageDetailsDrawer from './PackageDetailsDrawer';
 import QuotationDrawer from './QuotationDrawer';
-import { ClipboardList } from 'lucide-react';
-import { packageToQuotationItem, quotationKey, studyToQuotationItem, type QuotationItem } from '@/types/quotation';
+
+import {
+  packageToQuotationItem,
+  quotationKey,
+  studyToQuotationItem,
+  type QuotationItem,
+} from '@/types/quotation';
 
 import type {
   PackagesResponse,
@@ -31,103 +41,126 @@ import type {
 
 const QUOTATION_STORAGE_KEY = 'labwork:quotation:v1';
 
-type SavedQuotationItem = { type: 'study' | 'package'; id: string };
+type SavedQuotationItem = {
+  type: 'study' | 'package';
+  id: string;
+};
+
+/* ============================================================
+   RECUPERAR COTIZACIÓN
+============================================================ */
 
 function readSavedQuotation(): SavedQuotationItem[] {
   try {
-    const raw = window.localStorage.getItem(QUOTATION_STORAGE_KEY);
+    const raw = window.localStorage.getItem(
+      QUOTATION_STORAGE_KEY
+    );
+
     if (!raw) return [];
+
     const value: unknown = JSON.parse(raw);
+
     if (!Array.isArray(value)) return [];
-    return value.filter((item): item is SavedQuotationItem =>
-      typeof item === 'object' &&
-      item !== null &&
-      (item.type === 'study' || item.type === 'package') &&
-      typeof item.id === 'string'
+
+    return value.filter(
+      (item): item is SavedQuotationItem =>
+        typeof item === 'object' &&
+        item !== null &&
+        (item.type === 'study' || item.type === 'package') &&
+        typeof item.id === 'string'
     );
   } catch (error) {
-    console.warn('No fue posible recuperar la cotización guardada:', error);
+    console.warn(
+      'No fue posible recuperar la cotización guardada:',
+      error
+    );
+
     return [];
   }
 }
 
+/* ============================================================
+   CATÁLOGO
+============================================================ */
+
 export default function StudiesCatalog() {
-  /*
-  |--------------------------------------------------------------------------
-  | DATOS
-  |--------------------------------------------------------------------------
-  */
+  const t = useTranslations('StudiesCatalog');
+  const locale = useLocale();
+  const router = useRouter();
 
-  const [studies, setStudies] = useState<Study[]>(
-    []
-  );
-
-  const [packages, setPackages] = useState<
-    StudyPackage[]
-  >([]);
-
-  /*
-  |--------------------------------------------------------------------------
-  | TAB ACTIVO
-  |--------------------------------------------------------------------------
-  */
+  const [studies, setStudies] = useState<Study[]>([]);
+  const [packages, setPackages] = useState<StudyPackage[]>([]);
 
   const [activeTab, setActiveTab] =
     useState<CatalogTab>('studies');
 
-  /*
-  |--------------------------------------------------------------------------
-  | BÚSQUEDA
-  |--------------------------------------------------------------------------
-  */
-
   const [search, setSearch] = useState('');
-
-  /*
-  |--------------------------------------------------------------------------
-  | CATEGORÍA
-  |--------------------------------------------------------------------------
-  */
-
-  const [activeCategory, setActiveCategory] =
-    useState('all');
-
-  /*
-  |--------------------------------------------------------------------------
-  | ESTADOS DE CARGA
-  |--------------------------------------------------------------------------
-  */
+  const [activeCategory, setActiveCategory] = useState('all');
 
   const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
-  const [hasError, setHasError] =
-    useState(false);
+  const [quotationItems, setQuotationItems] =
+    useState<QuotationItem[]>([]);
 
-  /*
-  |--------------------------------------------------------------------------
-  | ESTUDIO SELECCIONADO
-  |--------------------------------------------------------------------------
-  */
-
-  const [quotationItems, setQuotationItems] = useState<QuotationItem[]>([]);
   const [quotationOpen, setQuotationOpen] = useState(false);
   const [quotationReady, setQuotationReady] = useState(false);
-  const addQuotationItem = (item: QuotationItem) => {
-    setQuotationItems((current) => current.some((existing) => quotationKey(existing) === quotationKey(item)) ? current : [...current, item]);
-  };
-  const removeQuotationItem = (key: string) => setQuotationItems((current) => current.filter((item) => quotationKey(item) !== key));
 
   const [selectedStudy, setSelectedStudy] =
     useState<Study | null>(null);
-const [
-  selectedPackage,
-  setSelectedPackage,
-] = useState<StudyPackage | null>(null);
-  /*
-  |--------------------------------------------------------------------------
-  | CARGAR CATÁLOGO REAL
-  |--------------------------------------------------------------------------
-  */
+
+  const [selectedPackage, setSelectedPackage] =
+    useState<StudyPackage | null>(null);
+
+  /* ============================================================
+     COTIZACIÓN
+  ============================================================ */
+
+  const addQuotationItem = (item: QuotationItem) => {
+    setQuotationItems((current) =>
+      current.some(
+        (existing) =>
+          quotationKey(existing) === quotationKey(item)
+      )
+        ? current
+        : [...current, item]
+    );
+  };
+
+  const bookItem = (item: QuotationItem) => {
+    // Read storage directly so navigation never races a React state update.
+    const saved = readSavedQuotation();
+    const selected: SavedQuotationItem = { type: item.type, id: item.id };
+    const merged = saved.some(
+      (entry) => entry.type === selected.type && entry.id === selected.id
+    ) ? saved : [...saved, selected];
+
+    try {
+      window.localStorage.setItem(QUOTATION_STORAGE_KEY, JSON.stringify(merged));
+    } catch (error) {
+      console.error('No fue posible guardar la selección para agendar:', error);
+      return;
+    }
+
+    setQuotationItems((current) =>
+      current.some((entry) => quotationKey(entry) === quotationKey(item))
+        ? current
+        : [...current, item]
+    );
+    router.push('/agendar');
+  };
+
+  const removeQuotationItem = (key: string) => {
+    setQuotationItems((current) =>
+      current.filter(
+        (item) => quotationKey(item) !== key
+      )
+    );
+  };
+
+  /* ============================================================
+     CARGAR CATÁLOGO
+  ============================================================ */
 
   useEffect(() => {
     const loadCatalog = async () => {
@@ -158,23 +191,11 @@ const [
         const packagesResult: PackagesResponse =
           await packagesResponse.json();
 
-        /*
-        |--------------------------------------------------------------------------
-        | ESTUDIOS ACTIVOS
-        |--------------------------------------------------------------------------
-        */
-
         const activeStudies = (
           studiesResult.data ?? []
         ).filter(
           (study) => study.isActive
         );
-
-        /*
-        |--------------------------------------------------------------------------
-        | PAQUETES ACTIVOS
-        |--------------------------------------------------------------------------
-        */
 
         const activePackages = (
           packagesResult.data ?? []
@@ -182,34 +203,43 @@ const [
           (item) => item.isActive
         );
 
-        /*
-        |--------------------------------------------------------------------------
-        | ÚNICAMENTE INFORMACIÓN REAL DE LA BD
-        |--------------------------------------------------------------------------
-        */
-
         setStudies(activeStudies);
         setPackages(activePackages);
 
-        // Reconstruir la cotización desde el catálogo vigente, no desde
-        // nombres o precios que pudieron quedar obsoletos en el navegador.
+        // Reconstruir la cotización con datos vigentes.
         const savedItems = readSavedQuotation();
+
         const restored: QuotationItem[] = [];
         const seen = new Set<string>();
 
         for (const saved of savedItems) {
           let quotationItem: QuotationItem | null = null;
+
           if (saved.type === 'study') {
-            const study = activeStudies.find((entry) => entry.id === saved.id);
-            if (study) quotationItem = studyToQuotationItem(study);
+            const study = activeStudies.find(
+              (entry) => entry.id === saved.id
+            );
+
+            if (study) {
+              quotationItem = studyToQuotationItem(study);
+            }
           } else {
-            const studyPackage = activePackages.find((entry) => entry.id === saved.id);
-            if (studyPackage) quotationItem = packageToQuotationItem(studyPackage);
+            const studyPackage = activePackages.find(
+              (entry) => entry.id === saved.id
+            );
+
+            if (studyPackage) {
+              quotationItem =
+                packageToQuotationItem(studyPackage);
+            }
           }
 
-          if (!quotationItem) continue; // Ya no existe o está inactivo.
+          if (!quotationItem) continue;
+
           const key = quotationKey(quotationItem);
+
           if (seen.has(key)) continue;
+
           seen.add(key);
           restored.push(quotationItem);
         }
@@ -228,26 +258,38 @@ const [
       }
     };
 
-    loadCatalog();
+    void loadCatalog();
   }, []);
 
-  // Guardar solo los identificadores: al recargar, nombres y precios
-  // se vuelven a obtener de la API. No sobrescribir si falló la carga.
+  /* ============================================================
+     GUARDAR COTIZACIÓN
+  ============================================================ */
+
   useEffect(() => {
     if (!quotationReady) return;
+
     try {
-      const selected: SavedQuotationItem[] = quotationItems.map(({ type, id }) => ({ type, id }));
-      window.localStorage.setItem(QUOTATION_STORAGE_KEY, JSON.stringify(selected));
+      const selected: SavedQuotationItem[] =
+        quotationItems.map(({ type, id }) => ({
+          type,
+          id,
+        }));
+
+      window.localStorage.setItem(
+        QUOTATION_STORAGE_KEY,
+        JSON.stringify(selected)
+      );
     } catch (error) {
-      console.warn('No fue posible guardar la cotización:', error);
+      console.warn(
+        'No fue posible guardar la cotización:',
+        error
+      );
     }
   }, [quotationItems, quotationReady]);
 
-  /*
-  |--------------------------------------------------------------------------
-  | CATEGORÍAS
-  |--------------------------------------------------------------------------
-  */
+  /* ============================================================
+     CATEGORÍAS
+  ============================================================ */
 
   const categories = useMemo(() => {
     return Array.from(
@@ -255,75 +297,60 @@ const [
         studies
           .map((study) => study.category)
           .filter(
-            (
-              category
-            ): category is string =>
+            (category): category is string =>
               Boolean(category)
           )
       )
     ).sort((a, b) =>
-      a.localeCompare(b, 'es')
+      a.localeCompare(b, locale)
     );
-  }, [studies]);
+  }, [studies, locale]);
 
-  /*
-  |--------------------------------------------------------------------------
-  | ESTUDIOS FILTRADOS
-  |--------------------------------------------------------------------------
-  */
+  /* ============================================================
+     ESTUDIOS FILTRADOS
+  ============================================================ */
 
   const filteredStudies = useMemo(() => {
     const normalizedSearch = search
       .trim()
-      .toLocaleLowerCase('es');
+      .toLocaleLowerCase(locale);
 
     return studies.filter((study) => {
-      const name =
-        study.name.toLocaleLowerCase('es');
+      const name = study.name.toLocaleLowerCase(locale);
 
       const category =
-        study.category?.toLocaleLowerCase(
-          'es'
-        ) ?? '';
+        study.category?.toLocaleLowerCase(locale) ?? '';
 
       const description =
-        study.description?.toLocaleLowerCase(
-          'es'
-        ) ?? '';
+        study.description?.toLocaleLowerCase(locale) ?? '';
 
       const matchesSearch =
         !normalizedSearch ||
         name.includes(normalizedSearch) ||
         category.includes(normalizedSearch) ||
-        description.includes(
-          normalizedSearch
-        );
+        description.includes(normalizedSearch);
 
       const matchesCategory =
         activeCategory === 'all' ||
         study.category === activeCategory;
 
-      return (
-        matchesSearch &&
-        matchesCategory
-      );
+      return matchesSearch && matchesCategory;
     });
   }, [
     studies,
     search,
     activeCategory,
+    locale,
   ]);
 
-  /*
-  |--------------------------------------------------------------------------
-  | PAQUETES FILTRADOS
-  |--------------------------------------------------------------------------
-  */
+  /* ============================================================
+     PAQUETES FILTRADOS
+  ============================================================ */
 
   const filteredPackages = useMemo(() => {
     const normalizedSearch = search
       .trim()
-      .toLocaleLowerCase('es');
+      .toLocaleLowerCase(locale);
 
     return packages.filter((item) => {
       if (!normalizedSearch) {
@@ -331,116 +358,76 @@ const [
       }
 
       const name =
-        item.name.toLocaleLowerCase('es');
+        item.name.toLocaleLowerCase(locale);
 
       const description =
-        item.description?.toLocaleLowerCase(
-          'es'
-        ) ?? '';
+        item.description?.toLocaleLowerCase(locale) ?? '';
 
       return (
         name.includes(normalizedSearch) ||
-        description.includes(
-          normalizedSearch
-        )
+        description.includes(normalizedSearch)
       );
     });
-  }, [packages, search]);
+  }, [packages, search, locale]);
 
-  /*
-  |--------------------------------------------------------------------------
-  | CAMBIAR TAB
-  |--------------------------------------------------------------------------
-  */
+  /* ============================================================
+     CAMBIAR TAB
+  ============================================================ */
 
-  const handleTabChange = (
-    tab: CatalogTab
-  ) => {
+  const handleTabChange = (tab: CatalogTab) => {
     setActiveTab(tab);
     setActiveCategory('all');
     setSearch('');
     setSelectedStudy(null);
   };
 
-  /*
-  |--------------------------------------------------------------------------
-  | ABRIR DETALLES
-  |--------------------------------------------------------------------------
-  */
+  /* ============================================================
+     DETALLES
+  ============================================================ */
 
-  const handleViewDetails = (
-    study: Study
-  ) => {
+  const handleViewDetails = (study: Study) => {
     setSelectedStudy(study);
   };
 
-  /*
-  |--------------------------------------------------------------------------
-  | CERRAR DETALLES
-  |--------------------------------------------------------------------------
-  */
+  const hasPackages = packages.length > 0;
 
-  const handleCloseDetails = () => {
-    setSelectedStudy(null);
-  };
-
-  /*
-  |--------------------------------------------------------------------------
-  | ¿EXISTEN PAQUETES?
-  |--------------------------------------------------------------------------
-  */
-
-  const hasPackages =
-    packages.length > 0;
+  /* ============================================================
+     RENDER
+  ============================================================ */
 
   return (
     <>
-      {/* ================================================================
-          HERO + BUSCADOR
-      ================================================================= */}
+      {/* HERO + BUSCADOR */}
 
       <StudiesHero
         search={search}
         onSearchChange={setSearch}
       />
 
-      {/* ================================================================
-          CATÁLOGO
-      ================================================================= */}
+      {/* CATÁLOGO */}
 
       <section className="bg-slate-50/40 py-4 sm:py-8 lg:py-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-          {/* ============================================================
-              TABS
-          ============================================================= */}
+          {/* TABS */}
 
           {!loading && !hasError && (
             <div className="flex justify-center">
               {hasPackages ? (
                 <StudiesTabs
                   activeTab={activeTab}
-                  onChange={
-                    handleTabChange
-                  }
-                  studiesCount={
-                    studies.length
-                  }
-                  packagesCount={
-                    packages.length
-                  }
+                  onChange={handleTabChange}
+                  studiesCount={studies.length}
+                  packagesCount={packages.length}
                 />
               ) : (
                 <div className="flex items-center border-b border-slate-200">
                   <div className="relative flex items-center gap-2 pb-4 text-sm font-bold text-primary-900">
-                    Estudios
+                    {t('studiesTab')}
 
-                    {studies.length >
-                      0 && (
+                    {studies.length > 0 && (
                       <span className="rounded-full bg-primary-50 px-2.5 py-1 text-xs font-bold text-primary-700">
-                        {
-                          studies.length
-                        }
+                        {studies.length}
                       </span>
                     )}
 
@@ -451,53 +438,47 @@ const [
             </div>
           )}
 
-       {!quotationOpen && (
-  <button
-    type="button"
-    onClick={() => setQuotationOpen(true)}
-    className="
-  fixed right-3 z-40
-  bottom-[calc(1.25rem+env(safe-area-inset-bottom))]
-  inline-flex min-h-11 items-center gap-2
-  rounded-full bg-primary-900
-  px-4 py-2.5
-  text-xs font-bold text-white
-  shadow-[0_8px_24px_rgba(11,55,109,0.22)]
-  transition-all duration-200
-  hover:bg-primary-800
-  sm:right-6 sm:px-5 sm:py-3 sm:text-sm
-"
-  >
-    <ClipboardList className="h-5 w-5" />
+          {/* BOTÓN FLOTANTE DE COTIZACIÓN */}
 
-    Mi cotización
+          {!quotationOpen && (
+            <button
+              type="button"
+              onClick={() => setQuotationOpen(true)}
+              className="
+                fixed right-3 z-40
+                bottom-[calc(1.25rem+env(safe-area-inset-bottom))]
+                inline-flex min-h-11 items-center gap-2
+                rounded-full bg-primary-900
+                px-4 py-2.5
+                text-xs font-bold text-white
+                shadow-[0_8px_24px_rgba(11,55,109,0.22)]
+                transition-all duration-200
+                hover:bg-primary-800
+                sm:right-6 sm:px-5 sm:py-3 sm:text-sm
+              "
+            >
+              <ClipboardList className="h-5 w-5" />
 
-    <span className="rounded-full bg-accent-500 px-2 py-0.5 text-xs text-primary-950">
-      {quotationItems.length}
-    </span>
-  </button>
-)}
+              {t('myQuotation')}
 
-          {/* ============================================================
-              LOADING
-          ============================================================= */}
+              <span className="rounded-full bg-accent-500 px-2 py-0.5 text-xs text-primary-950">
+                {quotationItems.length}
+              </span>
+            </button>
+          )}
+
+          {/* LOADING */}
 
           {loading && (
             <div className="mt-8">
-              {/* Categorías */}
-
               <div className="flex flex-wrap justify-center gap-2">
-                {[1, 2, 3, 4, 5].map(
-                  (item) => (
-                    <div
-                      key={item}
-                      className="h-10 w-32 animate-pulse rounded-full bg-slate-100"
-                    />
-                  )
-                )}
+                {[1, 2, 3, 4, 5].map((item) => (
+                  <div
+                    key={item}
+                    className="h-10 w-32 animate-pulse rounded-full bg-slate-100"
+                  />
+                ))}
               </div>
-
-              {/* Encabezado */}
 
               <div className="mt-10 flex items-center justify-between">
                 <div>
@@ -507,17 +488,8 @@ const [
                 </div>
               </div>
 
-              {/* Cards */}
-
               <div className="mt-4 grid gap-4 sm:mt-6 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
-                {[
-                  1,
-                  2,
-                  3,
-                  4,
-                  5,
-                  6,
-                ].map((item) => (
+                {[1, 2, 3, 4, 5, 6].map((item) => (
                   <div
                     key={item}
                     className="h-[260px] animate-pulse rounded-[22px] bg-slate-100"
@@ -527,82 +499,59 @@ const [
             </div>
           )}
 
-          {/* ============================================================
-              ERROR
-          ============================================================= */}
+          {/* ERROR */}
 
-          {!loading &&
-            hasError && (
-              <div className="mt-10 rounded-[24px] border border-red-100 bg-red-50 px-6 py-14 text-center">
-                <h2 className="font-display text-xl font-bold text-slate-900">
-                  No pudimos cargar el
-                  catálogo
-                </h2>
+          {!loading && hasError && (
+            <div className="mt-10 rounded-[24px] border border-red-100 bg-red-50 px-6 py-14 text-center">
+              <h2 className="font-display text-xl font-bold text-slate-900">
+                {t('error.title')}
+              </h2>
 
-                <p className="mt-2 text-sm text-slate-600">
-                  Intenta nuevamente en
-                  unos momentos.
-                </p>
-              </div>
-            )}
+              <p className="mt-2 text-sm text-slate-600">
+                {t('error.description')}
+              </p>
+            </div>
+          )}
 
-          {/* ============================================================
-              ESTUDIOS
-          ============================================================= */}
+          {/* ESTUDIOS */}
 
           {!loading &&
             !hasError &&
-            activeTab ===
-              'studies' && (
+            activeTab === 'studies' && (
               <div className="mt-4 sm:mt-8">
 
-                {/* ======================================================
-                    CATEGORÍAS
-                ======================================================= */}
+                {/* CATEGORÍAS */}
 
-                {categories.length >
-                  0 && (
+                {categories.length > 0 && (
                   <StudiesFilters
-                    categories={
-                      categories
-                    }
-                    activeCategory={
-                      activeCategory
-                    }
-                    onChange={
-                      setActiveCategory
-                    }
+                    categories={categories}
+                    activeCategory={activeCategory}
+                    onChange={setActiveCategory}
                   />
                 )}
 
-                {/* ======================================================
-                    ENCABEZADO DE RESULTADOS
-                ======================================================= */}
+                {/* ENCABEZADO DE RESULTADOS */}
 
                 <div className="mt-5 flex flex-col gap-2 sm:mt-10 sm:flex-row sm:items-end sm:justify-between">
                   <div>
                     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                       <h2 className="font-display text-2xl font-bold text-primary-950 sm:text-[28px]">
-                        {activeCategory ===
-                        'all'
-                          ? 'Todos los estudios'
+                        {activeCategory === 'all'
+                          ? t('allStudies')
                           : activeCategory}
                       </h2>
 
                       <span className="text-sm font-semibold text-slate-400">
-                        {
-                          filteredStudies.length
-                        }{' '}
-                        {filteredStudies.length ===
-                        1
-                          ? 'resultado'
-                          : 'resultados'}
+                        {t('results', {
+                          count: filteredStudies.length,
+                        })}
                       </span>
                     </div>
 
                     {search && (
                       <p className="mt-2 text-sm text-slate-500">
-                        Resultados para{' '}
+                        {t('resultsFor')}{' '}
+
                         <span className="font-semibold text-primary-800">
                           “{search}”
                         </span>
@@ -611,38 +560,33 @@ const [
                   </div>
                 </div>
 
-                {/* ======================================================
-                    CARDS DE ESTUDIOS
-                ======================================================= */}
+                {/* TARJETAS DE ESTUDIOS */}
 
-                {filteredStudies.length >
-                0 ? (
+                {filteredStudies.length > 0 ? (
                   <div className="mt-4 grid gap-4 sm:mt-6 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
-                    {filteredStudies.map(
-                      (study) => (
-                        <StudyCard
-                          key={
-                            study.id
-                          }
-                          study={
-                            study
-                          }
-                          onViewDetails={handleViewDetails}
-                          onAdd={(item) => addQuotationItem(studyToQuotationItem(item))}
-                          isAdded={quotationItems.some(
-                            (selected) => quotationKey(selected) === `study:${study.id}`
-                          )}
-                        />
-                      )
-                    )}
+                    {filteredStudies.map((study) => (
+                      <StudyCard
+                        key={study.id}
+                        study={study}
+                        onViewDetails={handleViewDetails}
+                        onAdd={(item) =>
+                          addQuotationItem(
+                            studyToQuotationItem(item)
+                          )
+                        }
+                        isAdded={quotationItems.some(
+                          (selected) =>
+                            quotationKey(selected) ===
+                            `study:${study.id}`
+                        )}
+                      />
+                    ))}
                   </div>
                 ) : (
                   <div className="mt-6">
                     <StudiesEmpty
                       type={
-                        studies.length ===
-                          0 &&
-                        !search
+                        studies.length === 0 && !search
                           ? 'studies'
                           : 'search'
                       }
@@ -652,51 +596,51 @@ const [
               </div>
             )}
 
-          {/* ============================================================
-              PAQUETES
-          ============================================================= */}
+          {/* PAQUETES */}
 
           {!loading &&
             !hasError &&
             hasPackages &&
-            activeTab ===
-              'packages' && (
+            activeTab === 'packages' && (
               <div className="mt-5 sm:mt-10">
 
                 {/* ENCABEZADO */}
 
                 <div className="flex flex-wrap items-baseline gap-3">
                   <h2 className="font-display text-2xl font-bold text-primary-950 sm:text-[28px]">
-                    Paquetes disponibles
+                    {t('availablePackages')}
                   </h2>
 
                   <span className="text-sm font-semibold text-slate-400">
-                    {
-                      filteredPackages.length
-                    }{' '}
-                    {filteredPackages.length ===
-                    1
-                      ? 'resultado'
-                      : 'resultados'}
+                    {t('results', {
+                      count: filteredPackages.length,
+                    })}
                   </span>
                 </div>
 
-                {/* PAQUETES */}
+                {/* TARJETAS DE PAQUETES */}
 
-                {filteredPackages.length >
-                0 ? (
+                {filteredPackages.length > 0 ? (
                   <div className="mt-4 grid gap-4 sm:mt-6 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                    {filteredPackages.map(
-                      (item) => (
-                       <PackageCard
-  key={item.id}
-  studyPackage={item}
-  onViewDetails={setSelectedPackage}
-  onAdd={(item) => addQuotationItem(packageToQuotationItem(item))}
-  isAdded={quotationItems.some((selected) => quotationKey(selected) === `package:${item.id}`)}
-/>
-                      )
-                    )}
+                    {filteredPackages.map((item) => (
+                      <PackageCard
+                        key={item.id}
+                        studyPackage={item}
+                        onViewDetails={setSelectedPackage}
+                        onAdd={(studyPackage) =>
+                          addQuotationItem(
+                            packageToQuotationItem(
+                              studyPackage
+                            )
+                          )
+                        }
+                        isAdded={quotationItems.some(
+                          (selected) =>
+                            quotationKey(selected) ===
+                            `package:${item.id}`
+                        )}
+                      />
+                    ))}
                   </div>
                 ) : (
                   <div className="mt-6">
@@ -708,6 +652,8 @@ const [
         </div>
       </section>
 
+      {/* COTIZACIÓN */}
+
       <QuotationDrawer
         open={quotationOpen}
         items={quotationItems}
@@ -716,18 +662,21 @@ const [
         onClear={() => setQuotationItems([])}
       />
 
-      {/* ================================================================
-          DRAWER DE DETALLES
-      ================================================================= */}
-<StudyDetailsDrawer
-  study={selectedStudy}
-  onClose={() => setSelectedStudy(null)}
-/>
+      {/* DETALLES DEL ESTUDIO */}
 
-<PackageDetailsDrawer
-  studyPackage={selectedPackage}
-  onClose={() => setSelectedPackage(null)}
-/>
+      <StudyDetailsDrawer
+        study={selectedStudy}
+        onBook={(study) => bookItem(studyToQuotationItem(study))}
+        onClose={() => setSelectedStudy(null)}
+      />
+
+      {/* DETALLES DEL PAQUETE */}
+
+      <PackageDetailsDrawer
+        studyPackage={selectedPackage}
+        onBook={(studyPackage) => bookItem(packageToQuotationItem(studyPackage))}
+        onClose={() => setSelectedPackage(null)}
+      />
     </>
   );
 }

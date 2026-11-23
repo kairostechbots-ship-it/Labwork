@@ -1,4 +1,6 @@
+
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 
 import {
   ArrowRight,
@@ -8,7 +10,9 @@ import {
   Phone,
 } from 'lucide-react';
 
-export default function ContactQuickHelp() {
+export default async function ContactQuickHelp() {
+  const t = await getTranslations('ContactQuickHelp');
+
   return (
     <aside
       className="
@@ -55,17 +59,15 @@ export default function ContactQuickHelp() {
 
       <div className="relative z-10">
         <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-accent-400">
-          Otras opciones
+          {t('badge')}
         </p>
 
         <h3 className="mt-3 max-w-sm font-display text-2xl font-bold leading-tight">
-          ¿Prefieres comunicarte directamente?
+          {t('title')}
         </h3>
 
         <p className="mt-3 text-sm leading-6 text-primary-100/75">
-          También puedes escribirnos por WhatsApp, enviarnos un
-          correo o comunicarte directamente con una de nuestras
-          sucursales.
+          {t('description')}
         </p>
 
         {/* Opciones */}
@@ -158,7 +160,7 @@ export default function ContactQuickHelp() {
 
             <div className="min-w-0 flex-1">
               <p className="text-xs font-bold">
-                Correo electrónico
+                {t('email.title')}
               </p>
 
               <p className="mt-0.5 truncate text-[11px] text-primary-100/65">
@@ -205,11 +207,11 @@ export default function ContactQuickHelp() {
 
             <div className="min-w-0 flex-1">
               <p className="text-xs font-bold">
-                Llamar a una sucursal
+                {t('branches.title')}
               </p>
 
               <p className="mt-0.5 text-[11px] text-primary-100/65">
-                Consulta los teléfonos disponibles
+                {t('branches.description')}
               </p>
             </div>
 
@@ -234,7 +236,7 @@ export default function ContactQuickHelp() {
           >
             <MapPin className="h-4 w-4" />
 
-            Ver todas las sucursales
+            {t('viewAllBranches')}
 
             <ArrowRight
               className="

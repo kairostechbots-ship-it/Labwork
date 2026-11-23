@@ -1,4 +1,8 @@
-import Link from 'next/link';
+
+"use client";
+
+import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 
 import {
   CalendarDays,
@@ -7,19 +11,63 @@ import {
   MessageCircle,
   Navigation,
   Phone,
-} from 'lucide-react';
+} from "lucide-react";
 
-import BranchMap from './BranchMap';
+import BranchMap from "./BranchMap";
 
-import type { Branch } from '@/types/branch';
+import type { Branch } from "@/types/branch";
 
 type BranchCardProps = {
   branch: Branch;
 };
 
+/*
+|--------------------------------------------------------------------------
+| TRADUCCIÓN DE HORARIOS
+|--------------------------------------------------------------------------
+| Conserva el horario original de la base de datos.
+| Solo traduce los nombres de los días para mostrarlos en inglés.
+|--------------------------------------------------------------------------
+*/
+
+function translateBusinessHours(
+  schedule: string,
+  locale: string
+): string {
+  if (locale !== "en") {
+    return schedule;
+  }
+
+  const translations: Array<[RegExp, string]> = [
+    [/\blunes\b/gi, "Monday"],
+    [/\bmartes\b/gi, "Tuesday"],
+    [/\bmiércoles\b/gi, "Wednesday"],
+    [/\bmiercoles\b/gi, "Wednesday"],
+    [/\bjueves\b/gi, "Thursday"],
+    [/\bviernes\b/gi, "Friday"],
+    [/\bsábado\b/gi, "Saturday"],
+    [/\bsabado\b/gi, "Saturday"],
+    [/\bdomingo\b/gi, "Sunday"],
+    [/\bcerrado\b/gi, "Closed"],
+    [/\babierto\b/gi, "Open"],
+    [/\ba\b/gi, "to"],
+  ];
+
+  let translated = schedule;
+
+  for (const [pattern, replacement] of translations) {
+    translated = translated.replace(pattern, replacement);
+  }
+
+  return translated;
+}
+
 export default function BranchCard({
   branch,
 }: BranchCardProps) {
+  const t = useTranslations("BranchCard");
+  const locale = useLocale();
+
   /*
   |--------------------------------------------------------------------------
   | WHATSAPP
@@ -27,7 +75,7 @@ export default function BranchCard({
   */
 
   const whatsappUrl = branch.whatsapp
-    ? `https://wa.me/${branch.whatsapp.replace(/\D/g, '')}`
+    ? `https://wa.me/${branch.whatsapp.replace(/\D/g, "")}`
     : null;
 
   /*
@@ -37,23 +85,17 @@ export default function BranchCard({
   */
 
   const phoneUrl = branch.phone
-    ? `tel:${branch.phone.replace(/[^\d+]/g, '')}`
+    ? `tel:${branch.phone.replace(/[^\d+]/g, "")}`
     : null;
 
   /*
   |--------------------------------------------------------------------------
   | FORMATO VISUAL DEL TELÉFONO
   |--------------------------------------------------------------------------
-  | BD:
-  | 3761151602
-  |
-  | Vista:
-  | 376 115 1602
-  |--------------------------------------------------------------------------
   */
 
   const formatPhone = (phone: string) => {
-    const digits = phone.replace(/\D/g, '');
+    const digits = phone.replace(/\D/g, "");
 
     if (digits.length === 10) {
       return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
@@ -78,17 +120,11 @@ export default function BranchCard({
   |--------------------------------------------------------------------------
   | HORARIO
   |--------------------------------------------------------------------------
-  | En la BD:
-  |
-  | Lunes a viernes... | Sábado... | Domingo cerrado
-  |
-  | Aquí separamos cada horario para mostrarlo en líneas.
-  |--------------------------------------------------------------------------
   */
 
   const businessHours = branch.businessHours
     ? branch.businessHours
-        .split('|')
+        .split("|")
         .map((item) => item.trim())
         .filter(Boolean)
     : [];
@@ -99,16 +135,12 @@ export default function BranchCard({
       className="scroll-mt-28 overflow-hidden rounded-[26px] border border-slate-100 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.06)]"
     >
       <div className="grid lg:grid-cols-[0.9fr_1.1fr]">
-        {/* ================================================================
-            INFORMACIÓN
-        ================================================================= */}
-
+        {/* INFORMACIÓN */}
         <div className="flex flex-col p-6 sm:p-7 lg:p-8">
           {/* ENCABEZADO */}
-
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-accent-600">
-              Sucursal
+              {t("branch")}
             </p>
 
             <h2 className="mt-2 font-display text-2xl font-bold tracking-tight text-primary-950 sm:text-3xl">
@@ -116,13 +148,9 @@ export default function BranchCard({
             </h2>
           </div>
 
-          {/* ================================================================
-              DATOS
-          ================================================================= */}
-
+          {/* DATOS */}
           <div className="mt-6 space-y-5">
             {/* DIRECCIÓN */}
-
             <div className="flex items-start gap-3">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-700">
                 <MapPin className="h-[18px] w-[18px]" />
@@ -130,7 +158,7 @@ export default function BranchCard({
 
               <div className="min-w-0">
                 <p className="text-xs font-bold uppercase tracking-[0.1em] text-slate-400">
-                  Dirección
+                  {t("address")}
                 </p>
 
                 <p className="mt-1 max-w-md text-sm leading-6 text-slate-600">
@@ -140,7 +168,6 @@ export default function BranchCard({
             </div>
 
             {/* HORARIO */}
-
             {businessHours.length > 0 && (
               <div className="flex items-start gap-3">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-700">
@@ -149,27 +176,24 @@ export default function BranchCard({
 
                 <div className="min-w-0">
                   <p className="text-xs font-bold uppercase tracking-[0.1em] text-slate-400">
-                    Horario
+                    {t("hours")}
                   </p>
 
                   <div className="mt-1.5 space-y-1">
-                    {businessHours.map(
-                      (schedule, index) => (
-                        <p
-                          key={`${schedule}-${index}`}
-                          className="text-sm leading-5 text-slate-600"
-                        >
-                          {schedule}
-                        </p>
-                      )
-                    )}
+                    {businessHours.map((schedule, index) => (
+                      <p
+                        key={`${schedule}-${index}`}
+                        className="text-sm leading-5 text-slate-600"
+                      >
+                        {translateBusinessHours(schedule, locale)}
+                      </p>
+                    ))}
                   </div>
                 </div>
               </div>
             )}
 
             {/* TELÉFONO */}
-
             {branch.phone && (
               <div className="flex items-start gap-3">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-700">
@@ -178,7 +202,7 @@ export default function BranchCard({
 
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.1em] text-slate-400">
-                    Teléfono
+                    {t("phone")}
                   </p>
 
                   {phoneUrl ? (
@@ -198,25 +222,19 @@ export default function BranchCard({
             )}
           </div>
 
-          {/* ================================================================
-              ACCIONES
-          ================================================================= */}
-
+          {/* ACCIONES */}
           <div className="mt-7">
             <div className="flex flex-wrap items-center gap-3">
               {/* AGENDAR CITA */}
-
               <Link
                 href={`/agendar?branch=${branch.slug}`}
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent-500 px-5 py-3 text-sm font-bold text-white shadow-[0_7px_18px_rgba(122,203,59,0.18)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent-600"
               >
                 <CalendarDays className="h-4 w-4" />
-
-                Agendar cita
+                {t("bookAppointment")}
               </Link>
 
               {/* WHATSAPP */}
-
               {whatsappUrl && (
                 <a
                   href={whatsappUrl}
@@ -225,14 +243,12 @@ export default function BranchCard({
                   className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-primary-900 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-300 hover:bg-accent-50"
                 >
                   <MessageCircle className="h-4 w-4 text-accent-600" />
-
                   WhatsApp
                 </a>
               )}
             </div>
 
             {/* CÓMO LLEGAR */}
-
             <a
               href={directionsUrl}
               target="_blank"
@@ -241,7 +257,7 @@ export default function BranchCard({
             >
               <Navigation className="h-4 w-4" />
 
-              Cómo llegar
+              {t("directions")}
 
               <span className="transition-transform duration-200 group-hover:translate-x-1">
                 →
@@ -250,10 +266,7 @@ export default function BranchCard({
           </div>
         </div>
 
-        {/* ================================================================
-            MAPA
-        ================================================================= */}
-
+        {/* MAPA */}
         <BranchMap
           name={branch.name}
           address={branch.address}

@@ -1,7 +1,9 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useLocale, useTranslations } from 'next-intl';
 
 import {
   ArrowRight,
@@ -14,15 +16,22 @@ import type {
 } from '@/types/study';
 
 export default function FeaturedStudies() {
+  const t = useTranslations('FeaturedStudies');
+  const locale = useLocale();
+
   const [studies, setStudies] = useState<Study[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const loadStudies = async () => {
       try {
         setLoading(true);
 
-        const response = await fetch('/api/services');
+        const response = await fetch('/api/services', {
+          signal: controller.signal,
+        });
 
         if (!response.ok) {
           throw new Error(
@@ -38,12 +47,19 @@ export default function FeaturedStudies() {
         ).filter((study) => study.isActive);
 
         /*
-         * Por ahora mostramos 3 estudios.
-         * Más adelante podemos usar isFeatured
-         * para elegirlos desde administración.
+         * Por ahora mostramos 3 estudios activos.
+         * Más adelante podemos utilizar isFeatured
+         * para seleccionarlos desde administración.
          */
         setStudies(activeStudies.slice(0, 3));
       } catch (error) {
+        if (
+          error instanceof Error &&
+          error.name === 'AbortError'
+        ) {
+          return;
+        }
+
         console.error(
           'Error al cargar estudios en inicio:',
           error
@@ -51,11 +67,17 @@ export default function FeaturedStudies() {
 
         setStudies([]);
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
-    loadStudies();
+    void loadStudies();
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   if (!loading && studies.length === 0) {
@@ -84,19 +106,18 @@ export default function FeaturedStudies() {
         <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div className="max-w-xl">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-accent-600">
-              Estudios
+              {t('eyebrow')}
             </p>
 
             <h2 className="mt-2 font-display text-3xl font-bold tracking-tight text-primary-950 sm:text-[34px] sm:leading-[1.12]">
-              Explora algunos de nuestros{' '}
+              {t('title')}{' '}
               <span className="text-accent-500">
-                estudios
+                {t('highlight')}
               </span>
             </h2>
 
             <p className="mt-3 max-w-lg text-sm leading-6 text-slate-500 sm:text-base">
-              Consulta precios y encuentra el análisis
-              que necesitas dentro de nuestro catálogo.
+              {t('description')}
             </p>
           </div>
 
@@ -104,7 +125,7 @@ export default function FeaturedStudies() {
             href="/estudios"
             className="group inline-flex shrink-0 items-center gap-2 pb-1 text-sm font-bold text-primary-800 transition-colors hover:text-accent-600"
           >
-            Ver todos los estudios
+            {t('viewAll')}
 
             <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
           </Link>
@@ -135,14 +156,18 @@ export default function FeaturedStudies() {
               const numericPrice = Number(study.price);
 
               const formattedPrice =
-                study.price &&
-                !Number.isNaN(numericPrice)
-                  ? new Intl.NumberFormat('es-MX', {
-                      style: 'currency',
-                      currency: 'MXN',
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 0,
-                    }).format(numericPrice)
+                study.price != null &&
+                study.price !== '' &&
+                Number.isFinite(numericPrice)
+                  ? new Intl.NumberFormat(
+                      locale === 'en' ? 'en-MX' : 'es-MX',
+                      {
+                        style: 'currency',
+                        currency: 'MXN',
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0,
+                      }
+                    ).format(numericPrice)
                   : null;
 
               return (
@@ -186,7 +211,7 @@ export default function FeaturedStudies() {
                   <div className="relative mt-auto flex items-end justify-between gap-4 border-t border-slate-100 pt-4">
                     <div>
                       <p className="text-[10px] font-medium text-slate-400">
-                        Precio público
+                        {t('publicPrice')}
                       </p>
 
                       {formattedPrice ? (
@@ -201,13 +226,13 @@ export default function FeaturedStudies() {
                         </div>
                       ) : (
                         <p className="mt-1 text-xs font-bold text-primary-800">
-                          Consultar precio
+                          {t('askPrice')}
                         </p>
                       )}
                     </div>
 
                     <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-primary-50 px-3.5 py-2 text-xs font-bold text-primary-700 transition-all group-hover:bg-primary-900 group-hover:text-white">
-                      Ver detalles
+                      {t('details')}
 
                       <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1" />
                     </span>

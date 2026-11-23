@@ -1,3 +1,6 @@
+
+import { getTranslations } from 'next-intl/server';
+
 import {
   CalendarDays,
   FileText,
@@ -7,28 +10,24 @@ import {
 const steps = [
   {
     number: '1',
+    key: 'search',
     icon: Search,
-    title: 'Busca tu estudio',
-    description:
-      'Encuentra el análisis o paquete que necesitas.',
   },
   {
     number: '2',
+    key: 'information',
     icon: FileText,
-    title: 'Consulta la información',
-    description:
-      'Revisa el precio y los detalles disponibles.',
   },
   {
     number: '3',
+    key: 'booking',
     icon: CalendarDays,
-    title: 'Agenda tu cita',
-    description:
-      'Elige tu sucursal y programa tu cita.',
   },
-];
+] as const;
 
-export default function HowItWorks() {
+export default async function HowItWorks() {
+  const t = await getTranslations('HowItWorks');
+
   return (
     <section className="border-y border-slate-100 bg-white py-12 sm:py-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -36,15 +35,15 @@ export default function HowItWorks() {
           {/* Encabezado */}
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-accent-600">
-              Así de fácil
+              {t('eyebrow')}
             </p>
 
             <h2 className="mt-2 font-display text-3xl font-bold tracking-tight text-primary-950 sm:text-[34px]">
-              ¿Cómo funciona?
+              {t('title')}
             </h2>
 
             <p className="mt-3 max-w-sm text-sm leading-6 text-slate-500">
-              Consulta, conoce y agenda en solo 3 pasos.
+              {t('description')}
             </p>
           </div>
 
@@ -122,11 +121,11 @@ export default function HowItWorks() {
                     </div>
 
                     <h3 className="font-display text-sm font-bold text-primary-950">
-                      {step.title}
+                      {t(`steps.${step.key}.title`)}
                     </h3>
 
                     <p className="mt-1.5 max-w-[200px] text-xs leading-5 text-slate-500">
-                      {step.description}
+                      {t(`steps.${step.key}.description`)}
                     </p>
                   </div>
                 </div>

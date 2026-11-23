@@ -1,4 +1,7 @@
 
+'use client';
+
+import { useTranslations } from 'next-intl';
 import { ChevronDown, SlidersHorizontal } from 'lucide-react';
 
 type StudiesFiltersProps = {
@@ -12,6 +15,8 @@ export default function StudiesFilters({
   activeCategory,
   onChange,
 }: StudiesFiltersProps) {
+  const t = useTranslations('StudiesFilters');
+
   if (categories.length === 0) {
     return null;
   }
@@ -27,11 +32,11 @@ export default function StudiesFilters({
             htmlFor="studies-category-filter"
             className="text-sm font-bold text-primary-950"
           >
-            Categorías
+            {t('categories')}
           </label>
 
           <span className="text-xs text-slate-500">
-            Filtra los estudios
+            {t('filterStudies')}
           </span>
         </div>
 
@@ -57,7 +62,7 @@ export default function StudiesFilters({
             "
           >
             <option value="all">
-              Todas las categorías
+              {t('allCategories')}
             </option>
 
             {categories.map((category) => (
@@ -93,7 +98,7 @@ export default function StudiesFilters({
             }
           `}
         >
-          Todos
+          {t('all')}
         </button>
 
         {categories.map((category) => {

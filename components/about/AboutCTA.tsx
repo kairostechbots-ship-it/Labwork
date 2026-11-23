@@ -1,5 +1,6 @@
 
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 import {
   ArrowRight,
@@ -7,7 +8,9 @@ import {
   FlaskConical,
 } from "lucide-react";
 
-export default function AboutCTA() {
+export default async function AboutCTA() {
+  const t = await getTranslations("AboutCTA");
+
   return (
     <section className="bg-white px-4 pb-16 pt-8 sm:px-6 lg:px-8 lg:pb-24">
       <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[28px] bg-primary-900 px-6 py-10 shadow-[0_20px_50px_rgba(11,55,109,0.14)] sm:px-10 lg:px-12 lg:py-12">
@@ -39,13 +42,13 @@ export default function AboutCTA() {
           {/* TÍTULO */}
           <div>
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-accent-400">
-              Lab-Work Análisis Clínicos
+              {t("badge")}
             </p>
 
             <h2 className="font-display text-2xl font-bold leading-tight tracking-tight text-white sm:text-3xl">
-              Seguimos creciendo junto
+              {t("title")}
               <span className="block text-accent-400">
-                a nuestra comunidad
+                {t("highlight")}
               </span>
             </h2>
           </div>
@@ -53,9 +56,7 @@ export default function AboutCTA() {
           {/* DESCRIPCIÓN */}
           <div className="border-white/20 lg:border-l lg:pl-9">
             <p className="max-w-[420px] text-sm leading-7 text-primary-100">
-              Desde 2022 hemos crecido gracias a la confianza de
-              nuestros pacientes. Hoy seguimos trabajando para estar
-              más cerca de las familias de la Ribera de Chapala.
+              {t("description")}
             </p>
           </div>
 
@@ -67,7 +68,7 @@ export default function AboutCTA() {
             >
               <FlaskConical className="h-4 w-4" />
 
-              Explorar estudios
+              {t("exploreStudies")}
 
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
@@ -78,7 +79,7 @@ export default function AboutCTA() {
             >
               <CalendarDays className="h-4 w-4" />
 
-              Agendar cita
+              {t("bookAppointment")}
 
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>

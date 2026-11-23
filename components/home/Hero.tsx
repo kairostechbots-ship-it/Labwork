@@ -1,5 +1,7 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 
 import {
   ArrowRight,
@@ -7,7 +9,9 @@ import {
   MapPin,
 } from 'lucide-react';
 
-export default function Hero() {
+export default async function Hero() {
+  const t = await getTranslations('Hero');
+
   return (
     <section className="relative overflow-hidden bg-white">
       {/* Fondo decorativo izquierdo */}
@@ -80,7 +84,7 @@ export default function Hero() {
             "
           >
             <span className="h-2 w-2 rounded-full bg-accent-500" />
-            Laboratorio de análisis clínicos
+            {t('badge')}
           </div>
 
           {/* Título */}
@@ -97,10 +101,10 @@ export default function Hero() {
               lg:leading-[1.08]
             "
           >
-            Tu salud comienza con
+            {t('title')}
 
             <span className="block text-accent-500">
-              información clara
+              {t('highlight')}
             </span>
           </h1>
 
@@ -116,8 +120,7 @@ export default function Hero() {
               sm:leading-8
             "
           >
-            Consulta nuestros estudios, encuentra la sucursal más
-            conveniente para ti y agenda tu cita de manera sencilla.
+            {t('description')}
           </p>
 
           {/* Botones */}
@@ -146,7 +149,7 @@ export default function Hero() {
               "
             >
               <CalendarDays className="h-4 w-4" />
-              Agendar cita
+              {t('book')}
               <ArrowRight className="h-4 w-4" />
             </Link>
 
@@ -171,7 +174,7 @@ export default function Hero() {
                 hover:bg-primary-50
               "
             >
-              Explorar estudios
+              {t('explore')}
             </Link>
           </div>
 
@@ -193,7 +196,7 @@ export default function Hero() {
           >
             <MapPin className="h-4 w-4 text-accent-500" />
 
-            Encuentra tu sucursal más cercana
+            {t('findBranch')}
 
             <ArrowRight
               className="
@@ -384,7 +387,7 @@ export default function Hero() {
           >
             <Image
               src="/images/home/laboratorio-hero.jpg"
-              alt="Laboratorio de análisis clínicos"
+              alt={t('imageAlt')}
               fill
               priority
               sizes="430px"
@@ -435,11 +438,11 @@ export default function Hero() {
 
             <div>
               <p className="text-xs font-medium text-slate-500">
-                ¿Necesitas un estudio?
+                {t('cardQuestion')}
               </p>
 
               <p className="mt-0.5 text-sm font-bold text-primary-950">
-                Agenda tu cita en línea
+                {t('cardTitle')}
               </p>
             </div>
 

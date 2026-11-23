@@ -1,6 +1,9 @@
+
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import { useTranslations } from 'next-intl';
+
 import {
   ArrowRight,
   Eye,
@@ -18,6 +21,14 @@ type RegisterFormData = {
   confirmPassword: string;
 };
 
+type RegisterErrorKey =
+  | 'passwordMismatch'
+  | 'passwordTooShort'
+  | 'invalidBirthDate'
+  | 'registrationFailed'
+  | 'unexpectedResponse'
+  | 'unexpectedError';
+
 const initialForm: RegisterFormData = {
   name: '',
   email: '',
@@ -33,11 +44,39 @@ interface RegisterFormProps {
 const inputClass =
   'w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0b376d] focus:ring-4 focus:ring-blue-100';
 
+/* ============================================================
+   FECHA LOCAL EN FORMATO YYYY-MM-DD
+============================================================ */
+
+function getTodayLocalDate(): string {
+  const now = new Date();
+
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+/* ============================================================
+   FORMULARIO DE REGISTRO
+============================================================ */
+
 export function RegisterForm({ onSuccess }: RegisterFormProps) {
+  const t = useTranslations('RegisterForm');
+
   const [form, setForm] = useState(initialForm);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+
+  const [errorKey, setErrorKey] =
+    useState<RegisterErrorKey | null>(null);
+
+  const [serverError, setServerError] = useState('');
+
+  /* ============================================================
+     ACTUALIZAR CAMPOS
+  ============================================================ */
 
   function updateField(
     field: keyof RegisterFormData,
@@ -47,30 +86,44 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       ...previous,
       [field]: value,
     }));
-    setError('');
+
+    setErrorKey(null);
+    setServerError('');
   }
+
+  /* ============================================================
+     ENVIAR REGISTRO
+  ============================================================ */
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (loading) return;
 
-    setError('');
+    setErrorKey(null);
+    setServerError('');
 
     if (form.password !== form.confirmPassword) {
-      setError('Las contraseñas no coinciden.');
+      setErrorKey('passwordMismatch');
       return;
     }
 
     if (form.password.length < 12) {
-      setError('La contraseña debe tener al menos 12 caracteres.');
+      setErrorKey('passwordTooShort');
       return;
     }
 
-    const today = new Date().toLocaleDateString('en-CA');
+    const today = getTodayLocalDate();
 
-    if (!form.birthDate || form.birthDate > today) {
-      setError('Selecciona una fecha de nacimiento válida.');
+    if (
+      !form.birthDate ||
+      !/^\d{4}-\d{2}-\d{2}$/.test(form.birthDate) ||
+      form.birthDate > today ||
+      Number.isNaN(
+        new Date(`${form.birthDate}T12:00:00`).getTime()
+      )
+    ) {
+      setErrorKey('invalidBirthDate');
       return;
     }
 
@@ -90,48 +143,59 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         }),
       });
 
-      const contentType = response.headers.get('content-type') || '';
+      const contentType =
+        response.headers.get('content-type') || '';
 
-if (!contentType.includes('application/json')) {
-  console.error('Respuesta inesperada del servidor:', {
-    status: response.status,
-    url: response.url,
-    contentType,
-  });
+      if (!contentType.includes('application/json')) {
+        console.error('Unexpected server response:', {
+          status: response.status,
+          url: response.url,
+          contentType,
+        });
 
-  throw new Error(
-    `El servidor devolvió una respuesta inesperada (${response.status}). Revisa la terminal de Next.js.`,
-  );
-}
+        setErrorKey('unexpectedResponse');
+        return;
+      }
 
-const result = await response.json();
+      const result = await response.json();
 
-if (!response.ok) {
-  throw new Error(
-    result.error || 'No fue posible crear tu cuenta.',
-  );
-}
+      if (!response.ok) {
+        // El backend puede devolver errores en español.
+        // No los mostramos directamente para mantener la interfaz bilingüe.
+        console.error('Patient registration failed:', {
+          status: response.status,
+          error: result?.error,
+        });
+
+        setErrorKey('registrationFailed');
+        return;
+      }
 
       onSuccess();
     } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : 'Ocurrió un error inesperado.',
-      );
+      console.error('Patient registration error:', error);
+
+      setErrorKey('unexpectedError');
     } finally {
       setLoading(false);
     }
   }
 
+  const displayedError = errorKey
+    ? t(`errors.${errorKey}`)
+    : serverError;
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+
+      {/* NOMBRE COMPLETO */}
+
       <div>
         <label
           htmlFor="register-name"
           className="mb-1.5 block text-sm font-medium text-slate-700"
         >
-          Nombre completo
+          {t('nameLabel')}
         </label>
 
         <div className="relative">
@@ -148,19 +212,23 @@ if (!response.ok) {
             minLength={2}
             maxLength={160}
             value={form.name}
-            onChange={(e) => updateField('name', e.target.value)}
-            placeholder="Nombre y apellidos"
+            onChange={(e) =>
+              updateField('name', e.target.value)
+            }
+            placeholder={t('namePlaceholder')}
             className={`${inputClass} pl-11`}
           />
         </div>
       </div>
+
+      {/* CORREO ELECTRÓNICO */}
 
       <div>
         <label
           htmlFor="register-email"
           className="mb-1.5 block text-sm font-medium text-slate-700"
         >
-          Correo electrónico
+          {t('emailLabel')}
         </label>
 
         <div className="relative">
@@ -176,38 +244,46 @@ if (!response.ok) {
             required
             maxLength={254}
             value={form.email}
-            onChange={(e) => updateField('email', e.target.value)}
-            placeholder="correo@ejemplo.com"
+            onChange={(e) =>
+              updateField('email', e.target.value)
+            }
+            placeholder={t('emailPlaceholder')}
             className={`${inputClass} pl-11`}
           />
         </div>
       </div>
+
+      {/* FECHA DE NACIMIENTO */}
 
       <div>
         <label
           htmlFor="register-birthdate"
           className="mb-1.5 block text-sm font-medium text-slate-700"
         >
-          Fecha de nacimiento
+          {t('birthDateLabel')}
         </label>
 
         <input
           id="register-birthdate"
           type="date"
           required
-          max={new Date().toISOString().slice(0, 10)}
+          max={getTodayLocalDate()}
           value={form.birthDate}
-          onChange={(e) => updateField('birthDate', e.target.value)}
+          onChange={(e) =>
+            updateField('birthDate', e.target.value)
+          }
           className={inputClass}
         />
       </div>
+
+      {/* CONTRASEÑA */}
 
       <div>
         <label
           htmlFor="register-password"
           className="mb-1.5 block text-sm font-medium text-slate-700"
         >
-          Contraseña
+          {t('passwordLabel')}
         </label>
 
         <div className="relative">
@@ -224,30 +300,42 @@ if (!response.ok) {
             minLength={12}
             maxLength={72}
             value={form.password}
-            onChange={(e) => updateField('password', e.target.value)}
-            placeholder="Mínimo 12 caracteres"
+            onChange={(e) =>
+              updateField('password', e.target.value)
+            }
+            placeholder={t('passwordPlaceholder')}
             className={`${inputClass} pl-11 pr-12`}
           />
 
           <button
             type="button"
-            onClick={() => setShowPassword((value) => !value)}
+            onClick={() =>
+              setShowPassword((value) => !value)
+            }
             aria-label={
-              showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
+              showPassword
+                ? t('hidePassword')
+                : t('showPassword')
             }
             className="absolute right-4 top-3.5 text-slate-400 transition hover:text-[#0b376d]"
           >
-            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            {showPassword ? (
+              <EyeOff size={18} />
+            ) : (
+              <Eye size={18} />
+            )}
           </button>
         </div>
       </div>
+
+      {/* CONFIRMAR CONTRASEÑA */}
 
       <div>
         <label
           htmlFor="register-confirm-password"
           className="mb-1.5 block text-sm font-medium text-slate-700"
         >
-          Confirmar contraseña
+          {t('confirmPasswordLabel')}
         </label>
 
         <input
@@ -261,26 +349,31 @@ if (!response.ok) {
           onChange={(e) =>
             updateField('confirmPassword', e.target.value)
           }
-          placeholder="Repite tu contraseña"
+          placeholder={t('confirmPasswordPlaceholder')}
           className={inputClass}
         />
       </div>
 
-      {error && (
+      {/* MENSAJE DE ERROR */}
+
+      {displayedError && (
         <div
           role="alert"
           className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
         >
-          {error}
+          {displayedError}
         </div>
       )}
+
+      {/* BOTÓN DE REGISTRO */}
 
       <button
         type="submit"
         disabled={loading}
         className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#7acb3b] px-5 py-3.5 text-sm font-semibold text-[#0b376d] transition hover:bg-[#6ab72f] disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {loading ? 'Creando cuenta...' : 'Crear mi cuenta'}
+        {loading ? t('creatingAccount') : t('createAccount')}
+
         {!loading && <ArrowRight size={18} />}
       </button>
     </form>

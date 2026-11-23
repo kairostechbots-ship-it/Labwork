@@ -1,3 +1,4 @@
+
 import {
   CalendarDays,
   FlaskConical,
@@ -5,30 +6,30 @@ import {
   Search,
 } from 'lucide-react';
 
+import { getTranslations } from 'next-intl/server';
+
 const benefits = [
   {
+    key: 'catalog',
     icon: FlaskConical,
-    title: 'Amplio catálogo',
-    description: 'Consulta los estudios disponibles',
   },
   {
+    key: 'information',
     icon: Search,
-    title: 'Información accesible',
-    description: 'Encuentra fácilmente lo que necesitas',
   },
   {
+    key: 'branches',
     icon: MapPin,
-    title: 'Varias sucursales',
-    description: 'Conoce nuestras ubicaciones',
   },
   {
+    key: 'booking',
     icon: CalendarDays,
-    title: 'Agenda en línea',
-    description: 'Programa tu cita fácilmente',
   },
-];
+] as const;
 
-export default function QuickBenefits() {
+export default async function QuickBenefits() {
+  const t = await getTranslations('QuickBenefits');
+
   return (
     <section className="border-y border-primary-100 bg-gradient-to-r from-primary-50/80 via-white to-primary-50/80">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -38,7 +39,7 @@ export default function QuickBenefits() {
 
             return (
               <div
-                key={benefit.title}
+                key={benefit.key}
                 className="relative flex items-center gap-4 px-3 py-6 sm:px-5 lg:px-7 lg:py-7"
               >
                 {/* Separador vertical */}
@@ -57,11 +58,11 @@ export default function QuickBenefits() {
                 {/* Información */}
                 <div className="min-w-0">
                   <h3 className="font-display text-sm font-bold text-primary-950">
-                    {benefit.title}
+                    {t(`${benefit.key}.title`)}
                   </h3>
 
                   <p className="mt-1 text-xs leading-5 text-slate-500">
-                    {benefit.description}
+                    {t(`${benefit.key}.description`)}
                   </p>
                 </div>
               </div>

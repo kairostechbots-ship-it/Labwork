@@ -3,6 +3,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+
 import {
   ArrowRight,
   Gift,
@@ -12,6 +14,8 @@ import {
 } from 'lucide-react';
 
 export default function LoyaltyCard() {
+  const t = useTranslations('LoyaltyCard');
+
   const sectionRef = useRef<HTMLElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -71,29 +75,28 @@ export default function LoyaltyCard() {
           >
             <span className="inline-flex items-center gap-2 rounded-full bg-lime-100 px-4 py-2 text-xs font-bold uppercase tracking-wider text-blue-900">
               <Gift className="h-4 w-4" />
-              Programa de lealtad
+              {t('badge')}
             </span>
 
             <h2
               id="loyalty-title"
               className="mt-6 text-3xl font-extrabold leading-tight text-blue-950 sm:text-4xl lg:text-5xl"
             >
-              Tu salud merece
+              {t('title')}
+
               <span className="block text-lime-600">
-                beneficios especiales.
+                {t('highlight')}
               </span>
             </h2>
 
             <p className="mt-5 max-w-xl text-base leading-8 text-slate-600">
-              En LabWork queremos reconocer tu compromiso
-              con el cuidado de tu salud. Con nuestra tarjeta
-              de lealtad, cada visita al laboratorio te acerca
-              a nuevos beneficios.
+              {t('description')}
             </p>
 
             {/* BENEFICIOS */}
             <div className="mt-8 space-y-5">
 
+              {/* BENEFICIO 1 */}
               <div className="group flex items-start gap-4">
                 <div className="rounded-xl bg-blue-100 p-3 text-blue-800 transition-transform duration-300 group-hover:scale-110">
                   <Heart className="h-5 w-5" />
@@ -101,15 +104,16 @@ export default function LoyaltyCard() {
 
                 <div>
                   <h3 className="font-bold text-blue-950">
-                    Cada visita cuenta
+                    {t('benefits.visits.title')}
                   </h3>
 
                   <p className="mt-1 text-sm leading-6 text-slate-600">
-                    Acumula sellos por tus visitas al laboratorio.
+                    {t('benefits.visits.description')}
                   </p>
                 </div>
               </div>
 
+              {/* BENEFICIO 2 */}
               <div className="group flex items-start gap-4">
                 <div className="rounded-xl bg-lime-100 p-3 text-lime-700 transition-transform duration-300 group-hover:scale-110">
                   <Gift className="h-5 w-5" />
@@ -117,17 +121,16 @@ export default function LoyaltyCard() {
 
                 <div>
                   <h3 className="font-bold text-blue-950">
-                    Recibe beneficios
+                    {t('benefits.rewards.title')}
                   </h3>
 
                   <p className="mt-1 text-sm leading-6 text-slate-600">
-                    Al completar tu tarjeta podrás recibir
-                    descuentos, regalos o estudios gratuitos,
-                    según tu historial.
+                    {t('benefits.rewards.description')}
                   </p>
                 </div>
               </div>
 
+              {/* BENEFICIO 3 */}
               <div className="group flex items-start gap-4">
                 <div className="rounded-xl bg-blue-100 p-3 text-blue-800 transition-transform duration-300 group-hover:scale-110">
                   <ShieldCheck className="h-5 w-5" />
@@ -135,12 +138,11 @@ export default function LoyaltyCard() {
 
                 <div>
                   <h3 className="font-bold text-blue-950">
-                    Sin fecha de vencimiento
+                    {t('benefits.expiration.title')}
                   </h3>
 
                   <p className="mt-1 text-sm leading-6 text-slate-600">
-                    Tu tarjeta no caduca. Cuando la completes,
-                    podrás comenzar una nueva.
+                    {t('benefits.expiration.description')}
                   </p>
                 </div>
               </div>
@@ -149,7 +151,7 @@ export default function LoyaltyCard() {
             {/* SOLICITAR TARJETA */}
             <div className="mt-10">
               <p className="mb-3 text-lg font-extrabold text-[#122a57]">
-                ¡Solicita tu tarjeta de lealtad en LabWork!
+                {t('requestTitle')}
               </p>
 
               <Link
@@ -159,14 +161,14 @@ export default function LoyaltyCard() {
                 <MapPin className="h-5 w-5 shrink-0" />
 
                 <span>
-                  Encuentra tu sucursal LabWork
+                  {t('findBranch')}
                 </span>
 
                 <ArrowRight className="h-4 w-4 shrink-0 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transform-none" />
               </Link>
 
               <p className="mt-3 text-sm text-slate-500">
-                Pídela directamente en el laboratorio.
+                {t('requestNote')}
               </p>
             </div>
           </div>
@@ -200,7 +202,7 @@ export default function LoyaltyCard() {
                     </p>
 
                     <h3 className="mt-2 text-2xl font-extrabold">
-                      Tarjeta de lealtad
+                      {t('card.title')}
                     </h3>
                   </div>
 
@@ -210,16 +212,16 @@ export default function LoyaltyCard() {
                 {/* Nombre ilustrativo */}
                 <div className="mt-8 rounded-xl bg-white/10 px-4 py-3">
                   <p className="text-xs text-blue-100">
-                    Nombre del paciente
+                    {t('card.patientName')}
                   </p>
 
                   <p className="mt-1 text-sm font-semibold">
-                    Tu nombre aquí
+                    {t('card.namePlaceholder')}
                   </p>
                 </div>
 
                 <p className="mt-8 text-center text-sm font-bold uppercase tracking-wide text-blue-100">
-                  Cada visita te acerca a tu meta
+                  {t('card.progress')}
                 </p>
 
                 {/* SELLOS */}
@@ -235,7 +237,7 @@ export default function LoyaltyCard() {
                     >
                       {index === 9 && (
                         <span className="text-[9px] font-extrabold sm:text-xs">
-                          META
+                          {t('card.goal')}
                         </span>
                       )}
                     </div>
@@ -245,21 +247,19 @@ export default function LoyaltyCard() {
                 {/* Beneficio */}
                 <div className="mt-8 rounded-xl bg-lime-300 px-4 py-4 text-center text-blue-950">
                   <p className="text-sm font-extrabold">
-                    ¡Completa tu tarjeta y descubre tus beneficios!
+                    {t('card.rewardMessage')}
                   </p>
                 </div>
 
                 <p className="mt-4 text-center text-xs leading-5 text-blue-100">
-                  Los beneficios se determinan de acuerdo con
-                  el historial de cada paciente.
+                  {t('card.disclaimer')}
                 </p>
               </div>
             </div>
 
             {/* Nota inferior */}
             <p className="mt-5 text-center text-xs text-slate-500">
-              Representación ilustrativa de la tarjeta física.
-              Solicítala directamente en el laboratorio.
+              {t('illustrationNote')}
             </p>
           </div>
 

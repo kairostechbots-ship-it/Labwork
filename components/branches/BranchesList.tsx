@@ -1,16 +1,20 @@
-'use client';
 
-import { useEffect, useState } from 'react';
+"use client";
 
-import BranchCard from './BranchCard';
-import BranchesEmpty from './BranchesEmpty';
+import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
+
+import BranchCard from "./BranchCard";
+import BranchesEmpty from "./BranchesEmpty";
 
 import type {
   Branch,
   BranchesResponse,
-} from '@/types/branch';
+} from "@/types/branch";
 
 export default function BranchesList() {
+  const t = useTranslations("BranchesList");
+
   const [branches, setBranches] = useState<Branch[]>([]);
   const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -26,11 +30,11 @@ export default function BranchesList() {
       try {
         setHasError(false);
 
-        const response = await fetch('/api/branches');
+        const response = await fetch("/api/branches");
 
         if (!response.ok) {
           throw new Error(
-            'No fue posible obtener las sucursales.'
+            "No fue posible obtener las sucursales."
           );
         }
 
@@ -44,7 +48,7 @@ export default function BranchesList() {
         setBranches(activeBranches);
       } catch (error) {
         console.error(
-          'Error al cargar sucursales:',
+          "Error al cargar sucursales:",
           error
         );
 
@@ -86,7 +90,7 @@ export default function BranchesList() {
     }
 
     const branchSlug = decodeURIComponent(
-      hash.replace('#', '')
+      hash.replace("#", "")
     );
 
     /*
@@ -102,8 +106,8 @@ export default function BranchesList() {
       }
 
       element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
+        behavior: "smooth",
+        block: "start",
       });
     }, 150);
 
@@ -115,10 +119,7 @@ export default function BranchesList() {
   return (
     <section className="bg-white py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* ================================================================
-            LOADING
-        ================================================================= */}
-
+        {/* LOADING */}
         {loading && (
           <div className="space-y-8">
             {[1, 2].map((item) => (
@@ -130,48 +131,37 @@ export default function BranchesList() {
           </div>
         )}
 
-        {/* ================================================================
-            ERROR
-        ================================================================= */}
-
+        {/* ERROR */}
         {!loading && hasError && (
           <div className="rounded-[28px] border border-red-100 bg-red-50 px-6 py-12 text-center">
             <h2 className="font-display text-xl font-bold text-slate-900">
-              No pudimos cargar las sucursales
+              {t("error.title")}
             </h2>
 
             <p className="mt-2 text-sm text-slate-600">
-              Intenta nuevamente en unos momentos.
+              {t("error.description")}
             </p>
           </div>
         )}
 
-        {/* ================================================================
-            VACÍO
-        ================================================================= */}
-
+        {/* VACÍO */}
         {!loading &&
           !hasError &&
           branches.length === 0 && (
             <BranchesEmpty />
           )}
 
-        {/* ================================================================
-            RESULTADOS
-        ================================================================= */}
-
+        {/* RESULTADOS */}
         {!loading &&
           !hasError &&
           branches.length > 0 && (
             <>
               {/* CONTADOR */}
-
               <div className="mb-8 flex items-center justify-between">
                 <p className="text-sm font-medium text-slate-500">
-                  {branches.length}{' '}
-                  {branches.length === 1
-                    ? 'sucursal disponible'
-                    : 'sucursales disponibles'}
+                  {t("availableCount", {
+                    count: branches.length,
+                  })}
                 </p>
 
                 <div className="flex items-center gap-2">
@@ -181,7 +171,6 @@ export default function BranchesList() {
               </div>
 
               {/* SUCURSALES */}
-
               <div className="space-y-8">
                 {branches.map((branch) => (
                   <BranchCard

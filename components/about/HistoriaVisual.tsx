@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import {
   BarChart3,
@@ -120,6 +121,7 @@ function StatCard({
 ============================================================ */
 
 export default function HistoriaVisual() {
+  const t = useTranslations("HistoriaVisual");
   const wrapRef = useRef<HTMLDivElement>(null);
 
   const [scale, setScale] = useState(1);
@@ -554,7 +556,7 @@ export default function HistoriaVisual() {
               text-primary-950
             "
           >
-            Crecemos cerca de ti
+            {t("center.title")}
           </h3>
 
           {/* TEXTO */}
@@ -568,8 +570,7 @@ export default function HistoriaVisual() {
               text-slate-500
             "
           >
-            Gracias a la confianza de nuestros pacientes, seguimos
-            creciendo en la Ribera de Chapala.
+            {t("center.description")}
           </p>
 
           {/* DETALLE VERDE */}
@@ -590,8 +591,8 @@ export default function HistoriaVisual() {
 
         <StatCard
           icon={CalendarDays}
-          label="Nuestro inicio"
-          value="Desde 2022"
+          label={t("cards.start.label")}
+          value={t("cards.start.value")}
           tone="blue"
           className="
             left-[54px]
@@ -607,8 +608,8 @@ export default function HistoriaVisual() {
 
         <StatCard
           icon={MapPin}
-          label="Presencia"
-          value="4 sucursales"
+          label={t("cards.branches.label")}
+          value={t("cards.branches.value")}
           tone="green"
           className="
             left-[528px]
@@ -624,8 +625,8 @@ export default function HistoriaVisual() {
 
         <StatCard
           icon={Users}
-          label="Comunidad"
-          value="Ribera de Chapala"
+          label={t("cards.community.label")}
+          value={t("cards.community.value")}
           tone="blue"
           className="
             left-[42px]
@@ -641,8 +642,8 @@ export default function HistoriaVisual() {
 
         <StatCard
           icon={BarChart3}
-          label="Seguimos creciendo"
-          value="Más cerca de nuestra comunidad"
+          label={t("cards.growth.label")}
+          value={t("cards.growth.value")}
           tone="green"
           className="
             left-[510px]

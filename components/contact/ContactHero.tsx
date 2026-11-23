@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 
 import {
   ArrowRight,
@@ -10,7 +11,9 @@ import {
   Phone,
 } from 'lucide-react';
 
-export default function ContactHero() {
+export default async function ContactHero() {
+  const t = await getTranslations('ContactHero');
+
   return (
     <section className="relative overflow-hidden bg-white">
       {/* =====================================================
@@ -76,7 +79,7 @@ export default function ContactHero() {
               text-accent-600
             "
           >
-            Contacto
+            {t('badge')}
           </p>
 
           <h1
@@ -93,9 +96,9 @@ export default function ContactHero() {
               lg:leading-[1.05]
             "
           >
-            ¿En qué podemos
+            {t('title')}
             <span className="block text-accent-500">
-              ayudarte?
+              {t('highlight')}
             </span>
           </h1>
 
@@ -110,9 +113,7 @@ export default function ContactHero() {
               sm:leading-8
             "
           >
-            Si tienes dudas sobre estudios, citas,
-            sucursales o cualquier otro tema, estamos
-            para orientarte.
+            {t('description')}
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -140,7 +141,7 @@ export default function ContactHero() {
             >
               <CalendarDays className="h-4 w-4" />
 
-              Agendar cita
+              {t('bookAppointment')}
 
               <ArrowRight
                 className="
@@ -177,7 +178,7 @@ export default function ContactHero() {
             >
               <MapPin className="h-4 w-4 text-primary-700" />
 
-              Ver sucursales
+              {t('viewBranches')}
 
               <ArrowRight
                 className="

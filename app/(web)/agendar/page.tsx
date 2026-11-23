@@ -1,11 +1,25 @@
 
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
+
 import AppointmentWizard from '@/components/appointments/AppointmentWizard';
 
-export const metadata = {
-  title: 'Agendar cita | LabWork',
-  description:
-    'Agenda tu cita para estudios de laboratorio en una sucursal de LabWork.',
-};
+/* ============================================================
+   METADATOS DINÁMICOS SEGÚN IDIOMA
+============================================================ */
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('AppointmentMetadata');
+
+  return {
+    title: t('title'),
+    description: t('description'),
+  };
+}
+
+/* ============================================================
+   PÁGINA DE AGENDAMIENTO
+============================================================ */
 
 export default function AgendarPage() {
   return <AppointmentWizard />;

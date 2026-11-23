@@ -1,4 +1,6 @@
+
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 
 import {
   ArrowRight,
@@ -10,32 +12,26 @@ import {
 
 const benefits = [
   {
+    key: 'clearInformation',
     icon: ShieldCheck,
-    title: 'Información clara',
-    description:
-      'Consulta precios, preparación y datos importantes antes de acudir.',
   },
   {
+    key: 'easyAccess',
     icon: Clock3,
-    title: 'Consulta sencilla',
-    description:
-      'Encuentra estudios, paquetes y detalles de forma rápida.',
   },
   {
+    key: 'personalAttention',
     icon: HeartHandshake,
-    title: 'Atención cercana',
-    description:
-      'Encuentra una sucursal que se adapte a tus necesidades.',
   },
   {
+    key: 'onlineBooking',
     icon: CalendarCheck2,
-    title: 'Agenda en línea',
-    description:
-      'Programa tu cita de manera sencilla desde nuestro sitio.',
   },
-];
+] as const;
 
-export default function AboutPreview() {
+export default async function AboutPreview() {
+  const t = await getTranslations('AboutPreview');
+
   return (
     <section className="relative overflow-hidden bg-primary-50/50 py-16 sm:py-20">
       {/* Decoración */}
@@ -91,7 +87,7 @@ export default function AboutPreview() {
                 text-accent-600
               "
             >
-              Conoce Lab-Work
+              {t('eyebrow')}
             </p>
 
             <h2
@@ -108,10 +104,11 @@ export default function AboutPreview() {
                 lg:leading-[1.12]
               "
             >
-              Una experiencia pensada para hacer
+              {t('title')}
+
               <span className="text-accent-500">
                 {' '}
-                todo más sencillo
+                {t('highlight')}
               </span>
             </h2>
           </div>
@@ -125,9 +122,7 @@ export default function AboutPreview() {
                 text-slate-600
               "
             >
-              En Lab-Work puedes consultar la información de tus estudios,
-              conocer nuestras sucursales y organizar tu visita desde un solo
-              lugar.
+              {t('description')}
             </p>
 
             <Link
@@ -145,7 +140,7 @@ export default function AboutPreview() {
                 hover:text-accent-600
               "
             >
-              Conoce más sobre Lab-Work
+              {t('learnMore')}
 
               <ArrowRight
                 className="
@@ -173,9 +168,9 @@ export default function AboutPreview() {
             lg:grid-cols-4
           "
         >
-          {benefits.map(({ icon: Icon, title, description }) => (
+          {benefits.map(({ key, icon: Icon }) => (
             <article
-              key={title}
+              key={key}
               className="
                 group
                 rounded-[22px]
@@ -223,7 +218,7 @@ export default function AboutPreview() {
                   text-primary-950
                 "
               >
-                {title}
+                {t(`benefits.${key}.title`)}
               </h3>
 
               <p
@@ -234,7 +229,7 @@ export default function AboutPreview() {
                   text-slate-500
                 "
               >
-                {description}
+                {t(`benefits.${key}.description`)}
               </p>
             </article>
           ))}

@@ -1,7 +1,9 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useLocale, useTranslations } from 'next-intl';
 
 import {
   ArrowRight,
@@ -14,15 +16,22 @@ import type {
 } from '@/types/study';
 
 export default function FeaturedPackages() {
+  const t = useTranslations('FeaturedPackages');
+  const locale = useLocale();
+
   const [packages, setPackages] = useState<StudyPackage[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const loadPackages = async () => {
       try {
         setLoading(true);
 
-        const response = await fetch('/api/packages');
+        const response = await fetch('/api/packages', {
+          signal: controller.signal,
+        });
 
         if (!response.ok) {
           throw new Error(
@@ -44,6 +53,13 @@ export default function FeaturedPackages() {
          */
         setPackages(activePackages.slice(0, 3));
       } catch (error) {
+        if (
+          error instanceof Error &&
+          error.name === 'AbortError'
+        ) {
+          return;
+        }
+
         console.error(
           'Error al cargar paquetes en inicio:',
           error
@@ -51,11 +67,17 @@ export default function FeaturedPackages() {
 
         setPackages([]);
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
-    loadPackages();
+    void loadPackages();
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   if (!loading && packages.length === 0) {
@@ -83,26 +105,25 @@ export default function FeaturedPackages() {
 
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-accent-700">
-              Paquetes
+              {t('eyebrow')}
             </p>
 
             <h2 className="mt-2 max-w-sm font-display text-3xl font-bold leading-tight tracking-tight text-primary-950 sm:text-[34px]">
-              Conoce nuestros{' '}
+              {t('title')}{' '}
               <span className="text-accent-500">
-                paquetes
+                {t('highlight')}
               </span>
             </h2>
 
             <p className="mt-3 max-w-sm text-sm leading-6 text-slate-500 sm:text-base">
-              Consulta las opciones disponibles y encuentra
-              la que mejor se adapte a lo que necesitas.
+              {t('description')}
             </p>
 
             <Link
               href="/estudios"
               className="group mt-6 inline-flex items-center gap-2 text-sm font-bold text-primary-800 transition-colors hover:text-accent-600"
             >
-              Ver todos los paquetes
+              {t('viewAll')}
 
               <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
@@ -133,14 +154,18 @@ export default function FeaturedPackages() {
                 const numericPrice = Number(item.price);
 
                 const formattedPrice =
-                  item.price &&
-                  !Number.isNaN(numericPrice)
-                    ? new Intl.NumberFormat('es-MX', {
-                        style: 'currency',
-                        currency: 'MXN',
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 0,
-                      }).format(numericPrice)
+                  item.price != null &&
+                  item.price !== '' &&
+                  Number.isFinite(numericPrice)
+                    ? new Intl.NumberFormat(
+                        locale === 'en' ? 'en-MX' : 'es-MX',
+                        {
+                          style: 'currency',
+                          currency: 'MXN',
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 0,
+                        }
+                      ).format(numericPrice)
                     : null;
 
                 return (
@@ -162,7 +187,7 @@ export default function FeaturedPackages() {
                       </div>
 
                       <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-accent-700">
-                        Paquete
+                        {t('packageLabel')}
                       </span>
                     </div>
 
@@ -182,7 +207,7 @@ export default function FeaturedPackages() {
                     <div className="relative mt-auto flex items-end justify-between gap-3 border-t border-accent-100 pt-4">
                       <div>
                         <p className="text-[10px] font-medium text-slate-400">
-                          Precio público
+                          {t('publicPrice')}
                         </p>
 
                         {formattedPrice ? (
@@ -191,13 +216,13 @@ export default function FeaturedPackages() {
                           </p>
                         ) : (
                           <p className="mt-1 text-xs font-bold text-primary-800">
-                            Consultar precio
+                            {t('askPrice')}
                           </p>
                         )}
                       </div>
 
                       <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-accent-50 px-3 py-2 text-xs font-bold text-accent-800 transition-all group-hover:bg-accent-600 group-hover:text-white">
-                        Ver paquete
+                        {t('viewPackage')}
 
                         <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1" />
                       </span>

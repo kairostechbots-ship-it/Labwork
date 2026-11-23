@@ -1,6 +1,10 @@
-import { MapPin } from 'lucide-react';
 
-export default function BranchesHero() {
+import { getTranslations } from "next-intl/server";
+import { MapPin } from "lucide-react";
+
+export default async function BranchesHero() {
+  const t = await getTranslations("BranchesHero");
+
   return (
     <section className="relative overflow-hidden border-b border-primary-100 bg-primary-50/40 py-16 sm:py-20">
       <div
@@ -16,16 +20,16 @@ export default function BranchesHero() {
       <div className="relative mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
         <div className="inline-flex items-center gap-2 rounded-full border border-primary-100 bg-white px-4 py-2 text-sm font-semibold text-primary-700 shadow-sm">
           <MapPin className="h-4 w-4 text-accent-500" />
-          Nuestras sucursales
+          {t("badge")}
         </div>
 
         <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-bold tracking-tight text-primary-950 sm:text-5xl">
-          Encuentra tu sucursal
+          {t("title")}
           <span className="text-accent-500"> Lab-Work</span>
         </h1>
 
         <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-          Consulta nuestras ubicaciones y horarios de atención.
+          {t("description")}
         </p>
       </div>
     </section>

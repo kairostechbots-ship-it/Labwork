@@ -1,3 +1,8 @@
+
+'use client';
+
+import { useTranslations } from 'next-intl';
+
 import {
   FlaskConical,
   Search,
@@ -12,6 +17,8 @@ export default function StudiesHero({
   search,
   onSearchChange,
 }: StudiesHeroProps) {
+  const t = useTranslations('StudiesHero');
+
   return (
     <section className="relative overflow-hidden bg-primary-900">
       {/* Círculo decorativo derecho */}
@@ -53,21 +60,21 @@ export default function StudiesHero({
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-primary-100">
             <FlaskConical className="h-4 w-4 text-accent-400" />
 
-            Estudios y paquetes
+            {t('badge')}
           </div>
 
           {/* Título */}
           <h1 className="mt-5 font-display text-4xl font-bold tracking-tight text-white sm:text-5xl">
-            Encuentra el estudio{' '}
+            {t('title')}{' '}
+
             <span className="text-accent-400">
-              que necesitas
+              {t('highlight')}
             </span>
           </h1>
 
           {/* Descripción */}
           <p className="mt-3 max-w-2xl text-base leading-7 text-primary-100/80 sm:text-lg">
-            Consulta nuestro catálogo de estudios disponibles
-            en Lab-Work.
+            {t('description')}
           </p>
 
           {/* BUSCADOR */}
@@ -80,8 +87,8 @@ export default function StudiesHero({
               onChange={(event) =>
                 onSearchChange(event.target.value)
               }
-              placeholder="Buscar estudio, análisis o perfil..."
-              aria-label="Buscar estudio"
+              placeholder={t('searchPlaceholder')}
+              aria-label={t('searchAriaLabel')}
               className="
                 h-[62px]
                 w-full

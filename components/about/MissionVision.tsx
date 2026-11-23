@@ -1,18 +1,21 @@
 
+import { getTranslations } from "next-intl/server";
 import { Eye, Target } from "lucide-react";
 
-export default function MissionVision() {
+export default async function MissionVision() {
+  const t = await getTranslations("MissionVision");
+
   return (
     <section className="bg-white py-14 lg:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* ENCABEZADO */}
         <div className="mb-9 text-center">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent-600">
-            Lo que guía nuestro trabajo
+            {t("badge")}
           </p>
 
           <h2 className="mt-2 font-display text-3xl font-bold tracking-tight text-primary-950 sm:text-4xl">
-            Misión y visión
+            {t("title")}
           </h2>
         </div>
 
@@ -26,13 +29,11 @@ export default function MissionVision() {
 
             <div>
               <h3 className="font-display text-lg font-bold text-primary-950">
-                Misión
+                {t("mission.title")}
               </h3>
 
               <p className="mt-1 text-sm leading-6 text-slate-600">
-                Acercar servicios de análisis clínicos a las familias de
-                la Ribera de Chapala, ofreciendo una atención cercana,
-                respetuosa y comprometida con cada paciente.
+                {t("mission.description")}
               </p>
             </div>
           </article>
@@ -45,13 +46,11 @@ export default function MissionVision() {
 
             <div>
               <h3 className="font-display text-lg font-bold text-primary-950">
-                Visión
+                {t("vision.title")}
               </h3>
 
               <p className="mt-1 text-sm leading-6 text-slate-600">
-                Continuar creciendo junto a nuestra comunidad,
-                ampliando nuestra presencia y facilitando el acceso
-                a servicios de análisis clínicos para más personas.
+                {t("vision.description")}
               </p>
             </div>
           </article>

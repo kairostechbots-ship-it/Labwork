@@ -3,20 +3,28 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import AuthProvider from '@/components/providers/AuthProvider';
 
-export default function WebLayout({
+import {NextIntlClientProvider} from 'next-intl';
+import {getLocale, getMessages} from 'next-intl/server';
+
+export default async function WebLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <AuthProvider>
-      <Header />
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      <AuthProvider>
+        <Header />
 
-      <main>
-        {children}
-      </main>
+        <main>
+          {children}
+        </main>
 
-      <Footer />
-    </AuthProvider>
+        <Footer />
+      </AuthProvider>
+    </NextIntlClientProvider>
   );
 }

@@ -1,4 +1,6 @@
+
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 
 import {
   ArrowRight,
@@ -8,7 +10,9 @@ import {
 
 import HistoriaVisual from '@/components/about/HistoriaVisual';
 
-export default function AboutHero() {
+export default async function AboutHero() {
+  const t = await getTranslations('AboutHero');
+
   return (
     <section
       className="
@@ -65,7 +69,7 @@ export default function AboutHero() {
           >
             <span className="h-2 w-2 rounded-full bg-accent-500" />
 
-            Nosotros
+            {t('badge')}
           </div>
 
           {/* TÍTULO */}
@@ -84,10 +88,10 @@ export default function AboutHero() {
               lg:leading-[1.05]
             "
           >
-            Crecemos contigo,
+            {t('title')}
 
             <span className="block text-accent-500">
-              cuidando lo que importa
+              {t('highlight')}
             </span>
           </h1>
 
@@ -103,9 +107,7 @@ export default function AboutHero() {
               sm:text-[17px]
             "
           >
-            Desde 2022 trabajamos para acercar servicios de análisis
-            clínicos a las familias de la Ribera de Chapala, creciendo
-            junto a nuestra comunidad.
+            {t('description')}
           </p>
 
           {/* BOTONES */}
@@ -143,7 +145,7 @@ export default function AboutHero() {
             >
               <CalendarDays className="h-4 w-4" />
 
-              Agendar cita
+              {t('bookAppointment')}
 
               <ArrowRight
                 className="
@@ -179,7 +181,7 @@ export default function AboutHero() {
             >
               <MapPin className="h-4 w-4" />
 
-              Conocer sucursales
+              {t('viewBranches')}
 
               <ArrowRight
                 className="

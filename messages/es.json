@@ -1,0 +1,975 @@
+
+{
+  "Header": {
+    "home": "Inicio",
+    "studies": "Estudios",
+    "branches": "Sucursales",
+    "about": "Nosotros",
+    "contact": "Contacto",
+    "book": "Agendar cita",
+    "login": "Iniciar sesión",
+    "account": "Mi cuenta",
+    "language": "Idioma"
+  },
+  "Hero": {
+    "badge": "Laboratorio de análisis clínicos",
+    "title": "Tu salud comienza con",
+    "highlight": "información clara",
+    "description": "Consulta nuestros estudios, encuentra la sucursal más conveniente para ti y agenda tu cita de manera sencilla.",
+    "book": "Agendar cita",
+    "explore": "Explorar estudios",
+    "findBranch": "Encuentra tu sucursal más cercana",
+    "cardQuestion": "¿Necesitas un estudio?",
+    "cardTitle": "Agenda tu cita en línea",
+    "imageAlt": "Laboratorio de análisis clínicos"
+  },
+
+"QuickBenefits": {
+  "catalog": {
+    "title": "Amplio catálogo",
+    "description": "Consulta los estudios disponibles"
+  },
+  "information": {
+    "title": "Información accesible",
+    "description": "Encuentra fácilmente lo que necesitas"
+  },
+  "branches": {
+    "title": "Varias sucursales",
+    "description": "Conoce nuestras ubicaciones"
+  },
+  "booking": {
+    "title": "Agenda en línea",
+    "description": "Programa tu cita fácilmente"
+  }
+
+},
+
+"FeaturedStudies": {
+  "eyebrow": "Estudios",
+  "title": "Explora algunos de nuestros",
+  "highlight": "estudios",
+  "description": "Consulta precios y encuentra el análisis que necesitas dentro de nuestro catálogo.",
+  "viewAll": "Ver todos los estudios",
+  "publicPrice": "Precio público",
+  "askPrice": "Consultar precio",
+  "details": "Ver detalles"
+},
+
+"FeaturedPackages": {
+  "eyebrow": "Paquetes",
+  "title": "Conoce nuestros",
+  "highlight": "paquetes",
+  "description": "Consulta las opciones disponibles y encuentra la que mejor se adapte a lo que necesitas.",
+  "viewAll": "Ver todos los paquetes",
+  "packageLabel": "Paquete",
+  "publicPrice": "Precio público",
+  "askPrice": "Consultar precio",
+  "viewPackage": "Ver paquete"
+},
+
+"AboutPreview": {
+  "eyebrow": "Conoce Lab-Work",
+  "title": "Una experiencia pensada para hacer",
+  "highlight": "todo más sencillo",
+  "description": "En Lab-Work puedes consultar la información de tus estudios, conocer nuestras sucursales y organizar tu visita desde un solo lugar.",
+  "learnMore": "Conoce más sobre Lab-Work",
+  "benefits": {
+    "clearInformation": {
+      "title": "Información clara",
+      "description": "Consulta precios, preparación y datos importantes antes de acudir."
+    },
+    "easyAccess": {
+      "title": "Consulta sencilla",
+      "description": "Encuentra estudios, paquetes y detalles de forma rápida."
+    },
+    "personalAttention": {
+      "title": "Atención cercana",
+      "description": "Encuentra una sucursal que se adapte a tus necesidades."
+    },
+    "onlineBooking": {
+      "title": "Agenda en línea",
+      "description": "Programa tu cita de manera sencilla desde nuestro sitio."
+    }
+  }
+},
+
+"HowItWorks": {
+  "eyebrow": "Así de fácil",
+  "title": "¿Cómo funciona?",
+  "description": "Consulta, conoce y agenda en solo 3 pasos.",
+  "steps": {
+    "search": {
+      "title": "Busca tu estudio",
+      "description": "Encuentra el análisis o paquete que necesitas."
+    },
+    "information": {
+      "title": "Consulta la información",
+      "description": "Revisa el precio y los detalles disponibles."
+    },
+    "booking": {
+      "title": "Agenda tu cita",
+      "description": "Elige tu sucursal y programa tu cita."
+    }
+  }
+},
+
+"BranchesPreview": {
+  "eyebrow": "Nuestras sucursales",
+  "title": "Encuentra la sucursal",
+  "highlight": "más conveniente",
+  "titleEnd": "para ti",
+  "description": "Consulta nuestras ubicaciones y elige la sucursal que mejor se adapte a ti.",
+  "viewAll": "Ver todas las sucursales",
+  "loadingMap": "Cargando mapa...",
+  "noBranches": "No hay sucursales disponibles",
+  "viewBranch": "Ver sucursal",
+  "showOnMap": "Mostrar {name} en el mapa"
+},
+
+"LoyaltyCard": {
+  "badge": "Programa de lealtad",
+  "title": "Tu salud merece",
+  "highlight": "beneficios especiales.",
+  "description": "En LabWork queremos reconocer tu compromiso con el cuidado de tu salud. Con nuestra tarjeta de lealtad, cada visita al laboratorio te acerca a nuevos beneficios.",
+  "benefits": {
+    "visits": {
+      "title": "Cada visita cuenta",
+      "description": "Acumula sellos por tus visitas al laboratorio."
+    },
+    "rewards": {
+      "title": "Recibe beneficios",
+      "description": "Al completar tu tarjeta podrás recibir descuentos, regalos o estudios gratuitos, según tu historial."
+    },
+    "expiration": {
+      "title": "Sin fecha de vencimiento",
+      "description": "Tu tarjeta no caduca. Cuando la completes, podrás comenzar una nueva."
+    }
+  },
+  "requestTitle": "¡Solicita tu tarjeta de lealtad en LabWork!",
+  "findBranch": "Encuentra tu sucursal LabWork",
+  "requestNote": "Pídela directamente en el laboratorio.",
+  "card": {
+    "title": "Tarjeta de lealtad",
+    "patientName": "Nombre del paciente",
+    "namePlaceholder": "Tu nombre aquí",
+    "progress": "Cada visita te acerca a tu meta",
+    "goal": "META",
+    "rewardMessage": "¡Completa tu tarjeta y descubre tus beneficios!",
+    "disclaimer": "Los beneficios se determinan de acuerdo con el historial de cada paciente."
+  },
+  "illustrationNote": "Representación ilustrativa de la tarjeta física. Solicítala directamente en el laboratorio."
+},
+
+"FinalCTA": {
+  "badge": "Estamos para ayudarte",
+  "title": "¿Listo para dar el siguiente paso?",
+  "description": "Agenda tu cita en línea o contáctanos si tienes dudas sobre nuestros estudios, sucursales o servicios.",
+  "links": {
+    "studies": "Consulta estudios",
+    "branches": "Encuentra tu sucursal",
+    "questions": "Resuelve tus dudas"
+  },
+  "book": "Agendar cita",
+  "contact": "Contactarnos",
+  "contactNote": "También puedes comunicarte con nosotros por WhatsApp o correo electrónico."
+},
+
+"Footer": {
+  "homeAriaLabel": "Ir al inicio de Lab-Work",
+  "description": "Consulta nuestros estudios, conoce nuestras sucursales y agenda tu cita con Lab-Work.",
+  "bookAppointment": "Agendar una cita",
+  "navigationTitle": "Navegación",
+  "navigationAriaLabel": "Navegación del pie de página",
+  "navigation": {
+    "home": "Inicio",
+    "studies": "Estudios",
+    "branches": "Sucursales",
+    "about": "Nosotros",
+    "contact": "Contacto"
+  },
+  "contactTitle": "Contacto",
+  "emailLabel": "Correo",
+  "callBranch": "Llamar a una sucursal",
+  "branchContactDescription": "Consulta teléfonos y ubicaciones",
+  "viewContactOptions": "Ver todas las opciones de contacto",
+  "rightsReserved": "Todos los derechos reservados.",
+  "privacyNotice": "Aviso de privacidad"
+},
+
+"Metadata": {
+  "title": "LabWork | Laboratorio de Análisis Clínicos",
+  "description": "Laboratorio de análisis clínicos. Consulta nuestros estudios, encuentra tu sucursal y agenda tu cita en línea."
+},
+
+"StudiesCatalog": {
+  "studiesTab": "Estudios",
+  "myQuotation": "Mi cotización",
+  "allStudies": "Todos los estudios",
+  "availablePackages": "Paquetes disponibles",
+  "results": "{count, plural, one {# resultado} other {# resultados}}",
+  "resultsFor": "Resultados para",
+  "error": {
+    "title": "No pudimos cargar el catálogo",
+    "description": "Intenta nuevamente en unos momentos."
+  }
+},
+
+"StudiesHero": {
+  "badge": "Estudios y paquetes",
+  "title": "Encuentra el estudio",
+  "highlight": "que necesitas",
+  "description": "Consulta nuestro catálogo de estudios disponibles en Lab-Work.",
+  "searchPlaceholder": "Buscar estudio, análisis o perfil...",
+  "searchAriaLabel": "Buscar estudio"
+},
+
+"StudiesTabs": {
+  "studies": "Estudios",
+  "packages": "Paquetes"
+},
+
+"StudiesFilters": {
+  "categories": "Categorías",
+  "filterStudies": "Filtra los estudios",
+  "allCategories": "Todas las categorías",
+  "all": "Todos"
+},
+
+"StudyCard": {
+  "publicPrice": "Precio público",
+  "askPrice": "Consultar precio",
+  "viewDetails": "Ver detalles",
+  "add": "Agregar",
+  "added": "Agregado",
+  "addAriaLabel": "Agregar {name} a la cotización",
+  "addedAriaLabel": "{name} agregado a la cotización"
+},
+
+"PackageCard": {
+  "packageLabel": "Paquete",
+  "publicPrice": "Precio público",
+  "askPrice": "Consultar precio",
+  "viewPackage": "Ver paquete",
+  "add": "Agregar",
+  "added": "Agregado",
+  "addAriaLabel": "Agregar {name} a la cotización",
+  "addedAriaLabel": "{name} agregado a la cotización"
+},
+
+"StudiesEmpty": {
+  "studies": {
+    "title": "No hay estudios disponibles",
+    "description": "Por el momento no hay estudios disponibles para mostrar."
+  },
+  "packages": {
+    "title": "No hay paquetes disponibles",
+    "description": "Por el momento no hay paquetes disponibles para mostrar."
+  },
+  "search": {
+    "title": "No encontramos resultados",
+    "description": "Intenta buscar con otro nombre o selecciona otra categoría."
+  }
+},
+
+"StudyDetailsDrawer": {
+  "closeDetails": "Cerrar detalles",
+  "close": "Cerrar",
+  "detailsOf": "Detalles de {name}",
+  "studies": "Estudios",
+  "publicPrice": "Precio público",
+  "askPrice": "Consultar precio",
+  "bookAppointment": "Agendar cita",
+  "information": "Información",
+  "preparation": "Preparación",
+  "noDescription": "La información detallada de este estudio estará disponible próximamente.",
+  "noPreparation": "Por el momento no hay indicaciones de preparación registradas para este estudio.",
+  "notice": "Si tienes dudas sobre el estudio o su preparación, puedes consultarlas al momento de agendar tu cita."
+},
+
+"PackageDetailsDrawer": {
+  "closeDetails": "Cerrar detalles del paquete",
+  "close": "Cerrar",
+  "packages": "Paquetes",
+  "packageLabel": "Paquete",
+  "publicPrice": "Precio público",
+  "askPrice": "Consultar precio",
+  "bookAppointment": "Agendar cita",
+  "packageDetails": "Detalles del paquete",
+  "noDescription": "La información detallada de este paquete estará disponible próximamente.",
+  "preparation": "Preparación",
+  "noPreparation": "Por el momento no hay indicaciones de preparación registradas para este paquete.",
+  "includedStudies": "Estudios incluidos",
+  "loadingStudies": "Cargando estudios incluidos",
+  "servicesError": "No fue posible consultar los estudios incluidos. Intenta abrir el paquete nuevamente.",
+  "noIncludedStudies": "Este paquete todavía no tiene estudios relacionados en el catálogo.",
+  "notice": "Si tienes dudas sobre este paquete o su preparación, puedes consultarlas al momento de agendar tu cita."
+},
+
+"QuotationDrawer": {
+  "title": "Mi cotización",
+  "selectedItems": "{count, plural, one {# elemento seleccionado} other {# elementos seleccionados}}",
+  "closeQuotation": "Cerrar cotización",
+  "close": "Cerrar",
+  "empty": "Todavía no has agregado estudios ni paquetes.",
+  "study": "Estudio",
+  "package": "Paquete",
+  "askPrice": "Precio por consultar",
+  "removeItem": "Quitar {name}",
+  "checkingPackages": "Revisando los estudios incluidos en tus paquetes…",
+  "duplicates": {
+    "title": "Posibles estudios repetidos",
+    "description": "Los siguientes estudios individuales también aparecen en los paquetes que seleccionaste:",
+    "includedIn": "incluido en {packages}.",
+    "notice": "Revisa tu selección. No eliminamos ni descontamos estudios automáticamente."
+  },
+  "verificationError": "{count, plural, one {No pudimos verificar el contenido de un paquete.} other {No pudimos verificar el contenido de algunos paquetes.}} Puede haber coincidencias que todavía no se hayan detectado.",
+  "clearQuotation": "Vaciar cotización",
+  "knownSubtotal": "Subtotal conocido",
+  "estimatedTotal": "Total estimado",
+  "missingPrices": "Hay elementos sin precio disponible. El total final no puede calcularse todavía.",
+  "disclaimer": "Precios de referencia sujetos a confirmación del laboratorio. Esta cotización no es una cita ni una reserva.",
+  "continueAppointment": "Continuar con mi cita"
+},
+
+"AppointmentMetadata": {
+  "title": "Agendar cita | LabWork",
+  "description": "Agenda tu cita para estudios de laboratorio en una sucursal de LabWork."
+},
+"AppointmentWizard": {
+    "patient": {
+      "note": "El nombre, correo y fecha de nacimiento están vinculados a tu cuenta. Para modificarlos, actualiza tu perfil.",
+      "description": "Estos datos provienen de tu cuenta. Confirma tu teléfono de contacto.",
+      "loading": "Cargando los datos de tu cuenta...",
+      "birthDate": "Fecha de nacimiento",
+      "back": "Regresar al horario",
+      "phone": "Número de teléfono",
+      "email": "Correo electrónico",
+      "fullName": "Nombre completo",
+      "account": "Ir a mi cuenta",
+      "title": "Tus datos",
+      "profileInvalid": "No se pudo validar tu cuenta. Revisa los datos de tu perfil.",
+      "phoneInvalid": "Ingresa un teléfono de 10 dígitos.",
+      "profileLoadError": "No fue posible cargar tu perfil.",
+      "profileIncomplete": "Los datos de tu cuenta están incompletos.",
+      "birthMissing": "Tu cuenta no tiene fecha de nacimiento. Actualízala en tu perfil antes de reservar.",
+      "namePlaceholder": "Nombre y apellidos",
+      "phonePlaceholder": "Ej. 3312345678",
+      "emailPlaceholder": "correo@ejemplo.com"
+    },
+    "receipt": {
+      "notice": "Conserva este comprobante para cualquier aclaración. No sustituye la confirmación del laboratorio.",
+      "title": "Comprobante de solicitud de cita",
+      "brand": "LabWork · Análisis Clínicos",
+      "branchPhone": "Teléfono de sucursal",
+      "notAvailable": "No disponible",
+      "location": "Ubicación:",
+      "address": "Dirección",
+      "homeMessage": "Solicitud de toma a domicilio pendiente de confirmación del laboratorio.",
+      "branchMessage": "El horario está reservado. La solicitud está pendiente de revisión por el laboratorio.",
+      "aria": "Comprobante de solicitud de cita"
+    },
+    "home": {
+      "mapHelp": "Si conoces tu ubicación, puedes compartir el enlace. La dirección escrita sigue siendo necesaria.",
+      "notice": "La fecha y el horario son solicitados; el laboratorio confirmará si puede realizar la visita.",
+      "title": "Dirección de la toma a domicilio",
+      "map": "Enlace de Google Maps (opcional)",
+      "address": "Dirección completa *",
+      "addressShort": "Ingresa una dirección completa.",
+      "mapInvalid": "Ingresa un enlace de ubicación válido.",
+      "addressPlaceholder": "Calle, número, colonia, municipio, referencias para llegar",
+      "mapLink": "Ver ubicación en Google Maps"
+    },
+    "quotation": {
+      "requiredText": "Para agendar una cita en LabWork necesitas agregar al menos un estudio o paquete a tu cotización.",
+      "requiredTitle": "Primero selecciona tus estudios",
+      "review": "Revisar cotización",
+      "explore": "Explorar estudios",
+      "invalid": "Algunos elementos ya no están disponibles. Revisa tu cotización antes de confirmar.",
+      "loadError": "No se pudo cargar la cotización.",
+      "validateError": "No pudimos validar los estudios y paquetes seleccionados.",
+      "invalidResponse": "El catálogo devolvió una respuesta inválida."
+    },
+    "hero": {
+      "description": "Elige dónde deseas realizar tus estudios.\n\n               Te guiaremos durante el proceso.",
+      "badge": "AGENDAMIENTO EN LÍNEA",
+      "title": "Agenda tu cita"
+    },
+    "sidebar": {
+      "empty": "No has seleccionado estudios ni paquetes. Debes agregar al menos uno para agendar.",
+      "missing": "El total no incluye los elementos sin precio.",
+      "description": "Resumen de tu selección",
+      "validating": "Validando cotización...",
+      "review": "Revisar mi cotización",
+      "dateTime": "Fecha y horario",
+      "patient": "Paciente",
+      "title": "Tu cita",
+      "notSelected": "Sin seleccionar",
+      "pending": "Pendiente de seleccionar"
+    },
+    "schedule": {
+      "noSlots": "No quedan horarios disponibles para esta fecha. Selecciona otro día.",
+      "closed": "No hay atención disponible para esta fecha. Selecciona otro día.",
+      "loading": "Consultando disponibilidad...",
+      "title": "Selecciona fecha y horario",
+      "available": "Horarios disponibles",
+      "changeAttention": "Cambiar atención",
+      "retry": "Reintentar",
+      "homeBranch": "Sucursal responsable",
+      "branchSelected": "Sucursal seleccionada",
+      "homeDate": "¿Qué día deseas la visita?",
+      "branchDate": "¿Qué día deseas acudir?",
+      "confirmation": "Sujeto a confirmación",
+      "oneSpot": "lugar",
+      "spots": "lugares",
+      "spotsCount": "{count, plural, one {# lugar} other {# lugares}}"
+    },
+    "review": {
+      "description": "Verifica que los datos sean correctos antes de enviarla.",
+      "noItems": "Sin estudios ni paquetes.",
+      "loading": "Registrando solicitud...",
+      "title": "Revisa tu solicitud",
+      "chooseAnother": "Elegir otro horario",
+      "confirm": "Confirmar solicitud",
+      "patientData": "Datos del paciente",
+      "edit": "Editar mis datos",
+      "homeTitle": "Toma a domicilio y horario solicitado",
+      "branchTitle": "Sucursal y horario",
+      "homeNotice": "Al enviar, se registrará tu solicitud de toma a domicilio. El horario está sujeto a confirmación del laboratorio.",
+      "branchNotice": "Al enviar, se registrará tu solicitud y se reservará el lugar seleccionado. El laboratorio revisará los detalles de atención."
+    },
+    "success": {
+      "keepFolio": "Conserva tu folio para cualquier aclaración.",
+      "title": "Recibimos tu solicitud de cita",
+      "map": "Ver ubicación en Google Maps",
+      "myAppointments": "Ver mis citas en mi cuenta",
+      "print": "Imprimir / Guardar PDF",
+      "badge": "Solicitud registrada",
+      "folio": "Folio:",
+      "homeMessage": "Recibimos tu solicitud a domicilio. El laboratorio revisará y confirmará la visita y el horario.",
+      "branchMessage": "Tu horario quedó reservado y la solicitud está pendiente de revisión por el laboratorio."
+    },
+    "branch": {
+      "none": "No hay sucursales disponibles.",
+      "later": "Intenta nuevamente más tarde.",
+      "select": "Selecciona tu sucursal",
+      "loading": "Cargando sucursales...",
+      "loadError": "No se pudieron cargar las sucursales.",
+      "invalidResponse": "El formato de sucursales no es válido.",
+      "genericError": "Ocurrió un error al cargar las sucursales."
+    },
+    "retry": "Intentar de nuevo",
+    "directions": "Cómo llegar",
+    "continue": "Continuar",
+    "call": "Llamar:",
+    "steps": {
+      "attention": "Atención",
+      "schedule": "Horario",
+      "patient": "Tus datos",
+      "summary": "Resumen"
+    },
+    "attention": {
+      "branchTitle": "En sucursal",
+      "branchDetail": "Acude al laboratorio",
+      "homeTitle": "A domicilio",
+      "homeDetail": "Solicita una visita a tu dirección",
+      "homeBranch": "Sucursal responsable de tu solicitud",
+      "branchLabel": "Selecciona tu sucursal",
+      "title": "¿Dónde deseas recibir atención?",
+      "description": "Elige atención presencial o una toma de muestra a domicilio."
+    },
+    "common": {
+      "branch": "Sucursal",
+      "responsibleBranch": "Sucursal responsable",
+      "visitAddress": "Dirección de visita",
+      "date": "Fecha",
+      "time": "Horario",
+      "patient": "Paciente",
+      "patientPhone": "Teléfono del paciente",
+      "email": "Correo",
+      "name": "Nombre",
+      "birth": "Nacimiento",
+      "phone": "Teléfono",
+      "folio": "Folio",
+      "testsPackages": "Estudios y paquetes",
+      "study": "Estudio",
+      "package": "Paquete",
+      "pricePending": "Precio por consultar",
+      "knownSubtotal": "Subtotal conocido",
+      "estimatedTotal": "Total estimado",
+      "branchColon": "Sucursal:",
+      "responsibleBranchColon": "Sucursal responsable:",
+      "visitAddressColon": "Dirección de visita:",
+      "dateColon": "Fecha:",
+      "timeColon": "Horario:",
+      "patientColon": "Paciente:",
+      "patientPhoneColon": "Teléfono del paciente:",
+      "emailColon": "Correo:",
+      "nameColon": "Nombre:",
+      "birthColon": "Nacimiento:",
+      "phoneColon": "Teléfono:",
+      "testPackagesColon": "Estudios y paquetes:"
+    },
+    "booking": {
+      "missingSelection": "Falta seleccionar una sucursal, fecha u horario.",
+      "homeAdvance": "La toma a domicilio debe solicitarse al menos con un día de anticipación.",
+      "homeAddress": "Ingresa una dirección completa para la toma a domicilio.",
+      "invalidProtocol": "El enlace de ubicación debe ser HTTP o HTTPS.",
+      "submitError": "No se pudo registrar la cita. Intenta nuevamente.",
+      "submitErrorShort": "No se pudo registrar la cita.",
+      "noId": "El servidor no devolvió el identificador de la cita. Verifica el registro antes de reintentar."
+    },
+    "availability": {
+      "loadError": "No se pudieron consultar los horarios.",
+      "invalidResponse": "La respuesta de disponibilidad no es válida.",
+      "genericError": "Error al consultar horarios."
+    },
+    "stepCount": "Paso {step} de 4"
+  },
+
+"LoginMetadata": {
+  "title": "Iniciar sesión | LabWork",
+  "description": "Accede a tu cuenta de paciente de LabWork."
+},
+
+"LoginView": {
+  "backToHome": "Volver al inicio",
+  "badge": "PORTAL DE PACIENTES",
+  "title": "Bienvenido de nuevo",
+  "description": "Inicia sesión para consultar tus citas y acceder a tu espacio personal.",
+  "noAccount": "¿Todavía no tienes cuenta?",
+  "createAccount": "Crear una cuenta",
+  "secureAccess": "Acceso seguro a tu cuenta de LabWork."
+},
+
+"LoginForm": {
+  "emailLabel": "Correo electrónico",
+  "emailPlaceholder": "correo@ejemplo.com",
+  "passwordLabel": "Contraseña",
+  "passwordPlaceholder": "Ingresa tu contraseña",
+  "showPassword": "Mostrar contraseña",
+  "hidePassword": "Ocultar contraseña",
+  "signIn": "Iniciar sesión",
+  "signingIn": "Iniciando sesión...",
+  "errors": {
+    "invalidCredentials": "No pudimos iniciar sesión. Verifica tus credenciales o el estado de tu cuenta.",
+    "loginFailed": "No fue posible iniciar sesión. Intenta nuevamente.",
+    "unexpectedError": "Ocurrió un error al iniciar sesión."
+  }
+},
+
+"RegisterMetadata": {
+  "title": "Crear cuenta | LabWork",
+  "description": "Regístrate en el portal de pacientes de LabWork."
+},
+
+"RegisterView": {
+  "backToHome": "Volver al inicio",
+  "badge": "PORTAL DE PACIENTES",
+  "title": "Crea tu cuenta",
+  "description": "Regístrate para gestionar tus citas y acceder a tus servicios de LabWork.",
+  "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+  "signIn": "Iniciar sesión",
+  "privacyNotice": "Tus datos se utilizarán para gestionar tu cuenta y tus solicitudes de cita conforme al aviso de privacidad."
+},
+
+"RegisterForm": {
+  "nameLabel": "Nombre completo",
+  "namePlaceholder": "Nombre y apellidos",
+  "emailLabel": "Correo electrónico",
+  "emailPlaceholder": "correo@ejemplo.com",
+  "birthDateLabel": "Fecha de nacimiento",
+  "passwordLabel": "Contraseña",
+  "passwordPlaceholder": "Mínimo 12 caracteres",
+  "confirmPasswordLabel": "Confirmar contraseña",
+  "confirmPasswordPlaceholder": "Repite tu contraseña",
+  "showPassword": "Mostrar contraseña",
+  "hidePassword": "Ocultar contraseña",
+  "createAccount": "Crear mi cuenta",
+  "creatingAccount": "Creando cuenta...",
+  "errors": {
+    "passwordMismatch": "Las contraseñas no coinciden.",
+    "passwordTooShort": "La contraseña debe tener al menos 12 caracteres.",
+    "invalidBirthDate": "Selecciona una fecha de nacimiento válida.",
+    "registrationFailed": "No fue posible crear tu cuenta. Verifica tus datos e intenta nuevamente.",
+    "unexpectedResponse": "El servidor devolvió una respuesta inesperada. Intenta nuevamente más tarde.",
+    "unexpectedError": "Ocurrió un error inesperado. Intenta nuevamente."
+  }
+},
+
+"RegisterSuccess": {
+  "title": "Registro recibido",
+  "description": "Tu cuenta se registró correctamente y está pendiente de verificación.",
+  "verificationNotice": "La verificación por correo todavía no está habilitada. Tu cuenta permanecerá inactiva hasta completar ese proceso.",
+  "backToHome": "Volver al inicio"
+},
+
+"PatientAccountMetadata": {
+  "title": "Mi cuenta | LabWork",
+  "description": "Consulta tus citas y gestiona tus reservas en el portal de pacientes de LabWork."
+},
+"PatientAccount": {
+  "badge": "PORTAL DE PACIENTES",
+  "greeting": "Hola, {name}",
+  "defaultName": "paciente",
+  "description": "Consulta tus próximas citas y el historial de tus reservas en LabWork."
+},
+"PatientAppointments": {
+    "appointmentFolio": "Folio de cita",
+    "status": {
+      "pending": "Pendiente",
+      "confirmed": "Confirmada",
+      "cancelled": "Cancelada",
+      "completed": "Completada"
+    },
+    "homeService": "A domicilio",
+    "branch": "Sucursal",
+    "detailsAndReceipt": "Detalles y comprobante",
+    "patient": "Paciente",
+    "phone": "Teléfono",
+    "email": "Correo",
+    "studiesAndPackages": "Estudios y paquetes",
+    "callBranch": "Llamar a sucursal",
+    "directions": "Cómo llegar",
+    "printOrSavePdf": "Imprimir o guardar PDF",
+    "savePdfHint": "Para descargarlo, selecciona «Guardar como PDF» en la ventana de impresión.",
+    "receiptAriaLabel": "Comprobante de cita",
+    "receiptBrand": "LabWork · Análisis Clínicos",
+    "receiptTitle": "Comprobante de solicitud de cita",
+    "folio": "Folio",
+    "appointmentStatus": "Estado de la cita",
+    "contactPhone": "Teléfono de contacto",
+    "emailAddress": "Correo electrónico",
+    "date": "Fecha",
+    "time": "Horario",
+    "notAvailable": "No disponible",
+    "address": "Dirección",
+    "branchPhone": "Teléfono de sucursal",
+    "addressNotAvailable": "Dirección no disponible",
+    "studies": "Estudios",
+    "receiptNotice": "Conserva este comprobante para cualquier aclaración. El estado indicado corresponde al momento de imprimirlo.",
+    "accountSections": "Secciones de mi cuenta",
+    "tabs": {
+      "appointments": {
+        "title": "Mis citas",
+        "subtitle": "Reservas e historial"
+      },
+      "results": {
+        "title": "Mis resultados",
+        "subtitle": "Sistema externo"
+      },
+      "profile": {
+        "title": "Mi perfil",
+        "subtitle": "Información personal"
+      }
+    },
+    "myAppointments": "Mis citas",
+    "appointmentsDescription": "Consulta tus reservas y sus comprobantes.",
+    "refreshAppointments": "Actualizar citas",
+    "newAppointment": "Nueva cita",
+    "loadingAppointments": "Cargando tus citas...",
+    "noAppointmentsTitle": "Todavía no tienes citas registradas",
+    "noAppointmentsDescription": "Cuando agendes una cita, podrás consultarla aquí.",
+    "bookFirstAppointment": "Agendar mi primera cita",
+    "upcomingAppointments": "Próximas citas",
+    "totalAppointments": "Total de citas",
+    "noUpcomingAppointments": "No tienes próximas citas.",
+    "appointmentHistory": "Historial de citas",
+    "viewResults": "Consultar mis resultados",
+    "resultsDescription": "Tus resultados se consultan en el sistema externo del laboratorio. Al ingresar, sigue las instrucciones de acceso que te proporcione LabWork.",
+    "goToResultsPortal": "Ir al portal de resultados",
+    "resultsLinkComingSoon": "Enlace próximamente disponible",
+    "resultsExternalNotice": "El acceso se abrirá en otra pestaña. Los resultados no se almacenan en este portal.",
+    "myProfile": "Mi perfil",
+    "profileDescription": "Información vinculada a tu cuenta de paciente.",
+    "loadingProfile": "Cargando tu información...",
+    "fullName": "Nombre completo",
+    "birthDate": "Fecha de nacimiento",
+    "notRegistered": "No registrada",
+    "profileReadOnly": "Por ahora, estos datos son de solo lectura.",
+    "errors": {
+      "appointmentsLoad": "No fue posible cargar tus citas.",
+      "appointmentsInvalid": "La respuesta de citas no es válida.",
+      "appointmentsUnknown": "Ocurrió un error al consultar tus citas.",
+      "profileLoad": "No fue posible cargar tu perfil.",
+      "profileUnavailable": "La información del perfil no está disponible.",
+      "profileUnknown": "No fue posible consultar tu perfil."
+    }
+  },
+
+"ContactMetadata": {
+  "title": "Contacto | LabWork",
+  "description": "Ponte en contacto con LabWork para resolver tus dudas sobre estudios de laboratorio, citas y sucursales."
+},
+
+"ContactHero": {
+  "badge": "Contacto",
+  "title": "¿En qué podemos",
+  "highlight": "ayudarte?",
+  "description": "Si tienes dudas sobre estudios, citas, sucursales o cualquier otro tema, estamos para orientarte.",
+  "bookAppointment": "Agendar cita",
+  "viewBranches": "Ver sucursales"
+},
+
+"ContactCards": {
+  "badge": "Contacto directo",
+  "title": "Elige cómo comunicarte con nosotros",
+  "description": "Estamos disponibles para orientarte y resolver tus dudas.",
+  "whatsapp": {
+    "description": "Escríbenos por nuestro WhatsApp general para solicitar información.",
+    "action": "Iniciar conversación"
+  },
+  "email": {
+    "title": "Correo electrónico",
+    "description": "También puedes enviarnos un correo con tus dudas o comentarios.",
+    "action": "Enviar correo"
+  },
+  "branches": {
+    "title": "Contacta una sucursal",
+    "description": "Consulta el teléfono de la sucursal con la que deseas comunicarte.",
+    "action": "Ver sucursales"
+  }
+},
+"ContactForm": {
+    "badge": "Escríbenos",
+    "title": "Envíanos un mensaje",
+    "description": "Déjanos tus datos y cuéntanos cómo podemos ayudarte.",
+    "name": {
+      "label": "Nombre completo",
+      "placeholder": "Tu nombre"
+    },
+    "contact": {
+      "label": "Correo o teléfono",
+      "placeholder": "Tu medio de contacto"
+    },
+    "subject": {
+      "label": "Motivo de contacto",
+      "placeholder": "Selecciona una opción",
+      "studies": "Información sobre estudios",
+      "appointment": "Información sobre una cita",
+      "branches": "Información sobre sucursales",
+      "other": "Otro"
+    },
+    "message": {
+      "label": "Mensaje",
+      "placeholder": "Escribe aquí tu duda o mensaje..."
+    },
+    "send": "Enviar mensaje",
+    "sending": "Enviando mensaje...",
+    "success": "¡Tu mensaje fue enviado correctamente! Nos pondremos en contacto contigo.",
+    "errors": {
+      "name": "Ingresa tu nombre completo.",
+      "contact": "Ingresa un correo electrónico o teléfono válido.",
+      "subject": "Selecciona un motivo de contacto.",
+      "message": "Tu mensaje debe contener al menos 10 caracteres.",
+      "sendFailed": "No fue posible enviar el mensaje. Inténtalo nuevamente.",
+      "unexpected": "Ocurrió un error al enviar tu mensaje."
+    }
+  },
+
+"ContactQuickHelp": {
+  "badge": "Otras opciones",
+  "title": "¿Prefieres comunicarte directamente?",
+  "description": "También puedes escribirnos por WhatsApp, enviarnos un correo o comunicarte directamente con una de nuestras sucursales.",
+  "email": {
+    "title": "Correo electrónico"
+  },
+  "branches": {
+    "title": "Llamar a una sucursal",
+    "description": "Consulta los teléfonos disponibles"
+  },
+  "viewAllBranches": "Ver todas las sucursales"
+},
+
+"AboutMetadata": {
+  "title": "Nosotros | LabWork",
+  "description": "Conoce más sobre LabWork, nuestra historia, misión, visión y valores, y nuestro compromiso con la atención a nuestros pacientes."
+},
+
+"AboutHero": {
+  "badge": "Nosotros",
+  "title": "Crecemos contigo,",
+  "highlight": "cuidando lo que importa",
+  "description": "Desde 2022 trabajamos para acercar servicios de análisis clínicos a las familias de la Ribera de Chapala, creciendo junto a nuestra comunidad.",
+  "bookAppointment": "Agendar cita",
+  "viewBranches": "Conocer sucursales"
+},
+
+"OurHistory": {
+  "badge": "Nuestra historia",
+  "title": "Una historia que sigue",
+  "highlight": "creciendo",
+  "paragraph1": "Lab-Work inició en 2022 en San Antonio con el propósito de acercar servicios de análisis clínicos a la comunidad.",
+  "paragraph2": "Gracias a la confianza de nuestros pacientes, hemos continuado creciendo para brindar mayor comodidad y estar cada vez más cerca de quienes nos eligen.",
+  "paragraph3Start": "Hoy contamos con",
+  "branchesHighlight": "4 sucursales en la Ribera de Chapala",
+  "paragraph3End": ", manteniendo la cercanía y atención que han acompañado nuestro crecimiento desde el inicio.",
+  "viewBranches": "Conoce nuestras sucursales",
+  "timeline": {
+    "start": {
+      "label": "2022",
+      "title": "Nuestro inicio",
+      "text": "Lab-Work inicia en San Antonio."
+    },
+    "growth": {
+      "label": "Crecimiento",
+      "title": "La confianza nos impulsa",
+      "text": "Seguimos creciendo junto a nuestros pacientes."
+    },
+    "today": {
+      "label": "Hoy",
+      "title": "Más cerca de ti",
+      "text": "4 sucursales en la Ribera de Chapala."
+    }
+  }
+},
+
+"MissionVision": {
+  "badge": "Lo que guía nuestro trabajo",
+  "title": "Misión y visión",
+  "mission": {
+    "title": "Misión",
+    "description": "Acercar servicios de análisis clínicos a las familias de la Ribera de Chapala, ofreciendo una atención cercana, respetuosa y comprometida con cada paciente."
+  },
+  "vision": {
+    "title": "Visión",
+    "description": "Continuar creciendo junto a nuestra comunidad, ampliando nuestra presencia y facilitando el acceso a servicios de análisis clínicos para más personas."
+  }
+},
+
+"OurValues": {
+  "badge": "Nuestros valores",
+  "title": "Lo que nos impulsa cada día",
+  "values": {
+    "trust": {
+      "title": "Confianza",
+      "description": "Construimos relaciones basadas en el respeto y la transparencia."
+    },
+    "closeness": {
+      "title": "Cercanía",
+      "description": "Estamos presentes para nuestra comunidad y sus necesidades."
+    },
+    "responsibility": {
+      "title": "Responsabilidad",
+      "description": "Actuamos con compromiso y profesionalismo en nuestro trabajo."
+    },
+    "clarity": {
+      "title": "Claridad",
+      "description": "Buscamos ofrecer información comprensible a nuestros pacientes."
+    }
+  }
+},
+
+"AboutCTA": {
+  "badge": "Lab-Work Análisis Clínicos",
+  "title": "Seguimos creciendo junto",
+  "highlight": "a nuestra comunidad",
+  "description": "Desde 2022 hemos crecido gracias a la confianza de nuestros pacientes. Hoy seguimos trabajando para estar más cerca de las familias de la Ribera de Chapala.",
+  "exploreStudies": "Explorar estudios",
+  "bookAppointment": "Agendar cita"
+},
+
+"HistoriaVisual": {
+    "center": {
+      "title": "Crecemos cerca de ti",
+      "description": "Gracias a la confianza de nuestros pacientes, seguimos creciendo en la Ribera de Chapala."
+    },
+    "cards": {
+      "start": {
+        "label": "Nuestro inicio",
+        "value": "Desde 2022"
+      },
+      "branches": {
+        "label": "Presencia",
+        "value": "4 sucursales"
+      },
+      "community": {
+        "label": "Comunidad",
+        "value": "Ribera de Chapala"
+      },
+      "growth": {
+        "label": "Seguimos creciendo",
+        "value": "Más cerca de nuestra comunidad"
+      }
+    }
+  },
+
+"BranchesMetadata": {
+  "title": "Sucursales | LabWork",
+  "description": "Encuentra las sucursales de LabWork en la Ribera de Chapala. Consulta ubicaciones, horarios y datos de contacto."
+},
+
+"BranchesHero": {
+  "badge": "Nuestras sucursales",
+  "title": "Encuentra tu sucursal",
+  "description": "Consulta nuestras ubicaciones y horarios de atención."
+},
+
+"BranchesList": {
+  "error": {
+    "title": "No pudimos cargar las sucursales",
+    "description": "Intenta nuevamente en unos momentos."
+  },
+  "availableCount": "{count, plural, one {# sucursal disponible} other {# sucursales disponibles}}"
+},
+
+"BranchCard": {
+  "branch": "Sucursal",
+  "address": "Dirección",
+  "hours": "Horario",
+  "phone": "Teléfono",
+  "bookAppointment": "Agendar cita",
+  "directions": "Cómo llegar"
+},
+
+"BranchesEmpty": {
+  "title": "No hay sucursales disponibles",
+  "description": "Por el momento no hay sucursales disponibles para mostrar."
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

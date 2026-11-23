@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
 import type { FormEvent } from 'react';
 
@@ -92,11 +93,11 @@ function todayInMexico() {
 
 }
 
-function formatDate(date: string) {
+function formatDate(date: string, locale: string) {
 
   if (!date) return '';
 
-  return new Intl.DateTimeFormat('es-MX', {
+  return new Intl.DateTimeFormat(locale === 'en' ? 'en-US' : 'es-MX', {
 
     dateStyle: 'full', timeZone: 'UTC',
 
@@ -105,18 +106,14 @@ function formatDate(date: string) {
 }
 
 const steps = [
-
-  { label: 'Atención', icon: Building2 },
-
-  { label: 'Horario', icon: CalendarDays },
-
-  { label: 'Tus datos', icon: UserRound },
-
-  { label: 'Resumen', icon: ClipboardList },
-
-];
+  { key: 'attention', icon: Building2 },
+  { key: 'schedule', icon: CalendarDays },
+  { key: 'patient', icon: UserRound },
+  { key: 'summary', icon: ClipboardList },
+] as const;
 
 function BranchContactActions({ branch }: { branch?: Branch }) {
+  const t = useTranslations('AppointmentWizard');
 
   if (!branch) return null;
 
@@ -151,7 +148,7 @@ const mapUrl =
 
           className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-primary-900 px-4 py-2 text-sm font-semibold text-primary-900 transition hover:bg-blue-50">
 
-          <Navigation className="h-4 w-4" /> Cómo llegar
+          <Navigation className="h-4 w-4" /> {t('directions')}
 
         </a>
 
@@ -163,7 +160,7 @@ const mapUrl =
 
           className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-primary-900 transition hover:bg-slate-100">
 
-          <Phone className="h-4 w-4" /> Llamar: {phone}
+          <Phone className="h-4 w-4" /> {t('call')} {phone}
 
         </a>
 
@@ -225,13 +222,15 @@ function catalogPrice(value: unknown): number | null {
 
 }
 
-function money(amount: number) {
+function money(amount: number, locale: string) {
 
-  return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(amount);
+  return new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'es-MX', { style: 'currency', currency: 'MXN' }).format(amount);
 
 }
 
 export default function AppointmentWizard() {
+  const t = useTranslations('AppointmentWizard');
+  const locale = useLocale();
 
   const [branches, setBranches] = useState<Branch[]>([]);
 
@@ -326,11 +325,11 @@ export default function AppointmentWizard() {
 
         ]);
 
-        if (!studiesResponse.ok || !packagesResponse.ok) throw new Error('No pudimos validar los estudios y paquetes seleccionados.');
+        if (!studiesResponse.ok || !packagesResponse.ok) throw new Error(t('quotation.validateError'));
 
         const [studiesBody, packagesBody] = await Promise.all([studiesResponse.json(), packagesResponse.json()]);
 
-        if (!Array.isArray(studiesBody.data) || !Array.isArray(packagesBody.data)) throw new Error('El catálogo devolvió una respuesta inválida.');
+        if (!Array.isArray(studiesBody.data) || !Array.isArray(packagesBody.data)) throw new Error(t('quotation.invalidResponse'));
 
         const studies = studiesBody.data as Array<{ id: string; name: string; price?: unknown; isActive: boolean }>;
 
@@ -356,11 +355,11 @@ export default function AppointmentWizard() {
 
         setQuotationInvalid(invalid);
 
-        if (invalid) setQuotationError('Algunos elementos ya no están disponibles. Revisa tu cotización antes de confirmar.');
+        if (invalid) setQuotationError(t('quotation.invalid'));
 
       } catch (error) {
 
-        if (!controller.signal.aborted) setQuotationError(error instanceof Error ? error.message : 'No se pudo cargar la cotización.');
+        if (!controller.signal.aborted) setQuotationError(error instanceof Error ? error.message : t('quotation.loadError'));
 
       } finally {
 
@@ -374,7 +373,7 @@ export default function AppointmentWizard() {
 
     return () => controller.abort();
 
-  }, [quotationRevision]);
+  }, [quotationRevision, t]);
 
   const quotationSubtotal = quotationItems.reduce((sum, item) => sum + (item.price ?? 0), 0);
 
@@ -396,17 +395,17 @@ export default function AppointmentWizard() {
 
       if (!selectedBranchId || !requestedDate || !requestedTime) {
 
-        throw new Error('Falta seleccionar una sucursal, fecha u horario.');
+        throw new Error(t('booking.missingSelection'));
 
       }
 
-      if (appointmentType === 'home' && requestedDate < minAppointmentDate) { throw new Error('La toma a domicilio debe solicitarse al menos con un día de anticipación.'); }
+      if (appointmentType === 'home' && requestedDate < minAppointmentDate) { throw new Error(t('booking.homeAdvance')); }
       if (appointmentType === 'home' && homeAddress.trim().length < 5) {
-        throw new Error('Ingresa una dirección completa para la toma a domicilio.');
+        throw new Error(t('booking.homeAddress'));
       }
       if (appointmentType === 'home' && locationUrl.trim()) {
         const parsed = new URL(locationUrl.trim());
-        if (!['https:', 'http:'].includes(parsed.protocol)) throw new Error('El enlace de ubicación debe ser HTTP o HTTPS.');
+        if (!['https:', 'http:'].includes(parsed.protocol)) throw new Error(t('booking.invalidProtocol'));
       }
       const response = await fetch('/api/appointments', {
 
@@ -458,11 +457,11 @@ export default function AppointmentWizard() {
 
         const message = payload?.error?.message ?? payload?.error ?? payload?.message;
 
-        throw new Error(typeof message === 'string' ? message : 'No se pudo registrar la cita. Intenta nuevamente.');
+        throw new Error(typeof message === 'string' ? message : t('booking.submitError'));
 
       }
 
-      if (!payload?.data?.id) throw new Error('El servidor no devolvió el identificador de la cita. Verifica el registro antes de reintentar.');
+      if (!payload?.data?.id) throw new Error(t('booking.noId'));
 
       setBookingSuccess({
 
@@ -480,7 +479,7 @@ export default function AppointmentWizard() {
 
     } catch (err) {
 
-      setBookingError(err instanceof Error ? err.message : 'No se pudo registrar la cita.');
+      setBookingError(err instanceof Error ? err.message : t('booking.submitErrorShort'));
 
     } finally {
 
@@ -500,13 +499,13 @@ export default function AppointmentWizard() {
 
     if (profileLoading || profileError || !patientName || !email || !birthDate) {
 
-      errors.profile = 'No se pudo validar tu cuenta. Revisa los datos de tu perfil.';
+      errors.profile = t('patient.profileInvalid');
 
     }
 
     if (cleanPhone.length !== 10) {
 
-      errors.phone = 'Ingresa un teléfono de 10 dígitos.';
+      errors.phone = t('patient.phoneInvalid');
 
     }
 
@@ -548,13 +547,13 @@ export default function AppointmentWizard() {
 
         if (!response.ok) {
 
-          throw new Error(payload?.error?.message ?? 'No fue posible cargar tu perfil.');
+          throw new Error(payload?.error?.message ?? t('patient.profileLoadError'));
 
         }
 
         if (!payload?.data?.id || !payload.data.name || !payload.data.email) {
 
-          throw new Error('Los datos de tu cuenta están incompletos.');
+          throw new Error(t('patient.profileIncomplete'));
 
         }
 
@@ -570,7 +569,7 @@ export default function AppointmentWizard() {
 
           if (!patient.birthDate) {
 
-            setProfileError('Tu cuenta no tiene fecha de nacimiento. Actualízala en tu perfil antes de reservar.');
+            setProfileError(t('patient.birthMissing'));
 
           }
 
@@ -580,7 +579,7 @@ export default function AppointmentWizard() {
 
         if (!controller.signal.aborted) {
 
-          setProfileError(err instanceof Error ? err.message : 'No fue posible cargar tu perfil.');
+          setProfileError(err instanceof Error ? err.message : t('patient.profileLoadError'));
 
         }
 
@@ -596,7 +595,7 @@ export default function AppointmentWizard() {
 
     return () => controller.abort();
 
-  }, []);
+  }, [t]);
 
   useEffect(() => {
 
@@ -636,11 +635,11 @@ export default function AppointmentWizard() {
 
         const payload = await response.json();
 
-        if (!response.ok) { const message = payload?.error?.message ?? payload?.error ?? payload?.message; throw new Error(typeof message === 'string' ? message : 'No se pudieron consultar los horarios.'); }
+        if (!response.ok) { const message = payload?.error?.message ?? payload?.error ?? payload?.message; throw new Error(typeof message === 'string' ? message : t('availability.loadError')); }
 
         if (!payload?.data || !Array.isArray(payload.data.slots)) {
 
-          throw new Error('La respuesta de disponibilidad no es válida.');
+          throw new Error(t('availability.invalidResponse'));
 
         }
 
@@ -650,7 +649,7 @@ export default function AppointmentWizard() {
 
         if (controller.signal.aborted) return;
 
-        setAvailabilityError(err instanceof Error ? err.message : 'Error al consultar horarios.');
+        setAvailabilityError(err instanceof Error ? err.message : t('availability.genericError'));
 
       } finally {
 
@@ -664,7 +663,7 @@ export default function AppointmentWizard() {
 
     return () => controller.abort();
 
-  }, [step, selectedBranchId, requestedDate, appointmentType, availabilityReload]);
+  }, [step, selectedBranchId, requestedDate, appointmentType, availabilityReload, t]);
 
   async function loadBranches(signal?: AbortSignal) {
 
@@ -684,7 +683,7 @@ export default function AppointmentWizard() {
 
       if (!response.ok) {
 
-        throw new Error('No se pudieron cargar las sucursales.');
+        throw new Error(t('branch.loadError'));
 
       }
 
@@ -694,7 +693,7 @@ export default function AppointmentWizard() {
 
       if (!Array.isArray(payload.data)) {
 
-        throw new Error('El formato de sucursales no es válido.');
+        throw new Error(t('branch.invalidResponse'));
 
       }
 
@@ -716,7 +715,7 @@ export default function AppointmentWizard() {
 
           ? err.message
 
-          : 'Ocurrió un error al cargar las sucursales.'
+          : t('branch.genericError')
 
       );
 
@@ -736,7 +735,7 @@ export default function AppointmentWizard() {
 
     return () => controller.abort();
 
-  }, []);
+  }, [t]);
 
   const selectedBranch = branches.find(
 
@@ -760,21 +759,19 @@ export default function AppointmentWizard() {
 
               <CalendarDays className="h-4 w-4 text-lime-300" />
 
-              AGENDAMIENTO EN LÍNEA
+              {t('hero.badge')}
 
             </div>
 
             <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
 
-              Agenda tu cita
+              {t('hero.title')}
 
             </h1>
 
             <p className="mt-3 max-w-xl text-sm leading-6 text-blue-100 sm:text-base">
 
-              Elige dónde deseas realizar tus estudios.
-
-              Te guiaremos durante el proceso.
+              {t('hero.description')}
 
             </p>
 
@@ -800,7 +797,7 @@ export default function AppointmentWizard() {
 
                 <div
 
-                  key={item.label}
+                  key={item.key}
 
                   className="flex flex-col items-center gap-2"
 
@@ -850,7 +847,7 @@ export default function AppointmentWizard() {
 
                   >
 
-                    {item.label}
+                    {t(`steps.${item.key}`)}
 
                   </span>
 
@@ -876,26 +873,26 @@ export default function AppointmentWizard() {
 
                     <span className="text-xs font-bold uppercase tracking-widest text-green-700">
 
-                      Paso 1 de 4
+                      {t('stepCount', { step: 1 })}
 
                     </span>
 
                     <h2 className="mt-2 text-xl font-bold text-primary-900 sm:text-2xl">
 
-                      ¿Dónde deseas recibir atención?
+                      {t('attention.title')}
 
                     </h2>
 
                     <p className="mt-2 text-sm leading-6 text-slate-500">
 
-                      Elige atención presencial o una toma de muestra a domicilio.
+                      {t('attention.description')}
 
                     </p>
 
                   </div>
 
                   <div className="mb-6 grid gap-3 sm:grid-cols-2">
-                    {([['branch', 'En sucursal', 'Acude al laboratorio'], ['home', 'A domicilio', 'Solicita una visita a tu dirección']] as const).map(([type, title, detail]) => (
+                    {([['branch', t('attention.branchTitle'), t('attention.branchDetail')], ['home', t('attention.homeTitle'), t('attention.homeDetail')]] as const).map(([type, title, detail]) => (
                       <button key={type} type="button" aria-pressed={appointmentType === type}
                         onClick={() => { setAppointmentType(type); setRequestedTime(''); setAvailability(null); setHomeError(''); setRequestedDate(type === 'home' ? (() => { const d = new Date(`${today || todayInMexico()}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + 1); return d.toISOString().slice(0, 10); })() : (today || todayInMexico())); }}
                         className={`rounded-2xl border-2 p-4 text-left transition ${appointmentType === type ? 'border-primary-900 bg-blue-50' : 'border-slate-200 hover:border-blue-300'}`}>
@@ -904,7 +901,7 @@ export default function AppointmentWizard() {
                       </button>
                     ))}
                   </div>
-                  <p className="mb-4 text-sm font-semibold text-slate-700">{appointmentType === 'home' ? 'Sucursal responsable de tu solicitud' : 'Selecciona tu sucursal'}</p>
+                  <p className="mb-4 text-sm font-semibold text-slate-700">{appointmentType === 'home' ? t('attention.homeBranch') : t('attention.branchLabel')}</p>
                   {loading && (
 
                     <div className="space-y-3" role="status">
@@ -923,7 +920,7 @@ export default function AppointmentWizard() {
 
                       <span className="sr-only">
 
-                        Cargando sucursales...
+                        {t('branch.loading')}
 
                       </span>
 
@@ -949,7 +946,7 @@ export default function AppointmentWizard() {
 
                         <RefreshCw className="h-4 w-4" />
 
-                        Intentar de nuevo
+                        {t('retry')}
 
                       </button>
 
@@ -965,13 +962,13 @@ export default function AppointmentWizard() {
 
                       <p className="font-semibold text-slate-700">
 
-                        No hay sucursales disponibles.
+                        {t('branch.none')}
 
                       </p>
 
                       <p className="mt-2 text-sm text-slate-500">
 
-                        Intenta nuevamente más tarde.
+                        {t('branch.later')}
 
                       </p>
 
@@ -1097,37 +1094,37 @@ export default function AppointmentWizard() {
 
                   {appointmentType === 'home' && (
                     <div className="mt-6 space-y-4 rounded-2xl border border-blue-100 bg-blue-50/50 p-5">
-                      <h3 className="font-bold text-primary-900">Dirección de la toma a domicilio</h3>
+                      <h3 className="font-bold text-primary-900">{t('home.title')}</h3>
                       <div>
-                        <label htmlFor="home-address" className="mb-2 block text-sm font-semibold text-slate-700">Dirección completa *</label>
+                        <label htmlFor="home-address" className="mb-2 block text-sm font-semibold text-slate-700">{t('home.address')}</label>
                         <textarea id="home-address" value={homeAddress} maxLength={1000} rows={3} onChange={(event) => { setHomeAddress(event.target.value); setHomeError(''); }}
-                          placeholder="Calle, número, colonia, municipio, referencias para llegar" className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-primary-900" />
+                          placeholder={t('home.addressPlaceholder')} className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-primary-900" />
                       </div>
                       <div>
-                        <label htmlFor="home-map" className="mb-2 block text-sm font-semibold text-slate-700">Enlace de Google Maps (opcional)</label>
+                        <label htmlFor="home-map" className="mb-2 block text-sm font-semibold text-slate-700">{t('home.map')}</label>
                         <input id="home-map" type="url" value={locationUrl} maxLength={2000} onChange={(event) => { setLocationUrl(event.target.value); setHomeError(''); }}
                           placeholder="https://maps.app.goo.gl/..." className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-primary-900" />
-                        <p className="mt-2 text-xs text-slate-500">Si conoces tu ubicación, puedes compartir el enlace. La dirección escrita sigue siendo necesaria.</p>
+                        <p className="mt-2 text-xs text-slate-500">{t('home.mapHelp')}</p>
                       </div>
                       {homeError && <p role="alert" className="text-sm text-red-700">{homeError}</p>}
-                      <p className="text-xs leading-5 text-slate-600">La fecha y el horario son solicitados; el laboratorio confirmará si puede realizar la visita.</p>
+                      <p className="text-xs leading-5 text-slate-600">{t('home.notice')}</p>
                     </div>
                   )}
                   {!quotationLoading && quotationItems.length === 0 && !quotationError && (
 
                     <div role="alert" className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5">
 
-                      <p className="text-sm font-bold text-amber-900">Primero selecciona tus estudios</p>
+                      <p className="text-sm font-bold text-amber-900">{t('quotation.requiredTitle')}</p>
 
                       <p className="mt-2 text-sm leading-6 text-amber-800">
 
-                        Para agendar una cita en LabWork necesitas agregar al menos un estudio o paquete a tu cotización.
+                        {t('quotation.requiredText')}
 
                       </p>
 
                       <a href="/estudios" className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary-900 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-800">
 
-                        Explorar estudios <ArrowRight className="h-4 w-4" />
+                        {t('quotation.explore')} <ArrowRight className="h-4 w-4" />
 
                       </a>
 
@@ -1139,7 +1136,7 @@ export default function AppointmentWizard() {
 
                     <div role="alert" className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
 
-                      {quotationError} <a href="/estudios" className="font-semibold underline">Revisar cotización</a>
+                      {quotationError} <a href="/estudios" className="font-semibold underline">{t('quotation.review')}</a>
 
                     </div>
 
@@ -1153,13 +1150,13 @@ export default function AppointmentWizard() {
 
                       disabled={!selectedBranch || loading || quotationBlocked}
 
-                      onClick={() => { if (appointmentType === 'home') { if (homeAddress.trim().length < 5) { setHomeError('Ingresa una dirección completa.'); return; } if (locationUrl.trim()) { try { const url = new URL(locationUrl.trim()); if (!['https:', 'http:'].includes(url.protocol)) throw new Error(); } catch { setHomeError('Ingresa un enlace de ubicación válido.'); return; } } } setHomeError(''); setStep(1); }}
+                      onClick={() => { if (appointmentType === 'home') { if (homeAddress.trim().length < 5) { setHomeError(t('home.addressShort')); return; } if (locationUrl.trim()) { try { const url = new URL(locationUrl.trim()); if (!['https:', 'http:'].includes(url.protocol)) throw new Error(); } catch { setHomeError(t('home.mapInvalid')); return; } } } setHomeError(''); setStep(1); }}
 
                       className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-primary-900 px-6 py-3 text-sm font-bold text-white transition hover:bg-primary-800 disabled:cursor-not-allowed disabled:opacity-40"
 
                     >
 
-                      Continuar
+                      {t('continue')}
 
                       <ArrowRight className="h-4 w-4" />
 
@@ -1175,17 +1172,17 @@ export default function AppointmentWizard() {
 
                   <div className="mb-6">
 
-                    <span className="text-xs font-bold uppercase tracking-widest text-green-700">Paso 2 de 4</span>
+                    <span className="text-xs font-bold uppercase tracking-widest text-green-700">{t('stepCount', { step: 2 })}</span>
 
-                    <h2 className="mt-2 text-xl font-bold text-primary-900 sm:text-2xl">Selecciona fecha y horario</h2>
+                    <h2 className="mt-2 text-xl font-bold text-primary-900 sm:text-2xl">{t('schedule.title')}</h2>
 
-                    <p className="mt-2 text-sm text-slate-500">{appointmentType === 'home' ? 'Sucursal responsable' : 'Sucursal seleccionada'}: {selectedBranch?.name}</p>
+                    <p className="mt-2 text-sm text-slate-500">{appointmentType === 'home' ? t('schedule.homeBranch') : t('schedule.branchSelected')}: {selectedBranch?.name}</p>
 
                   </div>
 
                   <label htmlFor="appointment-date" className="mb-2 block text-sm font-bold text-slate-700">
 
-                    {appointmentType === 'home' ? '¿Qué día deseas la visita?' : '¿Qué día deseas acudir?'}
+                    {appointmentType === 'home' ? t('schedule.homeDate') : t('schedule.branchDate')}
 
                   </label>
 
@@ -1209,9 +1206,9 @@ export default function AppointmentWizard() {
 
                     <div>
 
-                      <h3 className="font-bold text-primary-900">Horarios disponibles</h3>
+                      <h3 className="font-bold text-primary-900">{t('schedule.available')}</h3>
 
-                      <p className="mt-1 text-xs capitalize text-slate-500">{formatDate(requestedDate)}</p>
+                      <p className="mt-1 text-xs capitalize text-slate-500">{formatDate(requestedDate, locale)}</p>
 
                     </div>
 
@@ -1225,7 +1222,7 @@ export default function AppointmentWizard() {
 
                       {[1, 2, 3, 4, 5, 6].map((n) => <div key={n} className="h-14 animate-pulse rounded-xl bg-slate-100" />)}
 
-                      <span className="sr-only">Consultando disponibilidad...</span>
+                      <span className="sr-only">{t('schedule.loading')}</span>
 
                     </div>
 
@@ -1239,7 +1236,7 @@ export default function AppointmentWizard() {
 
                       <button type="button" onClick={() => setAvailabilityReload((value) => value + 1)} className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-red-700">
 
-                        <RefreshCw className="h-4 w-4" /> Reintentar
+                        <RefreshCw className="h-4 w-4" /> {t('schedule.retry')}
 
                       </button>
 
@@ -1251,7 +1248,7 @@ export default function AppointmentWizard() {
 
                     <div className="mt-5 rounded-2xl bg-slate-50 p-5 text-sm text-slate-600">
 
-                      No hay atención disponible para esta fecha. Selecciona otro día.
+                      {t('schedule.closed')}
 
                     </div>
 
@@ -1265,7 +1262,7 @@ export default function AppointmentWizard() {
 
                         <div className="mt-5 rounded-2xl bg-slate-50 p-5 text-sm text-slate-600">
 
-                          No quedan horarios disponibles para esta fecha. Selecciona otro día.
+                          {t('schedule.noSlots')}
 
                         </div>
 
@@ -1289,7 +1286,7 @@ export default function AppointmentWizard() {
 
                                 <span className={['mt-1 block text-[11px]', selected ? 'text-blue-100' : 'text-slate-500'].join(' ')}>
 
-                                  {appointmentType === 'home' ? 'Sujeto a confirmación' : `${slot.remaining} ${slot.remaining === 1 ? 'lugar' : 'lugares'}`}
+                                  {appointmentType === 'home' ? t('schedule.confirmation') : t('schedule.spotsCount', { count: slot.remaining ?? 0 })}
 
                                 </span>
 
@@ -1311,7 +1308,7 @@ export default function AppointmentWizard() {
 
                     <button type="button" onClick={() => setStep(0)} className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-primary-900">
 
-                      <ArrowLeft className="h-4 w-4" /> Cambiar atención
+                      <ArrowLeft className="h-4 w-4" /> {t('schedule.changeAttention')}
 
                     </button>
 
@@ -1319,7 +1316,7 @@ export default function AppointmentWizard() {
 
                       onClick={() => setStep(2)} className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-primary-900 px-6 py-3 text-sm font-bold text-white hover:bg-primary-800 disabled:cursor-not-allowed disabled:opacity-40">
 
-                      Continuar <ArrowRight className="h-4 w-4" />
+                      {t('continue')} <ArrowRight className="h-4 w-4" />
 
                     </button>
 
@@ -1333,13 +1330,13 @@ export default function AppointmentWizard() {
 
                   <div className="mb-7">
 
-                    <span className="text-xs font-bold uppercase tracking-widest text-green-700">Paso 3 de 4</span>
+                    <span className="text-xs font-bold uppercase tracking-widest text-green-700">{t('stepCount', { step: 3 })}</span>
 
-                    <h2 className="mt-2 text-xl font-bold text-primary-900 sm:text-2xl">Tus datos</h2>
+                    <h2 className="mt-2 text-xl font-bold text-primary-900 sm:text-2xl">{t('patient.title')}</h2>
 
                     <p className="mt-2 text-sm leading-6 text-slate-500">
 
-                      Estos datos provienen de tu cuenta. Confirma tu teléfono de contacto.
+                      {t('patient.description')}
 
                     </p>
 
@@ -1347,9 +1344,9 @@ export default function AppointmentWizard() {
 
                   <form onSubmit={handlePatientContinue} noValidate>
 
-                    {profileLoading && <p role="status" className="mb-5 text-sm text-slate-600">Cargando los datos de tu cuenta...</p>}
+                    {profileLoading && <p role="status" className="mb-5 text-sm text-slate-600">{t('patient.loading')}</p>}
 
-                    {profileError && <div role="alert" className="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{profileError} <a className="font-semibold underline" href="/mi-cuenta">Ir a mi cuenta</a></div>}
+                    {profileError && <div role="alert" className="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{profileError} <a className="font-semibold underline" href="/mi-cuenta">{t('patient.account')}</a></div>}
 
                     {patientErrors.profile && <p role="alert" className="mb-4 text-sm text-red-600">{patientErrors.profile}</p>}
 
@@ -1357,7 +1354,7 @@ export default function AppointmentWizard() {
 
                       <div className="sm:col-span-2">
 
-                        <label htmlFor="patient-name" className="mb-2 block text-sm font-bold text-slate-700">Nombre completo <span className="text-red-600">*</span></label>
+                        <label htmlFor="patient-name" className="mb-2 block text-sm font-bold text-slate-700">{t('patient.fullName')} <span className="text-red-600">*</span></label>
 
                         <input id="patient-name" type="text" autoComplete="name" maxLength={160}
 
@@ -1365,7 +1362,7 @@ export default function AppointmentWizard() {
 
                           aria-invalid={Boolean(patientErrors.patientName)} aria-describedby={patientErrors.patientName ? 'patient-name-error' : undefined}
 
-                          placeholder="Nombre y apellidos" className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none focus:border-primary-900 focus:ring-2 focus:ring-blue-100" />
+                          placeholder={t('patient.namePlaceholder')} className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none focus:border-primary-900 focus:ring-2 focus:ring-blue-100" />
 
                         {patientErrors.patientName && <p id="patient-name-error" className="mt-1 text-xs text-red-600">{patientErrors.patientName}</p>}
 
@@ -1373,7 +1370,7 @@ export default function AppointmentWizard() {
 
                       <div>
 
-                        <label htmlFor="birth-date" className="mb-2 block text-sm font-bold text-slate-700">Fecha de nacimiento <span className="text-red-600">*</span></label>
+                        <label htmlFor="birth-date" className="mb-2 block text-sm font-bold text-slate-700">{t('patient.birthDate')} <span className="text-red-600">*</span></label>
 
                         <input id="birth-date" type="date" max={today || undefined} value={birthDate}
 
@@ -1389,7 +1386,7 @@ export default function AppointmentWizard() {
 
                       <div>
 
-                        <label htmlFor="patient-phone" className="mb-2 block text-sm font-bold text-slate-700">Número de teléfono <span className="text-red-600">*</span></label>
+                        <label htmlFor="patient-phone" className="mb-2 block text-sm font-bold text-slate-700">{t('patient.phone')} <span className="text-red-600">*</span></label>
 
                         <input id="patient-phone" type="tel" autoComplete="tel" inputMode="numeric" maxLength={20}
 
@@ -1397,7 +1394,7 @@ export default function AppointmentWizard() {
 
                           aria-invalid={Boolean(patientErrors.phone)} aria-describedby={patientErrors.phone ? 'patient-phone-error' : undefined}
 
-                          placeholder="Ej. 3312345678" className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none focus:border-primary-900 focus:ring-2 focus:ring-blue-100" />
+                          placeholder={t('patient.phonePlaceholder')} className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none focus:border-primary-900 focus:ring-2 focus:ring-blue-100" />
 
                         {patientErrors.phone && <p id="patient-phone-error" className="mt-1 text-xs text-red-600">{patientErrors.phone}</p>}
 
@@ -1405,7 +1402,7 @@ export default function AppointmentWizard() {
 
                       <div className="sm:col-span-2">
 
-                        <label htmlFor="patient-email" className="mb-2 block text-sm font-bold text-slate-700">Correo electrónico <span className="text-red-600">*</span></label>
+                        <label htmlFor="patient-email" className="mb-2 block text-sm font-bold text-slate-700">{t('patient.email')} <span className="text-red-600">*</span></label>
 
                         <input id="patient-email" type="email" autoComplete="email" maxLength={254}
 
@@ -1413,7 +1410,7 @@ export default function AppointmentWizard() {
 
                           aria-invalid={Boolean(patientErrors.email)} aria-describedby={patientErrors.email ? 'patient-email-error' : undefined}
 
-                          placeholder="correo@ejemplo.com" className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none focus:border-primary-900 focus:ring-2 focus:ring-blue-100" />
+                          placeholder={t('patient.emailPlaceholder')} className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none focus:border-primary-900 focus:ring-2 focus:ring-blue-100" />
 
                         {patientErrors.email && <p id="patient-email-error" className="mt-1 text-xs text-red-600">{patientErrors.email}</p>}
 
@@ -1421,19 +1418,19 @@ export default function AppointmentWizard() {
 
                     </div>
 
-                    <p className="mt-5 text-xs leading-5 text-slate-500">El nombre, correo y fecha de nacimiento están vinculados a tu cuenta. Para modificarlos, actualiza tu perfil.</p>
+                    <p className="mt-5 text-xs leading-5 text-slate-500">{t('patient.note')}</p>
 
                     <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-6">
 
                       <button type="button" onClick={() => setStep(1)} className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-primary-900">
 
-                        <ArrowLeft className="h-4 w-4" /> Regresar al horario
+                        <ArrowLeft className="h-4 w-4" /> {t('patient.back')}
 
                       </button>
 
                       <button type="submit" disabled={profileLoading || Boolean(profileError)} className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-primary-900 px-6 py-3 text-sm font-bold text-white hover:bg-primary-800">
 
-                        Continuar <ArrowRight className="h-4 w-4" />
+                        {t('continue')} <ArrowRight className="h-4 w-4" />
 
                       </button>
 
@@ -1457,38 +1454,38 @@ export default function AppointmentWizard() {
 
                       </div>
 
-                      <span className="mt-6 block text-xs font-bold uppercase tracking-widest text-green-700">Solicitud registrada</span>
+                      <span className="mt-6 block text-xs font-bold uppercase tracking-widest text-green-700">{t('success.badge')}</span>
 
-                      <h2 className="mt-2 text-2xl font-bold text-primary-900">Recibimos tu solicitud de cita</h2>
+                      <h2 className="mt-2 text-2xl font-bold text-primary-900">{t('success.title')}</h2>
 
                       <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-slate-600">
 
-                        {appointmentType === 'home' ? 'Recibimos tu solicitud a domicilio. El laboratorio revisará y confirmará la visita y el horario.' : 'Tu horario quedó reservado y la solicitud está pendiente de revisión por el laboratorio.'}
+                        {appointmentType === 'home' ? t('success.homeMessage') : t('success.branchMessage')}
 
                       </p>
 
                       <div className="mx-auto mt-6 max-w-md rounded-2xl border border-slate-200 bg-slate-50 p-5 text-left text-sm">
 
-                        <p><strong>Folio:</strong> <span className="break-words font-semibold text-primary-900">{bookingSuccess.folio ?? bookingSuccess.id}</span></p>
+                        <p><strong>{t('success.folio')}</strong> <span className="break-words font-semibold text-primary-900">{bookingSuccess.folio ?? bookingSuccess.id}</span></p>
 
-                        <p className="mt-2"><strong>{appointmentType === 'home' ? 'Sucursal responsable:' : 'Sucursal:'}</strong> {selectedBranch?.name}</p>
+                        <p className="mt-2"><strong>{appointmentType === 'home' ? t('common.responsibleBranchColon') : t('common.branchColon')}</strong> {selectedBranch?.name}</p>
 
                         {appointmentType === 'branch' && selectedBranch?.address && <p className="mt-1 text-slate-500">{selectedBranch.address}</p>}
 
                         {appointmentType === 'branch' && <BranchContactActions branch={selectedBranch} />}
-                        {appointmentType === 'home' && <div className="mt-3"><p><strong>Dirección de visita:</strong> {homeAddress}</p>{locationUrl.trim() && <a className="mt-1 inline-block break-all text-primary-900 underline" href={locationUrl.trim()} target="_blank" rel="noopener noreferrer">Ver ubicación en Google Maps</a>}</div>}
+                        {appointmentType === 'home' && <div className="mt-3"><p><strong>{t('common.visitAddressColon')}</strong> {homeAddress}</p>{locationUrl.trim() && <a className="mt-1 inline-block break-all text-primary-900 underline" href={locationUrl.trim()} target="_blank" rel="noopener noreferrer">{t('success.map')}</a>}</div>}
 
-                        <p className="mt-2"><strong>Fecha:</strong> {formatDate(requestedDate)}</p>
+                        <p className="mt-2"><strong>{t('common.dateColon')}</strong> {formatDate(requestedDate, locale)}</p>
 
-                        <p className="mt-2"><strong>Horario:</strong> {requestedTime} h</p>
+                        <p className="mt-2"><strong>{t('common.timeColon')}</strong> {requestedTime} h</p>
 
-                        <p className="mt-2"><strong>Paciente:</strong> {patientName}</p>
+                        <p className="mt-2"><strong>{t('common.patientColon')}</strong> {patientName}</p>
 
-                        <p className="mt-2"><strong>Teléfono del paciente:</strong> {phone}</p>
+                        <p className="mt-2"><strong>{t('common.patientPhoneColon')}</strong> {phone}</p>
 
-                        <p className="mt-2 break-words"><strong>Correo:</strong> {email}</p>
+                        <p className="mt-2 break-words"><strong>{t('common.emailColon')}</strong> {email}</p>
 
-                        {quotationItems.length > 0 && <div className="mt-4 border-t border-slate-200 pt-3"><strong>Estudios y paquetes:</strong>{quotationItems.map((item) => <p key={`${item.type}:${item.id}`} className="mt-1">{item.name} — {item.price === null ? 'Precio por consultar' : money(item.price)}</p>)}<p className="mt-2 font-bold">{quotationMissingPrices ? 'Subtotal conocido' : 'Total estimado'}: {money(quotationSubtotal)}</p></div>}
+                        {quotationItems.length > 0 && <div className="mt-4 border-t border-slate-200 pt-3"><strong>{t('common.testPackagesColon')}</strong>{quotationItems.map((item) => <p key={`${item.type}:${item.id}`} className="mt-1">{item.name} — {item.price === null ? t('common.pricePending') : money(item.price, locale)}</p>)}<p className="mt-2 font-bold">{quotationMissingPrices ? t('common.knownSubtotal') : t('common.estimatedTotal')}: {money(quotationSubtotal, locale)}</p></div>}
 
                       </div>
 
@@ -1502,13 +1499,13 @@ export default function AppointmentWizard() {
 
                       >
 
-                        <Printer className="h-4 w-4" /> Imprimir / Guardar PDF
+                        <Printer className="h-4 w-4" /> {t('success.print')}
 
                       </button>
 
-                      <p className="mt-4 text-xs text-slate-500">Conserva tu folio para cualquier aclaración.</p>
+                      <p className="mt-4 text-xs text-slate-500">{t('success.keepFolio')}</p>
 
-                      <a href="/mi-cuenta" className="mt-4 inline-block text-sm font-bold text-primary-900 underline">Ver mis citas en mi cuenta</a>
+                      <a href="/mi-cuenta" className="mt-4 inline-block text-sm font-bold text-primary-900 underline">{t('success.myAppointments')}</a>
 
                     </div>
 
@@ -1516,56 +1513,56 @@ export default function AppointmentWizard() {
 
                     <>
 
-                      <span className="text-xs font-bold uppercase tracking-widest text-green-700">Paso 4 de 4</span>
+                      <span className="text-xs font-bold uppercase tracking-widest text-green-700">{t('stepCount', { step: 4 })}</span>
 
-                      <h2 className="mt-2 text-xl font-bold text-primary-900 sm:text-2xl">Revisa tu solicitud</h2>
+                      <h2 className="mt-2 text-xl font-bold text-primary-900 sm:text-2xl">{t('review.title')}</h2>
 
-                      <p className="mt-2 text-sm leading-6 text-slate-500">Verifica que los datos sean correctos antes de enviarla.</p>
+                      <p className="mt-2 text-sm leading-6 text-slate-500">{t('review.description')}</p>
 
                       <div className="mt-6 space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-700">
 
                         <div>
 
-                          <p className="font-bold text-primary-900">{appointmentType === 'home' ? 'Toma a domicilio y horario solicitado' : 'Sucursal y horario'}</p>
+                          <p className="font-bold text-primary-900">{appointmentType === 'home' ? t('review.homeTitle') : t('review.branchTitle')}</p>
 
-                          <p className="mt-2"><strong>{appointmentType === 'home' ? 'Sucursal responsable:' : 'Sucursal:'}</strong> {selectedBranch?.name}</p>
+                          <p className="mt-2"><strong>{appointmentType === 'home' ? t('common.responsibleBranchColon') : t('common.branchColon')}</strong> {selectedBranch?.name}</p>
 
                           {appointmentType === 'branch' && selectedBranch?.address && <p className="mt-1 text-slate-500">{selectedBranch.address}</p>}
 
                           {appointmentType === 'branch' && <BranchContactActions branch={selectedBranch} />}
-                          {appointmentType === 'home' && <div className="mt-3"><p><strong>Dirección de visita:</strong> {homeAddress}</p>{locationUrl.trim() && <a className="mt-1 inline-block break-all text-primary-900 underline" href={locationUrl.trim()} target="_blank" rel="noopener noreferrer">Ver ubicación en Google Maps</a>}</div>}
+                          {appointmentType === 'home' && <div className="mt-3"><p><strong>{t('common.visitAddressColon')}</strong> {homeAddress}</p>{locationUrl.trim() && <a className="mt-1 inline-block break-all text-primary-900 underline" href={locationUrl.trim()} target="_blank" rel="noopener noreferrer">{t('success.map')}</a>}</div>}
 
-                          <p className="mt-2"><strong>Fecha:</strong> {formatDate(requestedDate)}</p>
+                          <p className="mt-2"><strong>{t('common.dateColon')}</strong> {formatDate(requestedDate, locale)}</p>
 
-                          <p className="mt-1"><strong>Horario:</strong> {requestedTime} h</p>
-
-                        </div>
-
-                        <div className="border-t border-slate-200 pt-4">
-
-                          <p className="font-bold text-primary-900">Datos del paciente</p>
-
-                          <p className="mt-2"><strong>Nombre:</strong> {patientName}</p>
-
-                          <p className="mt-1"><strong>Nacimiento:</strong> {formatDate(birthDate)}</p>
-
-                          <p className="mt-1"><strong>Teléfono:</strong> {phone}</p>
-
-                          <p className="mt-1 break-words"><strong>Correo:</strong> {email}</p>
+                          <p className="mt-1"><strong>{t('common.timeColon')}</strong> {requestedTime} h</p>
 
                         </div>
 
                         <div className="border-t border-slate-200 pt-4">
 
-                          <p className="font-bold text-primary-900">Estudios y paquetes</p>
+                          <p className="font-bold text-primary-900">{t('review.patientData')}</p>
 
-                          {quotationItems.length === 0 ? <p className="mt-2">Sin estudios ni paquetes.</p> : quotationItems.map((item) => (
+                          <p className="mt-2"><strong>{t('common.nameColon')}</strong> {patientName}</p>
 
-                            <p key={`${item.type}:${item.id}`} className="mt-2">{item.type === 'study' ? 'Estudio' : 'Paquete'}: {item.name} — {item.price === null ? 'Precio por consultar' : money(item.price)}</p>
+                          <p className="mt-1"><strong>{t('common.birthColon')}</strong> {formatDate(birthDate, locale)}</p>
+
+                          <p className="mt-1"><strong>{t('common.phoneColon')}</strong> {phone}</p>
+
+                          <p className="mt-1 break-words"><strong>{t('common.emailColon')}</strong> {email}</p>
+
+                        </div>
+
+                        <div className="border-t border-slate-200 pt-4">
+
+                          <p className="font-bold text-primary-900">{t('common.testsPackages')}</p>
+
+                          {quotationItems.length === 0 ? <p className="mt-2">{t('review.noItems')}</p> : quotationItems.map((item) => (
+
+                            <p key={`${item.type}:${item.id}`} className="mt-2">{item.type === 'study' ? t('common.study') : t('common.package')}: {item.name} — {item.price === null ? t('common.pricePending') : money(item.price, locale)}</p>
 
                           ))}
 
-                          {quotationItems.length > 0 && <p className="mt-3 font-bold">{quotationMissingPrices ? 'Subtotal conocido' : 'Total estimado'}: {money(quotationSubtotal)}</p>}
+                          {quotationItems.length > 0 && <p className="mt-3 font-bold">{quotationMissingPrices ? t('common.knownSubtotal') : t('common.estimatedTotal')}: {money(quotationSubtotal, locale)}</p>}
 
                           {quotationError && <p role="alert" className="mt-3 text-red-700">{quotationError}</p>}
 
@@ -1575,7 +1572,7 @@ export default function AppointmentWizard() {
 
                       <div className="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-slate-600">
 
-                        {appointmentType === 'home' ? 'Al enviar, se registrará tu solicitud de toma a domicilio. El horario está sujeto a confirmación del laboratorio.' : 'Al enviar, se registrará tu solicitud y se reservará el lugar seleccionado. El laboratorio revisará los detalles de atención.'}
+                        {appointmentType === 'home' ? t('review.homeNotice') : t('review.branchNotice')}
 
                       </div>
 
@@ -1589,7 +1586,7 @@ export default function AppointmentWizard() {
 
                             <button type="button" onClick={() => { setBookingError(''); setSlotTaken(false); setRequestedTime(''); setAvailabilityReload((value) => value + 1); setStep(1); }} className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-red-700">
 
-                              <CalendarDays className="h-4 w-4" /> Elegir otro horario
+                              <CalendarDays className="h-4 w-4" /> {t('review.chooseAnother')}
 
                             </button>
 
@@ -1603,13 +1600,13 @@ export default function AppointmentWizard() {
 
                         <button type="button" disabled={bookingLoading} onClick={() => setStep(2)} className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-primary-900 disabled:opacity-40">
 
-                          <ArrowLeft className="h-4 w-4" /> Editar mis datos
+                          <ArrowLeft className="h-4 w-4" /> {t('review.edit')}
 
                         </button>
 
                         <button type="button" disabled={bookingLoading || slotTaken || profileLoading || Boolean(profileError) || quotationBlocked} onClick={() => void submitAppointment()} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-primary-900 px-6 py-3 text-sm font-bold text-white hover:bg-primary-800 disabled:cursor-not-allowed disabled:opacity-50">
 
-                          {bookingLoading ? 'Registrando solicitud...' : 'Confirmar solicitud'}
+                          {bookingLoading ? t('review.loading') : t('review.confirm')}
 
                           {!bookingLoading && <ArrowRight className="h-4 w-4" />}
 
@@ -1643,13 +1640,13 @@ export default function AppointmentWizard() {
 
                   <h3 className="font-bold text-primary-900">
 
-                    Tu cita
+                    {t('sidebar.title')}
 
                   </h3>
 
                   <p className="text-xs text-slate-500">
 
-                    Resumen de tu selección
+                    {t('sidebar.description')}
 
                   </p>
 
@@ -1661,13 +1658,13 @@ export default function AppointmentWizard() {
 
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
 
-                  {appointmentType === 'home' ? 'Sucursal responsable' : 'Sucursal'}
+                  {appointmentType === 'home' ? t('schedule.homeBranch') : t('common.branch')}
 
                 </p>
 
                 <p className="mt-2 text-sm font-semibold text-slate-700">
 
-                  {selectedBranch?.name ?? 'Sin seleccionar'}{appointmentType === 'home' ? ' · A domicilio' : ''}
+                  {selectedBranch?.name ?? t('sidebar.notSelected')}{appointmentType === 'home' ? ' · A domicilio' : ''}
 
                 </p>
 
@@ -1677,13 +1674,13 @@ export default function AppointmentWizard() {
 
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
 
-                  Fecha y horario
+                  {t('sidebar.dateTime')}
 
                 </p>
 
                 <p className="mt-2 text-sm text-slate-500">
 
-                  {requestedDate && requestedTime ? `${formatDate(requestedDate)} · ${requestedTime} h` : 'Pendiente de seleccionar'}
+                  {requestedDate && requestedTime ? `${formatDate(requestedDate, locale)} · ${requestedTime} h` : t('sidebar.pending')}
 
                 </p>
 
@@ -1693,7 +1690,7 @@ export default function AppointmentWizard() {
 
                 <div className="mt-5 border-t border-slate-100 pt-5">
 
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Paciente</p>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{t('sidebar.patient')}</p>
 
                   <p className="mt-2 text-sm font-semibold text-slate-700">{patientName.trim()}</p>
 
@@ -1705,9 +1702,9 @@ export default function AppointmentWizard() {
 
               <div className="mt-5 border-t border-slate-100 pt-5">
 
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Estudios y paquetes</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{t('common.testsPackages')}</p>
 
-                {quotationLoading ? <p className="mt-3 text-sm text-slate-500">Validando cotización...</p> : (
+                {quotationLoading ? <p className="mt-3 text-sm text-slate-500">{t('sidebar.validating')}</p> : (
 
                   <>
 
@@ -1715,19 +1712,19 @@ export default function AppointmentWizard() {
 
                       <li key={`${item.type}:${item.id}`} className="text-sm">
 
-                        <span className="block text-xs text-slate-500">{item.type === 'study' ? 'Estudio' : 'Paquete'}</span>
+                        <span className="block text-xs text-slate-500">{item.type === 'study' ? t('common.study') : t('common.package')}</span>
 
                         <span className="font-semibold text-primary-900">{item.name}</span>
 
-                        <span className="block text-slate-600">{item.price === null ? 'Precio por consultar' : money(item.price)}</span>
+                        <span className="block text-slate-600">{item.price === null ? t('common.pricePending') : money(item.price, locale)}</span>
 
                       </li>
 
-                    ))}</ul> : <p className="mt-3 text-sm text-slate-500">No has seleccionado estudios ni paquetes. Debes agregar al menos uno para agendar.</p>}
+                    ))}</ul> : <p className="mt-3 text-sm text-slate-500">{t('sidebar.empty')}</p>}
 
-                    {quotationItems.length > 0 && <div className="mt-4 flex justify-between gap-2 border-t border-slate-100 pt-3 text-sm font-bold text-primary-900"><span>{quotationMissingPrices ? 'Subtotal conocido' : 'Total estimado'}</span><span>{money(quotationSubtotal)}</span></div>}
+                    {quotationItems.length > 0 && <div className="mt-4 flex justify-between gap-2 border-t border-slate-100 pt-3 text-sm font-bold text-primary-900"><span>{quotationMissingPrices ? t('common.knownSubtotal') : t('common.estimatedTotal')}</span><span>{money(quotationSubtotal, locale)}</span></div>}
 
-                    {quotationMissingPrices && <p className="mt-2 text-xs text-amber-700">El total no incluye los elementos sin precio.</p>}
+                    {quotationMissingPrices && <p className="mt-2 text-xs text-amber-700">{t('sidebar.missing')}</p>}
 
                   </>
 
@@ -1735,9 +1732,9 @@ export default function AppointmentWizard() {
 
                 {quotationError && <p role="alert" className="mt-3 text-xs text-red-700">{quotationError}</p>}
 
-                <a href="/estudios" className="mt-4 inline-block text-xs font-semibold text-primary-900 underline">Revisar mi cotización</a>
+                <a href="/estudios" className="mt-4 inline-block text-xs font-semibold text-primary-900 underline">{t('sidebar.review')}</a>
 
-                {quotationError && <button type="button" onClick={() => setQuotationRevision((n) => n + 1)} className="ml-3 text-xs font-semibold text-primary-900 underline">Reintentar</button>}
+                {quotationError && <button type="button" onClick={() => setQuotationRevision((n) => n + 1)} className="ml-3 text-xs font-semibold text-primary-900 underline">{t('schedule.retry')}</button>}
 
               </div>
 
@@ -1795,48 +1792,48 @@ export default function AppointmentWizard() {
 
       {bookingSuccess && (
 
-        <section id="labwork-print-receipt" className="hidden print:block bg-white p-8 text-black" aria-label="Comprobante de solicitud de cita">
+        <section id="labwork-print-receipt" className="hidden print:block bg-white p-8 text-black" aria-label={t('receipt.aria')}>
 
           <div className="mx-auto max-w-2xl">
 
             <div className="border-b-2 border-slate-800 pb-5">
 
-              <h1 className="text-2xl font-bold">LabWork · Análisis Clínicos</h1>
+              <h1 className="text-2xl font-bold">{t('receipt.brand')}</h1>
 
-              <p className="mt-1 text-sm">Comprobante de solicitud de cita</p>
+              <p className="mt-1 text-sm">{t('receipt.title')}</p>
 
             </div>
 
-            <h2 className="mt-7 text-xl font-bold">Solicitud registrada</h2>
+            <h2 className="mt-7 text-xl font-bold">{t('success.badge')}</h2>
 
-            <p className="mt-2 text-sm">{appointmentType === 'home' ? 'Solicitud de toma a domicilio pendiente de confirmación del laboratorio.' : 'El horario está reservado. La solicitud está pendiente de revisión por el laboratorio.'}</p>
+            <p className="mt-2 text-sm">{appointmentType === 'home' ? t('receipt.homeMessage') : t('receipt.branchMessage')}</p>
 
             <dl className="mt-7 space-y-4 text-sm">
 
-              <div><dt className="font-bold">Folio</dt><dd className="break-words text-lg font-bold tracking-wide">{bookingSuccess.folio ?? bookingSuccess.id}</dd></div>
+              <div><dt className="font-bold">{t('common.folio')}</dt><dd className="break-words text-lg font-bold tracking-wide">{bookingSuccess.folio ?? bookingSuccess.id}</dd></div>
 
-              <div><dt className="font-bold">Paciente</dt><dd>{patientName}</dd></div>
+              <div><dt className="font-bold">{t('sidebar.patient')}</dt><dd>{patientName}</dd></div>
 
-              <div><dt className="font-bold">Teléfono del paciente</dt><dd>{phone}</dd></div>
+              <div><dt className="font-bold">{t('common.patientPhone')}</dt><dd>{phone}</dd></div>
 
-              <div><dt className="font-bold">Correo electrónico</dt><dd className="break-all">{email}</dd></div>
+              <div><dt className="font-bold">{t('patient.email')}</dt><dd className="break-all">{email}</dd></div>
 
-              <div><dt className="font-bold">{appointmentType === 'home' ? 'Sucursal responsable' : 'Sucursal'}</dt><dd>{selectedBranch?.name ?? 'No disponible'}</dd></div>
+              <div><dt className="font-bold">{appointmentType === 'home' ? t('schedule.homeBranch') : t('common.branch')}</dt><dd>{selectedBranch?.name ?? t('receipt.notAvailable')}</dd></div>
 
-              {appointmentType === 'branch' && selectedBranch?.address && <div><dt className="font-bold">Dirección</dt><dd>{selectedBranch.address}</dd></div>}
-              {appointmentType === 'home' && <div><dt className="font-bold">Dirección de visita</dt><dd>{homeAddress}</dd>{locationUrl.trim() && <dd className="break-all">Ubicación: {locationUrl.trim()}</dd>}</div>}
+              {appointmentType === 'branch' && selectedBranch?.address && <div><dt className="font-bold">{t('receipt.address')}</dt><dd>{selectedBranch.address}</dd></div>}
+              {appointmentType === 'home' && <div><dt className="font-bold">{t('common.visitAddress')}</dt><dd>{homeAddress}</dd>{locationUrl.trim() && <dd className="break-all">{t('receipt.location')} {locationUrl.trim()}</dd>}</div>}
 
-              {selectedBranch?.phone && <div><dt className="font-bold">Teléfono de sucursal</dt><dd>{selectedBranch.phone}</dd></div>}
+              {selectedBranch?.phone && <div><dt className="font-bold">{t('receipt.branchPhone')}</dt><dd>{selectedBranch.phone}</dd></div>}
 
-              <div><dt className="font-bold">Fecha</dt><dd>{formatDate(requestedDate)}</dd></div>
+              <div><dt className="font-bold">{t('common.date')}</dt><dd>{formatDate(requestedDate, locale)}</dd></div>
 
-              <div><dt className="font-bold">Horario</dt><dd>{requestedTime} h</dd></div>
+              <div><dt className="font-bold">{t('common.time')}</dt><dd>{requestedTime} h</dd></div>
 
-              {quotationItems.length > 0 && <div><dt className="font-bold">Estudios y paquetes</dt><dd>{quotationItems.map((item) => <p key={`${item.type}:${item.id}`}>{item.type === 'study' ? 'Estudio' : 'Paquete'}: {item.name} — {item.price === null ? 'Precio por consultar' : money(item.price)}</p>)}<p className="mt-2 font-bold">{quotationMissingPrices ? 'Subtotal conocido' : 'Total estimado'}: {money(quotationSubtotal)}</p></dd></div>}
+              {quotationItems.length > 0 && <div><dt className="font-bold">{t('common.testsPackages')}</dt><dd>{quotationItems.map((item) => <p key={`${item.type}:${item.id}`}>{item.type === 'study' ? t('common.study') : t('common.package')}: {item.name} — {item.price === null ? t('common.pricePending') : money(item.price, locale)}</p>)}<p className="mt-2 font-bold">{quotationMissingPrices ? t('common.knownSubtotal') : t('common.estimatedTotal')}: {money(quotationSubtotal, locale)}</p></dd></div>}
 
             </dl>
 
-            <p className="mt-10 border-t border-slate-300 pt-4 text-xs">Conserva este comprobante para cualquier aclaración. No sustituye la confirmación del laboratorio.</p>
+            <p className="mt-10 border-t border-slate-300 pt-4 text-xs">{t('receipt.notice')}</p>
 
           </div>
 

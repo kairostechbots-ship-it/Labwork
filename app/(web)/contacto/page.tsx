@@ -1,11 +1,32 @@
+
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
+
 import ContactCards from '@/components/contact/ContactCards';
 import ContactForm from '@/components/contact/ContactForm';
 import ContactHero from '@/components/contact/ContactHero';
 import ContactQuickHelp from '@/components/contact/ContactQuickHelp';
 
+/* ============================================================
+   METADATOS BILINGÜES
+============================================================ */
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('ContactMetadata');
+
+  return {
+    title: t('title'),
+    description: t('description'),
+  };
+}
+
+/* ============================================================
+   PÁGINA DE CONTACTO
+============================================================ */
+
 export default function ContactPage() {
   return (
-    <main className="bg-white">
+    <div className="bg-white">
       <ContactHero />
 
       <ContactCards />
@@ -34,6 +55,6 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

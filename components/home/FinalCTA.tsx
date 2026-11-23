@@ -1,4 +1,6 @@
+
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 
 import {
   ArrowRight,
@@ -9,7 +11,9 @@ import {
   MessageCircle,
 } from 'lucide-react';
 
-export default function FinalCTA() {
+export default async function FinalCTA() {
+  const t = await getTranslations('FinalCTA');
+
   return (
     <section className="bg-white px-4 pb-12 pt-4 sm:px-6 lg:px-8">
       <div
@@ -127,7 +131,7 @@ export default function FinalCTA() {
             >
               <Headphones className="h-4 w-4" />
 
-              Estamos para ayudarte
+              {t('badge')}
             </div>
 
             <h2
@@ -144,7 +148,7 @@ export default function FinalCTA() {
                 lg:leading-[1.1]
               "
             >
-              ¿Listo para dar el siguiente paso?
+              {t('title')}
             </h2>
 
             <p
@@ -157,8 +161,7 @@ export default function FinalCTA() {
                 sm:text-base
               "
             >
-              Agenda tu cita en línea o contáctanos si tienes dudas
-              sobre nuestros estudios, sucursales o servicios.
+              {t('description')}
             </p>
 
             {/* =================================================
@@ -190,7 +193,7 @@ export default function FinalCTA() {
               >
                 <FlaskConical className="h-4 w-4 text-accent-400" />
 
-                Consulta estudios
+                {t('links.studies')}
               </Link>
 
               <Link
@@ -205,7 +208,7 @@ export default function FinalCTA() {
               >
                 <MapPin className="h-4 w-4 text-accent-400" />
 
-                Encuentra tu sucursal
+                {t('links.branches')}
               </Link>
 
               <Link
@@ -220,7 +223,7 @@ export default function FinalCTA() {
               >
                 <MessageCircle className="h-4 w-4 text-accent-400" />
 
-                Resuelve tus dudas
+                {t('links.questions')}
               </Link>
             </div>
           </div>
@@ -266,7 +269,7 @@ export default function FinalCTA() {
             >
               <CalendarDays className="h-4 w-4" />
 
-              Agendar cita
+              {t('book')}
 
               <ArrowRight
                 className="
@@ -310,7 +313,7 @@ export default function FinalCTA() {
             >
               <MessageCircle className="h-4 w-4" />
 
-              Contactarnos
+              {t('contact')}
 
               <ArrowRight
                 className="
@@ -335,8 +338,7 @@ export default function FinalCTA() {
                 md:text-right
               "
             >
-              También puedes comunicarte con nosotros por WhatsApp
-              o correo electrónico.
+              {t('contactNote')}
             </p>
           </div>
         </div>

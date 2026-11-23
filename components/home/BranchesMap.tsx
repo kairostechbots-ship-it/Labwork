@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useMemo } from 'react';
@@ -83,12 +84,7 @@ function MapController({
 }) {
   const map = useMap();
 
-  /*
-  |--------------------------------------------------------------------------
-  | VISTA GENERAL
-  |--------------------------------------------------------------------------
-  */
-
+  /* VISTA GENERAL */
   useEffect(() => {
     if (selectedBranch) {
       return;
@@ -114,21 +110,11 @@ function MapController({
     map.fitBounds(bounds, {
       paddingTopLeft: [70, 70],
       paddingBottomRight: [70, 70],
-
-      /*
-       * Permite acercarnos un poco más que antes,
-       * pero sin perder todas las sucursales.
-       */
       maxZoom: 11,
     });
   }, [branches, selectedBranch, map]);
 
-  /*
-  |--------------------------------------------------------------------------
-  | SUCURSAL SELECCIONADA
-  |--------------------------------------------------------------------------
-  */
-
+  /* SUCURSAL SELECCIONADA */
   useEffect(() => {
     if (
       selectedBranch?.latitude == null ||
@@ -180,22 +166,16 @@ export default function BranchesMap({
       zoomControl={false}
       className="h-full w-full"
     >
-      {/* =====================================================
-          MAPA BASE
-      ====================================================== */}
-
+      {/* MAPA BASE */}
       <TileLayer
         attribution="&copy; OpenStreetMap contributors"
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {/* Zoom abajo a la derecha */}
+      {/* CONTROLES */}
       <ZoomControl position="bottomright" />
 
-      {/* =====================================================
-          SUCURSALES
-      ====================================================== */}
-
+      {/* SUCURSALES */}
       {validBranches.map((branch) => {
         const isSelected =
           selectedBranch?.id === branch.id;
@@ -222,10 +202,6 @@ export default function BranchesMap({
                 onSelectBranch(branch),
             }}
           >
-            {/* =================================================
-                ETIQUETA
-            ================================================== */}
-
             <Tooltip
               permanent={isSelected}
               sticky={!isSelected}
@@ -250,10 +226,7 @@ export default function BranchesMap({
         );
       })}
 
-      {/* =====================================================
-          CONTROLADOR
-      ====================================================== */}
-
+      {/* CONTROLADOR */}
       <MapController
         branches={validBranches}
         selectedBranch={selectedBranch}

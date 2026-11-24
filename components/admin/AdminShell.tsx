@@ -87,6 +87,8 @@ export default function AdminShell({
   const [collapsed, setCollapsed] = useState(false);
   const [showResultsNotice, setShowResultsNotice] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  const resultsUrl =
+  process.env.NEXT_PUBLIC_LABWORK_RESULTS_URL?.trim();
 
   useEffect(() => {
     setMobileOpen(false);
@@ -500,40 +502,56 @@ export default function AdminShell({
               </button>
             </div>
 
-            <div className="px-6 py-6">
-              <div className="flex items-start gap-3 rounded-xl border border-primary-100 bg-primary-50/60 p-4">
-                <Info className="mt-0.5 h-5 w-5 shrink-0 text-primary-600" />
+           
+<div className="px-6 py-6">
+  <div className="flex items-start gap-3 rounded-xl border border-primary-100 bg-primary-50/60 p-4">
+    <Info className="mt-0.5 h-5 w-5 shrink-0 text-primary-600" />
 
-                <div>
-                  <p className="text-sm font-bold text-primary-900">
-                    Enlace próximamente disponible
-                  </p>
+    <div>
+      <p className="text-sm font-bold text-primary-900">
+        {resultsUrl
+          ? "Consulta de resultados disponible"
+          : "Enlace próximamente disponible"}
+      </p>
 
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                    Los resultados se consultan en el sistema externo
-                    del laboratorio. El acceso estará disponible cuando
-                    LabWork nos proporcione el enlace correspondiente.
-                  </p>
-                </div>
-              </div>
+      <p className="mt-2 text-sm leading-relaxed text-slate-600">
+        {resultsUrl
+          ? "Accede al sistema externo de LabWork para consultar los resultados de los estudios realizados."
+          : "Los resultados se consultan en el sistema externo del laboratorio. El acceso estará disponible cuando LabWork nos proporcione el enlace correspondiente."}
+      </p>
+    </div>
+  </div>
 
-              <p className="mt-4 text-xs leading-relaxed text-slate-500">
-                Los resultados no se almacenan ni se administran desde
-                este portal.
-              </p>
-            </div>
+  <p className="mt-4 text-xs leading-relaxed text-slate-500">
+    Los resultados no se almacenan ni se administran desde
+    este portal.
+  </p>
+</div>
 
-            <div className="flex justify-end border-t border-primary-100 bg-slate-50 px-6 py-4">
-              <button
-                type="button"
-                onClick={() => setShowResultsNotice(false)}
-                className="rounded-xl bg-accent-500 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-accent-600"
-              >
-                Entendido
-              </button>
-            </div>
-          </div>
-        </div>
+<div className="flex flex-wrap justify-end gap-3 border-t border-primary-100 bg-slate-50 px-6 py-4">
+  <button
+    type="button"
+    onClick={() => setShowResultsNotice(false)}
+    className="rounded-xl border border-slate-200 bg-white px-6 py-2.5 text-sm font-bold text-slate-600 transition hover:bg-slate-100"
+  >
+    {resultsUrl ? "Cerrar" : "Entendido"}
+  </button>
+
+  {resultsUrl && (
+    <a
+      href={resultsUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={() => setShowResultsNotice(false)}
+      className="inline-flex items-center justify-center rounded-xl bg-accent-500 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-accent-600"
+    >
+      Consultar resultados
+    </a>
+  )}
+</div>
+</div>
+</div>
+
       )}
     </div>
   );
